@@ -1,0 +1,131 @@
+
+
+/* image start */
+.main-img {
+    width: 100%;
+    height: auto;
+    max-height: 100vh;
+    object-fit: contain;
+    position: relative;
+
+}
+
+.img-text {
+    position: absolute;
+    top: 75%;
+    left: 18%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    padding: 20px;
+    background-color: transparent;
+}
+
+.img-text h1 {
+    font-size: 50px;
+    color: white;
+    margin: 0;
+}
+
+@media (max-width: 1084px) {
+    .main-img {
+        max-width: 100%;
+        height: auto;
+        display: block;
+    }
+
+    #welcome-image {
+        padding-bottom: 300px;
+        /* Adjust as needed */
+    }
+}
+
+/* Main Content End */
+
+
+.container .heading {
+    text-align: center;
+    padding-top: 15px;
+    padding-bottom: 15px;
+    color: rgb(231, 55, 55);
+    text-shadow: 0 5 10 rgba(0, 0, 0, .2);
+    font-size: 40px;
+}
+
+.container .card-container {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(270px, 1fr));
+    gap: 15px;
+}
+
+.container .card-container .card {
+    box-shadow: 0 5px 10px rgba(0, 0, 0, .2);
+    border-radius: 5px;
+    background: white;
+    text-align: center;
+    padding: 30px 20px;
+
+}
+
+.container .card-container .card img {
+    height: 250px;
+    border-radius: 5px;
+    clip-path: polygon(0 0, 100% 0, 100% 85%, 0 100%);
+
+}
+
+.container .card-container .card h3 {
+    color: black;
+    font-size: 22px;
+    padding: 10px 0;
+}
+
+.container .card-container .card p {
+    text-align: left;
+    color: black;
+    font-size: 15px;
+    line-height: 1.8;
+    padding: 10px 0;
+}
+
+.container .card-container .card:hover {
+    box-shadow: 0 10px 15px rgba(0, 0, 0, .3);
+    transform: scale(1.03);
+}
+
+.img-text {
+    position: absolute;
+    top: 80%;
+    left: 18%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    padding: 20px;
+    background-color: transparent;
+}
+
+.img-text h1 {
+    font-size: 50px;
+    color: white;
+    margin: 0;
+}
+
+.img-text h2 {
+    font-size: 20px;
+    color: rgb(231, 55, 55);
+    margin: 0;
+}
+
+.classes {
+    position: relative;
+    right: 40%;
+}
+
+@media (max-width:768px) {
+    .container {
+        padding: 20px;
+    }
+    .container .card-container {
+        grid-template-columns: repeat(1, minmax(270px, 1fr)); /* Display one card in a row on smaller screens */
+    }
+}
+
+

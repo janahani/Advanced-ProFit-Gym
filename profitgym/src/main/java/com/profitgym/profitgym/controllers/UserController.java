@@ -10,7 +10,7 @@ import org.springframework.web.servlet.ModelAndView;
 @RequestMapping("/user")
 public class UserController {
 
-    @GetMapping("userprofile")
+    @GetMapping("/userprofile")
     public ModelAndView getUserProfile() {
         ModelAndView mav = new ModelAndView("userprofile.html");
         return mav;
