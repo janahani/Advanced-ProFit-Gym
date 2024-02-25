@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!--css/icons/boostrap/jquery/fonts/images start-->
+    <link rel="stylesheet" type="text/css" th:href="@{/CSS/footer.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/CSS/usersidebar.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/CSS/userprofile.css}">
+    <link rel="stylesheet"
+        th:href="@{https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@48,400,0,0}" />
+    <script src="https://kit.fontawesome.com/3472d45ca0.js" crossorigin="anonymous"></script>
+    <script src="https://kit.fontawesome.come/a076d05399.js"></script>
+    <!--css/icons/boostrap/jquery/fonts/images end-->
+    <link th:href="@{https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css}" rel='stylesheet'>
+
+</head>
+
+<body>
+    <!-- usersidebar -->
+    <div th:replace="~{partials/usersidebar}"></div>
+
+
+    <div class="profile">
+
+        <div class="greeting">
+            <p class="hello-fz"><i class="fas fa-lock"></i> Request to Freeze</p>
+        </div>
+
+        <div class="reminders">
+            <div class="reminder">
+                <p class="class">Package:</p>
+                <div class="class-title">2 Months</div>
+
+                <div class="dates">
+                    <div class="date">
+                        <p>Start Date:</p>
+                        <div class="start-date">21-06-2023</div>
+                    </div>
+                    <div class="date">
+                        <p>End Date:</p>
+                        <div class="end-date">21-08-2023</div>
+                    </div>
+                </div>
+
+                <div class="rem-info">
+                    <p>Remaining Freeze Duration:</p>
+                    <p class="actual-rem">10 Days</p>
+                </div>
+
+                <div class="freeze-request">
+
+                    <div class="membershipStatus">
+                        <p>Membership Status:</p>
+                    <p id="membershipStatus" class="actual-rem">Activated</p>
+                    </div>
+
+                    <div class="datePicking"  id="datePickerContainer">
+                        <label for="datepicker">Choose a Date:</label>
+                        <input type="date" id="datepicker">
+                      </div>
+
+                      <button id="freeze-button">Freeze</button> 
+                </div>
+            </div>
+
+            <div id="myModal" class="modal">
+                <div class="modal-content">
+                    <span class="close-popup">&times;</span>
+                    <p id="confirmation-text"></p>
+                    <button id="confirm-button">Yes</button>
+                    <button id="cancel-button">Cancel</button>
+                    <p id="modal-message"></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- footer -->
+    <div th:replace="~{partials/footer}"></div>
+
+</body>
+
+</html>
