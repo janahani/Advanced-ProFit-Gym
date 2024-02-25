@@ -45,4 +45,12 @@ public class UserController {
         ModelAndView mav = new ModelAndView("requestfreeze.html");
         return mav;
     }
+
+    @GetMapping("profsettings")
+    public ModelAndView viewProfSettings() {
+        ModelAndView mav = new ModelAndView("userprofsettings.html");
+        return mav;
+    }
+
+
 }
