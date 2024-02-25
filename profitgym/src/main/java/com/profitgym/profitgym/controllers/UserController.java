@@ -39,4 +39,10 @@ public class UserController {
         ModelAndView mav = new ModelAndView("viewclasses.html");
         return mav;
     }
+
+    @GetMapping("requestfreeze")
+    public ModelAndView requestFreeze() {
+        ModelAndView mav = new ModelAndView("requestfreeze.html");
+        return mav;
+    }
 }
