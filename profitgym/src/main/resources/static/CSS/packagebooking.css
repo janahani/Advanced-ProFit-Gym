@@ -1,0 +1,71 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap');
+
+.container{
+    height:180vh;
+    position:relative;
+    left:310px;
+    width:calc(100% - 310px);
+    transition: all 0.5s ease;
+    margin-bottom:3%;
+
+}
+
+ .sidebar.close ~ .container{
+    left:170px;
+    width:calc(100% - 170px);
+} 
+
+.gymfooter{
+    position:relative;
+    left:240px;
+    width:calc(100% - 240px);
+    transition: all 0.5s ease;
+    
+}
+
+.sidebar.close ~ .gymfooter{
+    left:70px;
+    width:calc(100% - 70px);
+}
+
+
+
+.btn-primary
+{
+    padding:10px;
+    width:30%;
+    margin-bottom:2%;
+    margin-left:34%;
+}
+
+h6{
+    font-size:16px;
+}
+
+.card-title,#price{
+    font-size:19px;
+}
+
+/* Add these styles to your CSS file */
+.row {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+}
+
+.col {
+    margin-bottom:4%;
+    height:70%;
+    width: calc(33.33% - 10px); /* Adjust the width and margin as needed */
+    margin-right: 20px; /* Add margin for spacing between columns */
+}
+
+#success,
+#fail,
+#alreadyExists1,
+#alreadyExists2 {
+    color: red;
+    font-size: 16px;
+    margin-left:30px;
+}

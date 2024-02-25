@@ -10,9 +10,15 @@ import org.springframework.web.servlet.ModelAndView;
 @RequestMapping("/user")
 public class UserController {
 
-    @GetMapping("userprofile")
+    @GetMapping("profile")
     public ModelAndView getUserProfile() {
         ModelAndView mav = new ModelAndView("userprofile.html");
+        return mav;
+    }
+
+    @GetMapping("bookpackage")
+    public ModelAndView getPackageBooking() {
+        ModelAndView mav = new ModelAndView("packagebooking.html");
         return mav;
     }
 }
