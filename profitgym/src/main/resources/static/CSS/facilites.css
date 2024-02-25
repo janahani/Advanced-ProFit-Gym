@@ -1,0 +1,61 @@
+/* Main Content Start */
+/* image start */
+.main-img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    position: relative;
+}
+
+.img-text {
+    position: absolute;
+    top: 75%;
+    left: 18%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    padding: 20px;
+    background-color: transparent;
+}
+
+.img-text h1 {
+    font-size: 50px;
+    color: white;
+    margin: 0;
+}
+
+@media (max-width: 1084px) {
+    .main-img {
+        max-width: 100%;
+        height: auto;
+        display: block;
+    }
+
+    #welcome-image {
+        padding-bottom: 300px;
+        /* Adjust as needed */
+    }
+}
+
+.facimgs {
+    overflow: hidden;
+    height: 300px;
+    padding: 14px;
+    transition: .7s;
+
+}
+
+.imgs {
+    width: 100%;
+    height: 100%;
+    border-radius: 20px 0px 20px 0px;
+}
+
+.facilites-desc{
+    font-size: 15px;
+    font-family: sans-serif;
+    margin-top: 50px;
+}
+
+.classes {
+    text-align: center;
+}
