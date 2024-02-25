@@ -1,0 +1,169 @@
+.header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    padding: 1.3rem 10%;
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    z-index: 100;
+}
+
+.navbar a {
+    position: relative;
+    font-size: 13px;
+    color: white;
+    text-decoration: none;
+    left: -220px;
+    margin-left: 20px;
+    letter-spacing: 1px;
+    font-family:system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif
+}
+
+.navbar a:hover{
+    color: rgb(222, 60, 60);
+}
+
+.navbar a::before {
+
+    content: '';
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background-color: rgb(222, 60, 60);
+    transition: .6s;
+}
+
+.navbar a:hover::before {
+    width: 100%;
+}
+
+.logo img {
+    position: relative;
+    left: -56px;
+    width: 235px;
+    height: 55px;
+}
+
+.icons {
+    position: absolute;
+    font-size: 2.6rem;
+    right: 16%;
+    color: white;
+    cursor: pointer;
+    display: none;
+}
+
+
+
+#home::before {
+
+    width: 100%;
+
+}
+
+
+
+.navbar-color {
+    backdrop-filter: blur(6px);
+    background-color: rgba(255, 255, 255, .15);    transition: .15s;
+}
+
+#check {
+    display: none;
+}
+
+.header::before {
+
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    backdrop-filter: blur(6px);
+    background-color: rgba(255, 255, 255, .15);
+    backdrop-filter: blur(50px);
+    z-index: -1;
+}
+
+@media(max-width:1100px) {
+    .header {
+        padding: 1.3rem 5%;
+    }
+}
+
+@media(max-width:600px) {
+    .navbar {
+        position: relative;
+        padding-left: 175px;
+    }
+    #gym-title{
+        padding-left: 50px;
+        font-size: 22px;
+        font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+        color: rgb(231, 55, 55);
+        font-weight: bolder;
+        text-shadow: #010916;
+    }
+    }
+
+
+
+
+@media(max-width:1084px) {
+    .icons {
+        display: inline-flex;
+    }
+
+
+    .navbar a:hover::before {
+        width: 0;
+    }
+
+    #check:checked~.icons #menu-icon {
+        display: none;
+    }
+
+    .icons #close-icon {
+        display: none;
+    }
+
+    #check:checked~.icons #close-icon {
+        display: block;
+    }
+
+    #home::before {
+
+        width: 0;
+
+    }
+
+    .navbar {
+        position: absolute;
+        top: 100%;
+        left: 0;
+        width: 100%;
+        height: 0;
+      backdrop-filter: blur(6px);
+    background-color: rgba(255, 255, 255, .15);
+        transition: .3s ease;
+        overflow: hidden;
+
+    }
+
+    #check:checked~.navbar {
+        height: 24.5rem;
+    }
+
+    .navbar a {
+        display: block;
+        font-size: 1.1rem;
+        margin: 1.3rem 0;
+        text-align: center;
+    }
+}
