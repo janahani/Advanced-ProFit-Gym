@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Page Title</title>
+    <style>
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: rgb(224, 224, 224);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background-color: rgb(31, 31, 31);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="sidebar close">
+        <div class="logo-details">
+            <i class='bx bx-user-circle'></i>
+            <span class="logo-name">Welcome Back</span>
+        </div>
+        <ul class="nav-links">
+            <li>
+                <a th:href="@{/views/userprofile}">
+                    <i class='bx bxs-grid-alt'></i>
+                    <span class="link-name">Profile</span>
+                </a>
+                <ul class="sub-menu blank">
+                    <li><a th:href="@{/templates/userprofile}" class="link-name">Profile</a></li>
+                </ul>
+            </li>
+            <li>
+                <div class="icon-link">
+                    <a href="#">
+                        <i class='bx bxs-book-add'></i>
+                        <span class="link-name">Booking</span>
+                    </a>
+                    <i class='bx bx-chevron-down arrow'></i>
+                </div>
+                <ul class="sub-menu">
+                    <li><a class="link-name">Booking</a></li>
+                    <li><a th:href="@{/templates/packagebooking}" class="link-name">Package</a></li>
+                    <li><a th:href="@{/templates/classbooking}" class="link-name">Class</a></li>
+                </ul>
+            </li>
+            <li>
+                <div class="icon-link">
+                    <a href="#">
+                        <i class='bx bxs-message-alt-detail'></i>
+                        <span class="link-name">Details</span>
+                    </a>
+                    <i class='bx bx-chevron-down arrow'></i>
+                </div>
+                <ul class="sub-menu">
+                    <li><a class="link-name">Details</a></li>
+                    <li><a th:href="@{/templates/viewpackage}" class="link-name">Package</a></li>
+                    <li><a th:href="@{/templates/viewclasses}" class="link-name">Class</a></li>
+                </ul>
+            </li>
+            <li>
+                <div class="icon-link">
+                    <a th:href="@{/templates/reqfreeze}">
+                        <i class='bx bxs-lock-alt'></i>
+                        <span class="link-name">Freeze</span>
+                    </a>
+                </div>
+                <ul class="sub-menu blank">
+                    <li><a th:href="@{/templates/reqfreeze}" class="link-name">Freeze</a></li>
+                </ul>
+            </li>
+            <li>
+                <div class="icon-link">
+                    <a th:href="@{/templates/userprofsettings}">
+                        <i class='bx bxs-cog'></i>
+                        <span class="link-name">Account</span>
+                    </a>
+                </div>
+                <ul class="sub-menu blank">
+                    <li><a th:href="@{/templates/userprofsettings}" class="link-name">Account Settings</a></li>
+                </ul>
+            </li>
+            <li>
+                <div class="icon-link">
+                    <a th:href="@{/templates/index}">
+                        <i class='bx bx-log-out'></i>
+                        <span class="link-name">Logout</span>
+                    </a>
+                </div>
+                <ul class="sub-menu blank">
+                    <li><a th:href="@{/templates/logout}" class="link-name">Logout</a></li>
+                </ul>
+            </li>
+            <li>
+                <div class="icon-link">
+                    <a th:href="@{/templates/index}">
+                        <i class='bx bx-home'></i>
+                        <span class="link-name">Return to Homepage</span>
+                    </a>
+                </div>
+                <ul class="sub-menu blank">
+                    <li><a th:href="@{/templates/index}" class="link-name">Return to Homepage</a></li>
+                </ul>
+            </li>
+        </ul>
+    </div>
+
+    <section class="home-section">
+        <div class="home-content">
+            <i class='bx bx-menu'></i>
+        </div>
+    </section>
+</body>
+
+</html>
+
