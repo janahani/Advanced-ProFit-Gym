@@ -1,0 +1,70 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap');
+
+.container{
+    height:180vh;
+    position:relative;
+    left:310px;
+    width:calc(100% - 310px);
+    transition: all 0.5s ease;
+    margin-bottom:3%;
+    
+
+}
+
+ .sidebar.close ~ .container{
+    left:170px;
+    width:calc(100% - 170px);
+} 
+
+.gymfooter{
+    position:relative;
+    left:240px;
+    width:calc(100% - 240px);
+    transition: all 0.5s ease;
+    
+}
+
+.sidebar.close ~ .gymfooter{
+    left:70px;
+    width:calc(100% - 70px);
+}
+
+
+.reserve-class {
+    background-color: transparent;
+    color: black;
+    padding: 10px 20px;
+    font-size: 16px;
+    border: 2px solid black;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    text-align: center;
+    display: block;
+    margin: 0 auto;
+}
+
+.reserve-class:hover {
+    background-color: #000000;
+    color: white;
+}
+
+.container .card-container{
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: flex-start;
+        gap: 10px;
+
+}
+
+.card{
+    margin-right:5%;
+    padding-bottom: 500px;
+
+}
+
+#failFree,#failNotFree,#alreadyExistsFree,#alreadyExistsNotFree,
+#noActiveMembershipFree, #noActiveMembershipNotFree {
+    color: red;
+    font-size: 16px;
+}

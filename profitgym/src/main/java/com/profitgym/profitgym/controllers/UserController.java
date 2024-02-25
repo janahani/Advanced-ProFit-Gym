@@ -21,4 +21,10 @@ public class UserController {
         ModelAndView mav = new ModelAndView("packagebooking.html");
         return mav;
     }
+
+    @GetMapping("bookclass")
+    public ModelAndView getClassBooking() {
+        ModelAndView mav = new ModelAndView("classbooking.html");
+        return mav;
+    }
 }
