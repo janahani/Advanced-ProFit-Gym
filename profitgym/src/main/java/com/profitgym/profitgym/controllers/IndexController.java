@@ -14,4 +14,24 @@ public class IndexController {
         ModelAndView mav = new ModelAndView("index.html");
         return mav;
     }
+
+    @GetMapping("/facilties")
+    public ModelAndView getFacilities() {
+        ModelAndView mav = new ModelAndView("facilities.html");
+        return mav;
+    }
+
+    @GetMapping("/login")
+    public ModelAndView getLogin() {
+        ModelAndView mav = new ModelAndView("login.html");
+        return mav;
+    }
+
+    @GetMapping("/contactus")
+    public ModelAndView getContactUs() {
+        ModelAndView mav = new ModelAndView("contactus.html");
+        return mav;
+    }
+
+
 }
