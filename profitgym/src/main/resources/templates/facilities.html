@@ -1,7 +1,7 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 
-head>
+<head>
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
@@ -28,9 +28,10 @@ head>
 <body>
     <!-- include header -->
     <div th:replace="~{/partials/header}"></div>
+
     <!-- add image -->
     <section id="welcome-image">
-        <img th:src="@{/Images/bckgrnd2.jpg}" alt="Home Image" class="main-img">
+        <img th:src="@{/images/bckgrnd2.jpg}" alt="Home Image" class="main-img">
         <div class="img-text">
             <!-- title over image -->
             <h1>Facilities</h1>
@@ -39,7 +40,7 @@ head>
     <div class="container py-5">
         <div class="row">
             <div class="col-lg-4 col-xl-4 facimgs col align-self-center">
-                <img th:src="@{/Images/spa.jpeg}" alt="" class="imgs">
+                <img th:src="@{/images/spa.jpeg}" alt="" class="imgs">
             </div>
             <div class="col-lg-8 py-5">
                 <p class="facilites-desc">Indulge in the ultimate relaxation and wellness experience in our sauna and
@@ -57,11 +58,11 @@ head>
             </div>
 
             <div class="col-lg-4 col-xl-4 facimgs col align-self-center">
-                <img th:src="@{/Images/equipments.jpeg}" alt="" class="imgs">
+                <img th:src="@{/images/equipments.jpeg}" alt="" class="imgs">
             </div>
             <hr>
             <div class="col-lg-4 col-xl-4 facimgs col align-self-center">
-                <img th:src="@{/Images/lockers.jpeg}" alt="" class="imgs">
+                <img th:src="@{/images/lockers.jpeg}" alt="" class="imgs">
             </div>
             <div class="col-lg-8 py-5">
                 <p class="facilites-desc">Our spacious and well-appointed locker rooms provide the perfect space to
@@ -76,6 +77,7 @@ head>
         </div>
     </div>
 
+    <!-- include footer -->
     <div th:replace="~{partials/footer}"></div>
 
 </body>

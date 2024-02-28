@@ -15,7 +15,7 @@ public class IndexController {
         return mav;
     }
 
-    @GetMapping("/facilties")
+    @GetMapping("/facilities")
     public ModelAndView getFacilities() {
         ModelAndView mav = new ModelAndView("facilities.html");
         return mav;

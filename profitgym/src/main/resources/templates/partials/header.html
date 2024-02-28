@@ -1,23 +1,24 @@
 <header class="header">
-    <a id="gym-title">ProFit Gym</a>
+    <a th:href="@{/}" id="gym-title">ProFit Gym</a>
     <input type="checkbox" id="check">
     <label for="check" class="icons">
-        <span class="material-symbols-outlined" id="menu-icon" >
+        <span class="material-symbols-outlined" id="menu-icon">
             menu
-            </span>
-            <span class="material-symbols-outlined" id="close-icon">
-                close
-                </span>
+        </span>
+        <span class="material-symbols-outlined" id="close-icon">
+            close
+        </span>
     </label>
     <nav class="navbar">
-        <a href="/" id="home">HOME</a>
-        <a href="#" id="classes"> CLASSES</a>
-        <a href="#" id="memberships">MEMBERSHIPS</a>
-        <a href="#" id="facilities">FACILITIES</a>
-        <a href="#" id="contactus">CONTACT US</a>
-        <a href="#"><i class="ri-account-circle-line"></i></a>
+        <a th:href="@{/index}" id="home">HOME</a>
+        <a th:href="@{/classes}" id="classes"> CLASSES</a>
+        <a th:href="@{/memberships}" id="memberships">MEMBERSHIPS</a>
+        <a th:href="@{/facilities}" id="facilities">FACILITIES</a>
+        <a th:href="@{/contactus}" id="contactus">CONTACT US</a>
+        <a th:href="@{/login}"><i class="ri-account-circle-line"></i></a>
     </nav>
 </header>
+<!-- Include your JavaScript files here -->
+<script src="/js/index.js"></script>
 </body>
-<script src="/js/index.js">
-</script>
+</html>
