@@ -30,7 +30,7 @@ public class AdminController {
     
     @GetMapping("packages")
     public ModelAndView viewPackages() {
-        ModelAndView mav = new ModelAndView("packagesAdminDash.html");
+        ModelAndView mav = new ModelAndView("packageAdminDash.html");
         return mav;
     }
 
@@ -39,9 +39,34 @@ public class AdminController {
         ModelAndView mav = new ModelAndView("clientReqAdminDash.html");
         return mav;
     }
+    @GetMapping("memberships")
+    public ModelAndView viewMemberships() {
+        ModelAndView mav = new ModelAndView("membershipAdminDash.html");
+        return mav;
+    }
+    @GetMapping("classes")
+    public ModelAndView viewClasses() {
+        ModelAndView mav = new ModelAndView("classAdminDash.html");
+        return mav;
+    }
     @GetMapping("addclient")
     public ModelAndView getClientForm() {
         ModelAndView mav = new ModelAndView("addClientAdminDash.html");
+        return mav;
+    }
+    @GetMapping("addemployee")
+    public ModelAndView getEmpForm() {
+        ModelAndView mav = new ModelAndView("addEmpAdminDash.html");
+        return mav;
+    }
+    @GetMapping("addclass")
+    public ModelAndView getClassForm() {
+        ModelAndView mav = new ModelAndView("addClassAdminDash.html");
+        return mav;
+    }
+    @GetMapping("addpackage")
+    public ModelAndView getPackageForm() {
+        ModelAndView mav = new ModelAndView("addPackageAdminDash.html");
         return mav;
     }
 
