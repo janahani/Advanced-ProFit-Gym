@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Profile Dashboard</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css">
-    <link href="https://unpkg.com/boxicons@2.0.9/css/boxicons.min.css" rel="stylesheet">
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700">
     <link rel="stylesheet"
         href="https://rawcdn.githack.com/Loopple/loopple-public-assets/ad60f16c8a16d1dcad75e176c00d7f9e69320cd4/argon-dashboard/css/nucleo/css/nucleo.css">
@@ -71,60 +71,28 @@
         <div class="container-fluid pt-3">
             <div class="row removable">
                 <div class="col-lg">
-                    <h1 class="centeredHeader">Available Packages</h1>
+                    <h1 class="centeredHeader">Available Packages <div class="">
+                        <a th:href="@{/admindashboard/addpackage}" class="btn-add">Add Package</a>
+                    </h1> 
                     <div class="packageContainer">
-                        <div class="packageBox">
-                            <h3>Beginner Package</h3>
+                        <div th:each="package: ${packages}" class="packageBox">
+                            <h3 th:text="${package.Title}"></h3>
                             <div class="packageContent">
                                 <div class="packageText">
-                                    <p>Duration: <span>1 Month</span></p>
-                                    <p>Number Of visits: <span>30</span></p>
-                                    <button class="btn-package">Activate</button>
-
+                                    <p> <span th:text="${package.isVisitsLimited + ' Visits'}"></span></p>
+                                    <p> <span th:text="${package.VisitsLimit + ' VisitsLimit'}"></span></p>
+                                    <p> <span th:text="${package.NumOfInvitations + ' Invitations'}"></span></p>
+                                    <p> <span th:text="${package.NumOfInbodySessions + ' Inbody Sessions'}"></span></p>
+                                    <p> <span th:text="${package.NumOfPrivateTrainingSessions + ' Private Training Sessions'}"></span></p>
+                                    <p><bold>For: <span th:text="${package.price + ' L.E'}"></span></bold></p>
+                                    
+                                    <!-- Check if package is activated -->
+                                    <button class="btn-package" th:if="${package.isActivated eq 'Activated'}">Deactivate</button>
+                                    <button class="btn-package" th:unless="${package.isActivated eq 'Activated'}">Activate</button>
                                 </div>
                             </div>
                         </div>
-                        <div class="packageBox">
-                            <h3>Beginner Package</h3>
-                            <div class="packageContent">
-                                <div class="packageText">
-                                    <p>Duration: <span>1 Month</span></p>
-                                    <p>Number Of visits: <span>30</span></p>
-                                    <button class="btn-package">Activate</button>
-
-                                </div>
-                            </div>
-                        </div>
-                        <div class="packageBox">
-                            <h3>Beginner Package</h3>
-                            <div class="packageContent">
-                                <div class="packageText">
-                                    <p>Duration: <span>1 Month</span></p>
-                                    <p>Number Of visits: <span>30</span></p>
-                                    <button class="btn-package">Activate</button>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="packageBox">
-                            <h3>Beginner Package</h3>
-                            <div class="packageContent">
-                                <div class="packageText">
-                                    <p>Duration: <span>1 Month</span></p>
-                                    <p>Number Of visits: <span>30</span></p>
-                                    <button class="btn-package">Activate</button>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="packageBox">
-                            <h3>Beginner Package</h3>
-                            <div class="packageContent">
-                                <div class="packageText">
-                                    <p>Duration: <span>1 Month</span></p>
-                                    <p>Number Of visits: <span>30</span></p>
-                                    <button class="btn-package">Activate</button>
-                                </div>
-                            </div>
-                        </div>
+                    </div>
                     </div>
                 </div>
             </div>
