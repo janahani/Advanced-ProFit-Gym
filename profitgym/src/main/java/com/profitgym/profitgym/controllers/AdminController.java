@@ -10,7 +10,7 @@ import org.springframework.web.servlet.ModelAndView;
 @RequestMapping("/admindashboard")
 public class AdminController {
 
-    @GetMapping("main")
+    @GetMapping("")
     public ModelAndView getAdminDash() {
         ModelAndView mav = new ModelAndView("adminDash.html");
         return mav;
@@ -31,6 +31,8 @@ public class AdminController {
     @GetMapping("packages")
     public ModelAndView viewPackages() {
         ModelAndView mav = new ModelAndView("packagesAdminDash.html");
+        //List<Package> fruits = this.packageRespository.findAll();
+       // mav.addObject("fruits", fruits);
         return mav;
     }
 
