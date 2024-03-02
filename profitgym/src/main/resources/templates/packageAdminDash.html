@@ -71,27 +71,69 @@
         <div class="container-fluid pt-3">
             <div class="row removable">
                 <div class="col-lg">
-                    <div class="user-form">
-                        <h1>Add a Client</h1>
-                        <form class="add-client">
-                            <input class="add-user-input" type="text" placeholder="Name">
-                            <input class="add-user-input" type="text" placeholder="Age">
-                            <input class="add-user-input" type="text" placeholder="Email">
-                            <input class="add-user-input" type="text" placeholder="Password">
-                            <input class="add-user-input" type="text" placeholder="Phone Number">
-                            <select class="add-user-input" name="gender">
-                                <option value="">Gender</option>
-                                <option value="female">Female</option>
-                                <option value="male">Male</option>
-                            </select>
-                            <br>
-                            <button class="btn btn-add-form" type="submit">Add Client</button>
-                        </form>
+                    <h1 class="centeredHeader">Available Packages <div class="">
+                        <a th:href="@{/admindashboard/addpackage}" class="btn-add">Add Package</a>
+                    </h1> 
+                    <div class="packageContainer">
+                        <div class="packageBox">
+                            <h3>Beginner Package</h3>
+                            <div class="packageContent">
+                                <div class="packageText">
+                                    <p>Duration: <span>1 Month</span></p>
+                                    <p>Number Of visits: <span>30</span></p>
+                                    <p>Freeze Limit: <span>10</span></p>
+                                    <button class="btn-package">Activate</button>
+
+                                </div>
+                            </div>
+                        </div>
+                        <div class="packageBox">
+                            <h3>Beginner Package</h3>
+                            <div class="packageContent">
+                                <div class="packageText">
+                                    <p>Duration: <span>1 Month</span></p>
+                                    <p>Number Of visits: <span>30</span></p>
+                                    <button class="btn-package-deactivate">De-activate</button>
+
+                                </div>
+                            </div>
+                        </div>
+                        <div class="packageBox">
+                            <h3>Beginner Package</h3>
+                            <div class="packageContent">
+                                <div class="packageText">
+                                    <p>Duration: <span>1 Month</span></p>
+                                    <p>Number Of visits: <span>30</span></p>
+                                    <button class="btn-package">Activate</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="packageBox">
+                            <h3>Beginner Package</h3>
+                            <div class="packageContent">
+                                <div class="packageText">
+                                    <p>Duration: <span>1 Month</span></p>
+                                    <p>Number Of visits: <span>30</span></p>
+                                    <button class="btn-package">Activate</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="packageBox">
+                            <h3>Beginner Package</h3>
+                            <div class="packageContent">
+                                <div class="packageText">
+                                    <p>Duration: <span>1 Month</span></p>
+                                    <p>Number Of visits: <span>30</span></p>
+                                    <button class="btn-package">Activate</button>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+
     <script
         src="https://rawcdn.githack.com/Loopple/loopple-public-assets/5cef8f62939eeb089fa26d4c53a49198de421e3d/argon-dashboard/js/vendor/jquery.min.js"></script>
     <script

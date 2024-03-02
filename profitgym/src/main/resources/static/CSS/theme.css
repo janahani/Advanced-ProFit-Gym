@@ -1,5 +1,22 @@
 @charset 'UTF-8';
 
+/*!
+
+=========================================================
+* Argon Dashboard - v1.2.0
+=========================================================
+
+* Product Page: https://www.creative-tim.com/product/argon-dashboard
+* Copyright 2020 Creative Tim (https://www.creative-tim.com)
+* Licensed under MIT (https://github.com/creativetimofficial/argon-dashboard/blob/master/LICENSE.md)
+
+* Coded by www.creative-tim.com
+
+=========================================================
+
+* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+*/
 :root {
     --blue: #11cdef;
     --indigo: #5603ad;
@@ -285,13 +302,6 @@ select {
 
 select {
     word-wrap: normal;
-}
-
-[type="button"],
-[type="reset"],
-[type="submit"],
-button {
-    -webkit-appearance: button;
 }
 
 [type="button"]:not(:disabled),
@@ -2872,24 +2882,38 @@ fieldset:disabled a.btn {
     position: relative;
     transition: all 0.15s ease;
     letter-spacing: 0.025em;
-    text-transform: none;
-    will-change: transform;
     line-height: 1.5;
     padding: 0.25rem 0.5rem;
     border-radius: 0.25rem;
     color: #fff;
     background-color: rgb(239, 172, 172);
 }
-.btn-package{
+
+.btn-package {
+    background-color: #ffb5b5;
     border: none;
     padding: 5px;
     border-radius: 3px;
-    width: 80px;
-    background-color: #f7e7e7;
+    width: 100px;
     transition: .5s ease;
 }
+
+.btn-package-deactivate {
+    background-color: #f7e7e7;
+    border: none;
+    padding: 5px;
+    border-radius: 3px;
+    width: 100px;
+    transition: .5s ease;
+}
+
+.btn-package-deactivate:focus,
+.btn-package-deactivate:hover {
+    color: white;
+    background-color: #ec9494;
+}
 .btn-package:focus,
-.btn-package:hover{
+.btn-package:hover {
     color: white;
     background-color: #ec9494;
 }
@@ -2903,6 +2927,29 @@ fieldset:disabled a.btn {
 .btn-add:hover {
     color: white;
     box-shadow: 0 4px 6px rgba(50, 50, 93, 0.11), 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+
+.btn-freeze {
+    color: #fff;
+    background-color: rgb(232, 23, 166);
+    box-shadow: 0 4px 6px rgba(50, 50, 93, 0.11), 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+
+.btn-unfreeze {
+    background-color: rgb(183, 98, 156);
+    color: #fff;
+    box-shadow: 0 4px 6px rgba(50, 50, 93, 0.11), 0 1px 3px rgba(0, 0, 0, 0.08);
+    transform: .3s ease-in;
+}
+
+.btn-unfreeze:hover {
+    background-color: rgb(151, 49, 119);
+    color: #fff;
+}
+
+.btn-freeze:hover {
+    background-color: rgb(186, 55, 145);
+    color: white;
 }
 
 .btn-activate:hover {
@@ -5500,20 +5547,24 @@ input[type="submit"].btn-block {
     color: var(--bs-body-color);
 }
 
+
 .navbar.bg-white .navbar-nav .nav-link {
     color: var(--bs-body-color);
 }
-
 
 
 .navbar.bg-white .navbar-nav .nav-link.disabled {
     color: var(--bs-body-color);
 }
 
-.navbar.bg-white .navbar-nav .active>.nav-link,
 .navbar.bg-white .navbar-toggler {
     color: var(--bs-body-color);
     border-color: transparent;
+}
+
+
+.navbar.bg-white .navbar-text a {
+    color: var(--bs-body-color);
 }
 
 
@@ -17330,6 +17381,7 @@ textarea[resize="horizontal"] {
 }
 
 
+
 .icon-xs {
     width: 1.25rem;
     height: 1.25rem;
@@ -17339,6 +17391,7 @@ textarea[resize="horizontal"] {
 .icon-xs svg {
     font-size: 0.5rem;
 }
+
 
 
 .icon-shape {
@@ -26190,6 +26243,8 @@ pre>code.highlight {
     text-align: center;
 }
 
+.select-days {}
+
 .add-client {
     padding: 5px;
     display: block;
@@ -26199,16 +26254,38 @@ pre>code.highlight {
     margin: 5px;
     padding: 5px;
     width: 40%;
+    border: none;
+    transition: all .5s ease-in;
+    max-width: 400px;
 }
-.centeredHeader{
+
+.btn-add-form {
+    margin: 5px;
+    padding: 5px;
+    width: 40%;
+    background-color: rgb(239, 172, 172);
+    font-weight: 400px;
+    font-size: 17px;
+    color: white;
+    transition: .2s ease-in;
+}
+
+.btn-add-form:hover {
+    color: white;
+    background-color: rgb(249, 172, 172);
+}
+
+.centeredHeader {
     text-align: center;
 }
-.packageContainer{
+
+.packageContainer {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
     gap: 10px;
 }
-.packageBox{
+
+.packageBox {
     margin: 10px;
     background-color: white;
     border-radius: 1rem;
