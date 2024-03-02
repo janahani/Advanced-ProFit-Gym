@@ -1,14 +1,23 @@
 package com.profitgym.profitgym.controllers;
 
-// import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.profitgym.profitgym.models.Package;
+import com.profitgym.profitgym.repositories.PackageRepository;
+
+import java.util.List;
+
+
 @RestController
 @RequestMapping("/admindashboard")
 public class AdminController {
+
+    @Autowired
+    private PackageRepository packageRespository;
 
     @GetMapping("")
     public ModelAndView getAdminDash() {
@@ -30,9 +39,10 @@ public class AdminController {
     
     @GetMapping("packages")
     public ModelAndView viewPackages() {
+        System.out.println("viewPackages() method called");
         ModelAndView mav = new ModelAndView("packagesAdminDash.html");
-        //List<Package> fruits = this.packageRespository.findAll();
-       // mav.addObject("fruits", fruits);
+        List<Package> packages = this.packageRespository.findAll();
+        mav.addObject("packages", packages);
         return mav;
     }
 

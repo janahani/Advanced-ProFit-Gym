@@ -73,22 +73,24 @@
                 <div class="col-lg">
                     <h1 class="centeredHeader">Available Packages</h1>
                     <div class="packageContainer">
-                        <div class="packageBox">
-                            <h3>Beginner Package</h3>
+                        <div th:each="package: ${packages}" class="packageBox">
+                            <h3 th:text="${package.Title}"></h3>
                             <div class="packageContent">
                                 <div class="packageText">
-                                    <p>Duration: <span>1 Month</span></p>
-                                    <p>limited visits</p>
-                                    <p>20 visits</p>
-                                    <p>2 invitations</p>
-                                    <p>1 inbody session</p>
-                                    <p>1 private training session</p>
-                                    <p><bold>Price: <span>600 L.E</span></bold></p>
-                                    <button class="btn-package">Activate</button>
-
+                                    <p> <span th:text="${package.isVisitsLimited + ' Visits'}"></span></p>
+                                    <p> <span th:text="${package.VisitsLimit + ' VisitsLimit'}"></span></p>
+                                    <p> <span th:text="${package.NumOfInvitations + ' Invitations'}"></span></p>
+                                    <p> <span th:text="${package.NumOfInbodySessions + ' Inbody Sessions'}"></span></p>
+                                    <p> <span th:text="${package.NumOfPrivateTrainingSessions + ' Private Training Sessions'}"></span></p>
+                                    <p><bold>For: <span th:text="${package.price + ' L.E'}"></span></bold></p>
+                                    
+                                    <!-- Check if package is activated -->
+                                    <button class="btn-package" th:if="${package.isActivated eq 'Activated'}" style="width: 130px;">Deactivate</button>
+                                    <button class="btn-package" th:unless="${package.isActivated eq 'Activated'}">Activate</button>
                                 </div>
                             </div>
                         </div>
+                    </div>
                     </div>
                 </div>
             </div>
