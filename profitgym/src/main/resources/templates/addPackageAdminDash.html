@@ -71,27 +71,28 @@
                 <div class="col-lg">
                     <div class="user-form">
                         <h1>Add a Package</h1>
-                        <form class="add-client" action="POST">
-                            <input class="add-user-input" type="text" placeholder="Package Title">
-                            <input class="add-user-input" type="text" placeholder="Number of Months">
+                        <form th:action="@{/admindashboard/addpackage}" th:object="${packageObj}" class="add-package" method="POST">
+                            <input th:field="*{Title}" class="add-user-input" type="text" placeholder="Package Title">
+                            <input th:field="*{NumOfMonths}" class="add-user-input" type="number" placeholder="Number of Months" value="">
                             <div class="visits-container">
                                 <div class="visits-title">Visits:</div>
                                 <div class="radio-buttons">
-                                    <input type="radio" id="limitedRadio" name="visits" value="limited" class="radio-btn" onclick="showLimitField()">
+                                    <input type="radio" id="limitedRadio" name="visits" value="limited" class="radio-btn" onclick="showLimitField()" th:field="*{isVisitsLimited}">
                                     <label for="limitedRadio">Limited</label>
-                            
-                                    <input type="radio" id="unlimitedRadio" name="visits" value="unlimited" class="radio-btn" onclick="hideLimitField()">
+                        
+                                    <input type="radio" id="unlimitedRadio" name="visits" value="unlimited" class="radio-btn" onclick="hideLimitField()" th:field="*{isVisitsLimited}">
                                     <label for="unlimitedRadio">Unlimited</label>
                                 </div>
                                 <div id="limitField" class="hidden" style="display:none;">
-                                    <input class="add-user-input" type="number" placeholder="Limit (Days)">
+                                    <input th:field="*{VisitsLimit}" class="add-user-input" type="number" placeholder="Limit (Days)" value="">
                                 </div>
-                            </div>                            
-                            <input class="add-user-input" type="number" placeholder="Freeze Limit (Days)">
-                            <input class="add-user-input" type="number" placeholder="Number of Invitations">
-                            <input class="add-user-input" type="number" placeholder="Number of Inbody Sessions">
-                            <input class="add-user-input" type="number" placeholder="Number of PT Sessions">
-                            <input class="add-user-input" type="number" placeholder="Price">
+                            </div>
+                            <input th:field="*{FreezeLimit}" class="add-user-input" type="number" placeholder="Freeze Limit (Days)" value="">
+                            <input th:field="*{NumOfInvitations}" class="add-user-input" type="number" placeholder="Number of Invitations" value="">
+                            <input th:field="*{NumOfInbodySessions}" class="add-user-input" type="number" placeholder="Number of Inbody Sessions" value="">
+                            <input th:field="*{NumOfPrivateTrainingSessions}" class="add-user-input" type="number" placeholder="Number of PT Sessions" value="">
+                            <input th:field="*{Price}" class="add-user-input" type="number" placeholder="Price" value="">
+                            <input type="hidden" name="isActivated" value="Activated">
                             <br>
                             <button class="btn btn-add-form" type="submit">Add Package</button>
                         </form>

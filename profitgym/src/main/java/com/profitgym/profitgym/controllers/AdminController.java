@@ -2,6 +2,8 @@ package com.profitgym.profitgym.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
@@ -79,7 +81,14 @@ public class AdminController {
     @GetMapping("addpackage")
     public ModelAndView getPackageForm() {
         ModelAndView mav = new ModelAndView("addPackageAdminDash.html");
+        mav.addObject("packageObj", new Package()); 
         return mav;
     }
+    @PostMapping("addpackage")
+    public String savePackage(@ModelAttribute Package packageObj) {
+        this.packageRespository.save(packageObj);
+        return "Added";
+    }
+    
 
 }
