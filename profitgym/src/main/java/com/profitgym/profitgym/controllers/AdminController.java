@@ -58,6 +58,11 @@ public class AdminController {
         ModelAndView mav = new ModelAndView("membershipAdminDash.html");
         return mav;
     }
+    @GetMapping("checkin")
+    public ModelAndView viewCheckIn() {
+        ModelAndView mav = new ModelAndView("checkinAdminDash.html");
+        return mav;
+    }
     @GetMapping("classes")
     public ModelAndView viewClasses() {
         ModelAndView mav = new ModelAndView("classAdminDash.html");
