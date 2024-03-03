@@ -30,7 +30,7 @@
                                 </div>
                             </div>
                         </li>
-
+                        
                     </ul>
                     <ul class="navbar-nav align-items-center  ml-auto ml-md-0 ">
                         <li class="nav-item dropdown">
@@ -71,30 +71,16 @@
         <div class="container-fluid pt-3">
             <div class="row removable">
                 <div class="col-lg">
-                    <div id="myFreezeModal" class="freezeDatepicker">
-                        <div class="freezeContent">
-                            <div class="freezeHeader">
-                                <span class="freezeClose" id="closeModalBtn">&times;</span>
-                                <h2>Select the End date</h2>
-                            </div>
-                            <div class="freezeBody">
-                                <input type="date" id="freezeDate" name="freezeDate">
-                            </div>
-                            <div class="freezeFooter">
-                                <button class="btn btn-sm btn-freeze">Freeze</button>
-                            </div>
-                        </div>
-                    </div>
                     <div class="card">
                         <div class="card-header border-0">
                             <div class="row align-items-center">
                                 <div class="col">
-                                    <h1 class="mb-0">Memberships</h1>
+                                    <h1 class="mb-0">Check in</h1>
                                 </div>
                                 <div class="col text-right">
-                                    <input class="table-search-bar" placeholder="Search for a Membership">
+                                    <input class="table-search-bar" placeholder="Search for Client">
                                 </div>
-
+                                
                             </div>
                         </div>
                         <div class="table-responsive">
@@ -104,9 +90,9 @@
                                         <th scope="col">ID</th>
                                         <th scope="col">Name</th>
                                         <th scope="col">Membership</th>
+                                        <th scope="col">End Date</th>
+                                        <th scope="col">Status</th>
                                         <th scope="col">Visits</th>
-                                        <th scope="col">Inbody</th>
-                                        <th scope="col">Freeze</th>
                                         <th scope="col">Action</th>
 
                                     </tr>
@@ -120,47 +106,23 @@
                                             Sahwa Amr
                                         </td>
                                         <td>
-                                            sahwaamr@gmail.com
+                                           4 months+ 2 months
+                                        </td>
+                                        <td>
+                                            20-4-2024
+                                        </td>
+                                        <td>
+                                            Active
                                         </td>
                                         <td>
                                             20
                                         </td>
                                         <td>
-                                            female
+                                            <button href="" class="btn btn-sm btn-activate">Check in</button>
                                         </td>
-                                        <td>
-                                            <a href="packagesAdminDash.html" class="btn btn-sm btn-freeze">Freeze</a>
-                                        </td>
-                                        <td>
-                                            <a href="#!" class="btn btn-sm btn-primary">Edit</a>
-                                            <a href="#!" class="btn btn-sm btn-delete">Delete</a>
-                                        </td>
+                                       
                                     </tr>
-                                    <tr>
-                                        <th scope="row">
-                                            01
-                                        </th>
-                                        <td>
-                                            Sahwa Amr
-                                        </td>
-                                        <td>
-                                            sahwaamr@gmail.com
-                                        </td>
-                                        <td>
-                                            20
-                                        </td>
-                                        <td>
-                                            female
-                                        </td>
-
-                                        <td>
-                                            <button href="#!" class="btn btn-sm btn-unfreeze">Unfreeze</button>
-                                        </td>
-                                        <td>
-                                            <a href="#!" class="btn btn-sm btn-primary">Edit</a>
-                                            <a href="#!" class="btn btn-sm btn-delete">Delete</a>
-                                        </td>
-                                    </tr>
+                                    
                                 </tbody>
                             </table>
                         </div>
@@ -169,27 +131,7 @@
             </div>
         </div>
     </div>
-    <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            var modal = document.getElementById("myFreezeModal");
-            var btn = document.getElementById("btnFreeze");
-            var span = document.getElementsByClassName("freezeClose")[0];
-    
-            btn.onclick = function () {
-                modal.style.display = "block";
-            };
-    
-            span.onclick = function () {
-                modal.style.display = "none";
-            };
-    
-            window.onclick = function (event) {
-                if (event.target == modal) {
-                    modal.style.display = "none";
-                }
-            };
-        });
-    </script>
+
     <script
         src="https://rawcdn.githack.com/Loopple/loopple-public-assets/5cef8f62939eeb089fa26d4c53a49198de421e3d/argon-dashboard/js/vendor/jquery.min.js"></script>
     <script
