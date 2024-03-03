@@ -1,7 +1,6 @@
 function showLimitField() {
     var limitField = document.getElementById("limitField");
     limitField.style.display = "block";
-
 }
 
 function hideLimitField() {

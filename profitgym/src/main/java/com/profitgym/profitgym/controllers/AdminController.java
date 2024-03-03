@@ -40,7 +40,7 @@ public class AdminController {
     @GetMapping("packages")
     public ModelAndView viewPackages() {
         System.out.println("viewPackages() method called");
-        ModelAndView mav = new ModelAndView("packagesAdminDash.html");
+        ModelAndView mav = new ModelAndView("packageAdminDash.html");
         List<Package> packages = this.packageRespository.findAll();
         mav.addObject("packages", packages);
         return mav;

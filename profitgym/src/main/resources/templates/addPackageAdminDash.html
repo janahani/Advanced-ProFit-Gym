@@ -72,11 +72,26 @@
                     <div class="user-form">
                         <h1>Add a Package</h1>
                         <form class="add-client" action="POST">
-                            <input class="add-user-input" type="text" placeholder="Package Name">
-                            <input class="add-user-input" type="text" placeholder="Duration">
-                            <input class="add-user-input" type="text" placeholder="Price">
-                            <input class="add-user-input" type="text" placeholder="Freeze Limit">
-                            <input class="add-user-input" type="text" placeholder="Visits">
+                            <input class="add-user-input" type="text" placeholder="Package Title">
+                            <input class="add-user-input" type="text" placeholder="Number of Months">
+                            <div class="visits-container">
+                                <div class="visits-title">Visits:</div>
+                                <div class="radio-buttons">
+                                    <input type="radio" id="limitedRadio" name="visits" value="limited" class="radio-btn" onclick="showLimitField()">
+                                    <label for="limitedRadio">Limited</label>
+                            
+                                    <input type="radio" id="unlimitedRadio" name="visits" value="unlimited" class="radio-btn" onclick="hideLimitField()">
+                                    <label for="unlimitedRadio">Unlimited</label>
+                                </div>
+                                <div id="limitField" class="hidden" style="display:none;">
+                                    <input class="add-user-input" type="number" placeholder="Limit (Days)">
+                                </div>
+                            </div>                            
+                            <input class="add-user-input" type="number" placeholder="Freeze Limit (Days)">
+                            <input class="add-user-input" type="number" placeholder="Number of Invitations">
+                            <input class="add-user-input" type="number" placeholder="Number of Inbody Sessions">
+                            <input class="add-user-input" type="number" placeholder="Number of PT Sessions">
+                            <input class="add-user-input" type="number" placeholder="Price">
                             <br>
                             <button class="btn btn-add-form" type="submit">Add Package</button>
                         </form>
@@ -85,6 +100,7 @@
             </div>
         </div>
     </div>
+    <script src="/js/addPackage.js"></script>
     <script
         src="https://rawcdn.githack.com/Loopple/loopple-public-assets/5cef8f62939eeb089fa26d4c53a49198de421e3d/argon-dashboard/js/vendor/jquery.min.js"></script>
     <script
