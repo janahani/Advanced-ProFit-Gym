@@ -1,5 +1,8 @@
 package com.profitgym.profitgym.models;
 
+import jakarta.persistence.Entity;
+
+@Entity
 public class Memberships {
 
     private String title;
