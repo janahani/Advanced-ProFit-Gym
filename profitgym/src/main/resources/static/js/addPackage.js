@@ -1,11 +1,14 @@
+var hide=true;
 function showLimitField() {
     var limitField = document.getElementById("limitField");
     limitField.style.display = "block";
+    hide=false;
 }
 
 function hideLimitField() {
     var limitField = document.getElementById("limitField");
     limitField.style.display = "none";
+    hide=true;
 }
 
 window.addEventListener('DOMContentLoaded', (event) => {
@@ -20,86 +23,89 @@ function clearInputFields() {
 }
 
 function validateForm() {
+    
+    var title = document.getElementById("title").value.trim();
+    var numOfMonths = document.getElementById("numOfMonths").value;
+    var isVisitsLimited = document.querySelector('input[name="visits"]:checked');
+    var visitsLimit = document.getElementById("visitsLimit").value;
+    var freezeLimit = document.getElementById("freezeLimit").value;
+    var numOfInvitations = document.getElementById("numOfInvitations").value;
+    var numOfInbodySessions = document.getElementById("numOfInbodySessions").value;
+    var numOfPTSessions = document.getElementById("numOfPTSessions").value;
+    var price = document.getElementById("price").value;
 
-    var isLimitedError = document.getElementById("isLimited-error");
-    var limitError = document.getElementById("limit-error");
-    var freezeLimitError = document.getElementById("freezeLimit-error");
-    var titleError = document.getElementById("title-error");
-    var monthsError = document.getElementById("months-error");
-    var invitationsError = document.getElementById("invitations-error");
-    var inbodyError = document.getElementById("inbody-error");
-    var ptSessionError = document.getElementById("ptsession-error");
-    var priceError = document.getElementById("price-error");
+    
+    var titleError = document.getElementById("titleError");
+    var numOfMonthsError = document.getElementById("numOfMonthsError");
+    var visitsLimitError = document.getElementById("visitsLimitError");
+    var freezeLimitError = document.getElementById("freezeLimitError");
+    var numOfInvitationsError = document.getElementById("numOfInvitationsError");
+    var numOfInbodySessionsError = document.getElementById("numOfInbodySessionsError");
+    var numOfPTSessionsError = document.getElementById("numOfPTSessionsError");
+    var priceError = document.getElementById("priceError");
 
-    let isValid = true;
+    
+    titleError.innerHTML = "";
+    numOfMonthsError.innerHTML = "";
+    visitsLimitError.innerHTML = "";
+    freezeLimitError.innerHTML = "";
+    numOfInvitationsError.innerHTML = "";
+    numOfInbodySessionsError.innerHTML = "";
+    numOfPTSessionsError.innerHTML = "";
+    priceError.innerHTML = "";
 
-    // Validate visits radio buttons
-    var limited = document.getElementById("limited");
-    var unlimited = document.getElementById("unlimited");
-    var limitDays=document.getElementById("limitDays");
-    var freezeLimit = document.getElementById("freezelimit");
-    var months = document.getElementById("months");
-    var title = document.getElementById("title");
-    var invitation = document.getElementById("invitation");
-    var inbody= document.getElementById("inbody");
-    var ptSession = document.getElementById("ptsession");
-    var price = document.getElementById("price");
+    var isValid = true;
 
-    if (!limited.checked && !unlimited.checked) {
-        isLimitedError.innerHTML="Visits is required";
-        isValid=false;
+    if (title === "") {
+        titleError.innerHTML = "Please enter a Package Title";
+        isValid = false;
+    }
+    if (numOfMonths <= 0) {
+        numOfMonthsError.innerHTML = "Please enter a valid Number of Months";
+        isValid = false;
     }
 
-    if(limited.checked && limitDays.value.trim() === "")
-    {
-        limitError.innerHTML="Visit Limit is Required";
-        isValid=false;
+    if (!isVisitsLimited) {
+        visitsLimitError.innerHTML = "Please select Limited or Unlimited visits";
+        isValid = false;
+
+    } else {
+        if (isVisitsLimited.value === "limited" && visitsLimit < 0) {
+            visitsLimitError.innerHTML = "Please enter a valid Visits Limit";
+            isValid = false;
+        }
+        if (isVisitsLimited.value === "limited" && visitsLimit === "" && document.getElementById("limitField").style.display !== "none") {
+            visitsLimitError.innerHTML = "Please enter a Visits Limit";
+            isValid = false;
+        }
+        if(isVisitsLimited.value === "unlimited")
+        {
+            console.log(isVisitsLimited);
+
+            document.getElementById("visitsLimit").value=0;
+        }
     }
 
-    if(freezeLimit.value.trim() === "")
-    {
-        freezeLimitError.innerHTML="Freeze Limit is Required";
-        isValid=false;
+    if (freezeLimit <= 0) {
+        freezeLimitError.innerHTML = "Please enter a valid Freeze Limit";
+        isValid = false;
     }
-
-    if(title.value.trim() === "")
-    {
-        titleError.innerHTML=" Package Title is Required";
-        isValid=false;
+    if (numOfInvitations <= 0) {
+        numOfInvitationsError.innerHTML = "Please enter a valid Number of Invitations";
+        isValid = false;
     }
-
-    if(months.value.trim() === "")
-    {
-        monthsError.innerHTML=" Number of Months is Required";
-        isValid=false;
+    if (numOfInbodySessions <= 0) {
+        numOfInbodySessionsError.innerHTML = "Please enter a valid Number of Inbody Sessions";
+        isValid = false;
     }
-
-    if(invitation.value.trim() === "")
-    {
-        invitationsError.innerHTML="Number of Invitations is Required";
-        isValid=false;
+    if (numOfPTSessions <= 0) {
+        numOfPTSessionsError.innerHTML = "Please enter a valid Number of PT Sessions";
+        isValid = false;
     }
-
-    if(inbody.value.trim() === "")
-    {
-        inbodyError.innerHTML="Number of Inbody Sessions is Required";
-        isValid=false;
-    }
-
-    if(ptSession.value.trim() === "")
-    {
-        ptSessionError.innerHTML="Number of PT sessions is Required";
-        isValid=false;
-    }
-
-    if(price.value.trim() === "")
-    {
-        priceError.innerHTML="Price is Required";
-        isValid=false;
+    if (price <= 0) {
+        priceError.innerHTML = "Please enter a valid Price";
+        isValid = false;
     }
 
     return isValid;
-
-
-
 }
