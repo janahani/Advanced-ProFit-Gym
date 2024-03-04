@@ -45,4 +45,10 @@ public class IndexController {
         return mav;
     }
 
+    @GetMapping("/memberships")
+    public ModelAndView getMemberships() {
+        ModelAndView mav = new ModelAndView("memberships.html");
+        return mav;
+    }
+
 }
