@@ -8,7 +8,7 @@ import jakarta.persistence.Id;
 @Entity
 public class Package {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int ID;
     private String Title;
     private int NumOfMonths;
