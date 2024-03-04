@@ -10,7 +10,14 @@
     <link rel="stylesheet"
         href="https://rawcdn.githack.com/Loopple/loopple-public-assets/ad60f16c8a16d1dcad75e176c00d7f9e69320cd4/argon-dashboard/css/nucleo/css/nucleo.css">
         <link rel="stylesheet" type="text/css" th:href="@{/CSS/theme.css}">
-</head>
+        <style>
+        .error {
+            color: red;
+            font-size: 12px;
+        }
+
+        </style>
+    </head>
 
 <body>
     <div th:replace="~{partials/adminDashSideBar}"></div>
@@ -71,27 +78,46 @@
                 <div class="col-lg">
                     <div class="user-form">
                         <h1>Add a Package</h1>
-                        <form th:action="@{/admindashboard/addpackage}" th:object="${packageObj}" class="add-package" method="POST">
-                            <input th:field="*{Title}" class="add-user-input" type="text" placeholder="Package Title">
-                            <input th:field="*{NumOfMonths}" class="add-user-input" type="number" placeholder="Number of Months" value="">
+                        <form th:action="@{/admindashboard/addpackage}" th:object="${packageObj}" class="add-package" method="POST" onsubmit="return validateForm()">
+                            <div>
+                            <input th:field="*{Title}" class="add-user-input" type="text" placeholder="Package Title" id="title">
+                            </div>
+                            <span class="error" id="titleError"></span><br>
+                            <div>
+                            <input th:field="*{NumOfMonths}" class="add-user-input" type="number" placeholder="Number of Months" id="numOfMonths">
+                            </div>
+                            <span class="error" id="numOfMonthsError"></span><br>
+                            
                             <div class="visits-container">
                                 <div class="visits-title">Visits:</div>
                                 <div class="radio-buttons">
-                                    <input type="radio" id="limitedRadio" name="visits" value="limited" class="radio-btn" onclick="showLimitField()" th:field="*{isVisitsLimited}">
+                                    <input type="radio" id="limitedRadio" name="visits" value="limited" class="radio-btn"
+                                           th:checked="${packageObj.isVisitsLimited == 'limited'}" onclick="showLimitField()">
                                     <label for="limitedRadio">Limited</label>
-                        
-                                    <input type="radio" id="unlimitedRadio" name="visits" value="unlimited" class="radio-btn" onclick="hideLimitField()" th:field="*{isVisitsLimited}">
+                                
+                                    <input type="radio" id="unlimitedRadio" name="visits" value="unlimited" class="radio-btn"
+                                           th:checked="${packageObj.isVisitsLimited == 'unlimited'}" onclick="hideLimitField()">
                                     <label for="unlimitedRadio">Unlimited</label>
                                 </div>
+                                
                                 <div id="limitField" class="hidden" style="display:none;">
-                                    <input th:field="*{VisitsLimit}" class="add-user-input" type="number" placeholder="Limit (Days)" value="">
+                                    <input th:field="*{VisitsLimit}" class="add-user-input" type="number" placeholder="Limit (Days)" value="" id="visitsLimit">
                                 </div>
                             </div>
-                            <input th:field="*{FreezeLimit}" class="add-user-input" type="number" placeholder="Freeze Limit (Days)" value="">
-                            <input th:field="*{NumOfInvitations}" class="add-user-input" type="number" placeholder="Number of Invitations" value="">
-                            <input th:field="*{NumOfInbodySessions}" class="add-user-input" type="number" placeholder="Number of Inbody Sessions" value="">
-                            <input th:field="*{NumOfPrivateTrainingSessions}" class="add-user-input" type="number" placeholder="Number of PT Sessions" value="">
-                            <input th:field="*{Price}" class="add-user-input" type="number" placeholder="Price" value="">
+                            <span class="error" id="visitsLimitError"></span><br>
+                        
+                            <div>
+                            <input th:field="*{FreezeLimit}" class="add-user-input" type="number" placeholder="Freeze Limit (Days)" id="freezeLimit">
+                            </div><span class="error" id="freezeLimitError"></span><br>
+                            <div><input th:field="*{NumOfInvitations}" class="add-user-input" type="number" placeholder="Number of Invitations" id="numOfInvitations">
+                            </div><span class="error" id="numOfInvitationsError"></span><br>
+                            <div><input th:field="*{NumOfInbodySessions}" class="add-user-input" type="number" placeholder="Number of Inbody Sessions" id="numOfInbodySessions">
+                            </div><span class="error" id="numOfInbodySessionsError"></span><br>
+                            <div><input th:field="*{NumOfPrivateTrainingSessions}" class="add-user-input" type="number" placeholder="Number of PT Sessions" id="numOfPTSessions">
+                            </div><span class="error" id="numOfPTSessionsError"></span><br>
+                            <div><input th:field="*{Price}" class="add-user-input" type="number" placeholder="Price" id="price">
+                            </div><span class="error" id="priceError"></span><br>
+                        
                             <input type="hidden" name="isActivated" value="Activated">
                             <br>
                             <button class="btn btn-add-form" type="submit">Add Package</button>
