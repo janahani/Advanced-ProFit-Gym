@@ -1,14 +1,19 @@
 package com.profitgym.profitgym.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.profitgym.profitgym.models.Employee;
 import com.profitgym.profitgym.models.Package;
+import com.profitgym.profitgym.repositories.EmployeeRepository;
 import com.profitgym.profitgym.repositories.PackageRepository;
 
 import java.util.List;
@@ -20,6 +25,8 @@ public class AdminController {
 
     @Autowired
     private PackageRepository packageRespository;
+    private EmployeeRepository employeeRepository;
+
 
     @GetMapping("")
     public ModelAndView getAdminDash() {
@@ -36,7 +43,13 @@ public class AdminController {
     @GetMapping("employees")
     public ModelAndView viewEmployees() {
         ModelAndView mav = new ModelAndView("empAdminDash.html");
+
+        List<Employee> employees = this.employeeRepository.findAll();
+        mav.addObject("employees", employees);
+
         return mav;
+
+
     }
     
     @GetMapping("packages")
@@ -73,11 +86,20 @@ public class AdminController {
         ModelAndView mav = new ModelAndView("addClientAdminDash.html");
         return mav;
     }
+    
     @GetMapping("addemployee")
     public ModelAndView getEmpForm() {
         ModelAndView mav = new ModelAndView("addEmpAdminDash.html");
         return mav;
     }
+
+    @PostMapping("addemployee")
+    public String saveEmployee(@ModelAttribute Employee employeeObj) {
+        this.employeeRepository.save(employeeObj);
+        return "Added";
+    }
+
+
     @GetMapping("addclass")
     public ModelAndView getClassForm() {
         ModelAndView mav = new ModelAndView("addClassAdminDash.html");
