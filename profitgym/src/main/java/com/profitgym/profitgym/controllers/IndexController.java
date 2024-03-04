@@ -1,9 +1,15 @@
 package com.profitgym.profitgym.controllers;
 
+import java.util.List;
+
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
+
+import com.profitgym.profitgym.models.Classes;
+
+import ch.qos.logback.core.model.Model;
 
 @RestController
 @RequestMapping("")
@@ -30,6 +36,12 @@ public class IndexController {
     @GetMapping("/contactus")
     public ModelAndView getContactUs() {
         ModelAndView mav = new ModelAndView("contactus.html");
+        return mav;
+    }
+
+    @GetMapping("/classes")
+    public ModelAndView getClasses() {
+        ModelAndView mav = new ModelAndView("classes.html");
         return mav;
     }
 
