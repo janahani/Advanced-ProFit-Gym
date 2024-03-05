@@ -138,6 +138,21 @@
 
                 <input
                   class="add-user-input"
+                  type="text"
+                  th:field="*{salary}"
+                  placeholder="Salary"/>
+                <span id="salary-error" class="error-message"></span>
+
+                <input
+                class="add-user-input"
+                type="text"
+                th:field="*{address}"
+                placeholder="Address"/>
+              <span id="address-error" class="error-message"></span>
+
+
+                <input
+                  class="add-user-input"
                   type="password"
                   th:field="*{password}"
                   placeholder="Password"/>

@@ -1,8 +1,8 @@
 function validateForm() {
-    const name = document.getElementsByName('name');
+    const name = document.getElementsByName('name').value.trim();
     const phoneNumber = document.getElementsByName('phoneNumber');
     const email = document.getElementsByName('email');
-    const jobTitle = document.getElementById('jobs');
+    const jobTitle = document.getElementById('jobs').value;
     const salary = document.getElementsByName('salary');
     const address = document.getElementsByName('address');
     const password = document.getElementsByName('password');
