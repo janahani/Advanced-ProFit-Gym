@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -102,11 +103,14 @@ public class AdminController {
  
 
     @PostMapping("addemployee")
-    public String saveEmployee(@ModelAttribute Employee employeeObj) {
+    public String saveEmployee(@ModelAttribute Employee employeeObj, @RequestParam(value = "jobTitleHidden", required = false) Integer jobTitle) {
+        if (jobTitle != null) {
+            employeeObj.setJobTitle(jobTitle);
+        }
         this.employeeRepository.save(employeeObj);
         return "Added";
     }
-
+    
 
     @GetMapping("addclass")
     public ModelAndView getClassForm() {

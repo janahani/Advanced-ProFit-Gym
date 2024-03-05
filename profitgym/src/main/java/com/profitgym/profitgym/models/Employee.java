@@ -15,13 +15,13 @@ public class Employee {
     private int PhoneNumber;
     private double Salary;
     private String Address;
-    private String JobTitle;
+    private Integer JobTitle;
     private String Password;
 
 
 
     
-    public Employee(int iD, String name, String email, int phoneNumber, double salary, String address, String jobTitle,
+    public Employee(int iD, String name, String email, int phoneNumber, double salary, String address, Integer jobTitle,
             String password) {
         ID = iD;
         Name = name;
@@ -86,11 +86,11 @@ public class Employee {
         Address = address;
     }
 
-    public String getJobTitle() {
+    public Integer getJobTitle() {
         return JobTitle;
     }
 
-    public void setJobTitle(String jobTitle) {
+    public void setJobTitle(Integer jobTitle) {
         JobTitle = jobTitle;
     }
 
