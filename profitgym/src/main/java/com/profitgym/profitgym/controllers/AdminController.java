@@ -127,6 +127,7 @@ public class AdminController {
         if (optionalEmployee.isPresent()) {
             Employee employee = optionalEmployee.get();
             mav.addObject("employeeObj", employee); // Add employeeObj to the model
+            mav.addObject("jobTitles", jobTitlesRepository.findAll());
         } else {
             mav.addObject("errorMessage", "Employee not found");
         }
