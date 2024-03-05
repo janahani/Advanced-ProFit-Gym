@@ -25,6 +25,8 @@ public class AdminController {
 
     @Autowired
     private PackageRepository packageRespository;
+
+    @Autowired
     private EmployeeRepository employeeRepository;
 
 
@@ -42,6 +44,8 @@ public class AdminController {
 
     @GetMapping("employees")
     public ModelAndView viewEmployees() {
+        System.out.println("viewEmployees() method called");
+
         ModelAndView mav = new ModelAndView("empAdminDash.html");
 
         List<Employee> employees = this.employeeRepository.findAll();
@@ -90,8 +94,12 @@ public class AdminController {
     @GetMapping("addemployee")
     public ModelAndView getEmpForm() {
         ModelAndView mav = new ModelAndView("addEmpAdminDash.html");
+        mav.addObject("employeeObj", new Employee()); // Add employeeObj to the model
+
         return mav;
     }
+    
+ 
 
     @PostMapping("addemployee")
     public String saveEmployee(@ModelAttribute Employee employeeObj) {

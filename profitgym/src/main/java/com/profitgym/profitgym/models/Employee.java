@@ -15,13 +15,13 @@ public class Employee {
     private int PhoneNumber;
     private double Salary;
     private String Address;
-    private int JobTitle;
+    private String JobTitle;
     private String Password;
 
 
 
     
-    public Employee(int iD, String name, String email, int phoneNumber, double salary, String address, int jobTitle,
+    public Employee(int iD, String name, String email, int phoneNumber, double salary, String address, String jobTitle,
             String password) {
         ID = iD;
         Name = name;
@@ -31,6 +31,9 @@ public class Employee {
         Address = address;
         JobTitle = jobTitle;
         Password = password;
+    }
+
+    public Employee() {
     }
 
     public int getID() {
@@ -82,11 +85,11 @@ public class Employee {
         Address = address;
     }
 
-    public int getJobTitle() {
+    public String getJobTitle() {
         return JobTitle;
     }
 
-    public void setJobTitle(int jobTitle) {
+    public void setJobTitle(String jobTitle) {
         JobTitle = jobTitle;
     }
 
