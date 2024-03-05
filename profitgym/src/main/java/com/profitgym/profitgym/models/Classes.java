@@ -13,10 +13,8 @@ public class Classes {
     private int ID;
     private String name;
     private String description;
+    private String imgPath;
 
-    public String getImgPath() {
-        return imgPath;
-    }
 
     public void setID(int ID) {
         this.ID = ID;
