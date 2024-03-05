@@ -2,7 +2,7 @@ var hide=true;
 function showLimitField() {
     var limitField = document.getElementById("limitField");
     limitField.style.display = "block";
-    hide=false;
+    hide=false; 
 }
 
 function hideLimitField() {
