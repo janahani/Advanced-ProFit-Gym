@@ -20,7 +20,6 @@ import com.profitgym.profitgym.repositories.PackageRepository;
 
 import java.util.List;
 
-
 @RestController
 @RequestMapping("/admindashboard")
 public class AdminController {
@@ -30,7 +29,6 @@ public class AdminController {
 
     @Autowired
     private EmployeeRepository employeeRepository;
-
 
     @GetMapping("")
     public ModelAndView getAdminDash() {
@@ -55,9 +53,8 @@ public class AdminController {
 
         return mav;
 
-
     }
-    
+
     @GetMapping("packages")
     public ModelAndView viewPackages() {
         System.out.println("viewPackages() method called");
@@ -72,27 +69,31 @@ public class AdminController {
         ModelAndView mav = new ModelAndView("clientReqAdminDash.html");
         return mav;
     }
+
     @GetMapping("memberships")
     public ModelAndView viewMemberships() {
         ModelAndView mav = new ModelAndView("membershipAdminDash.html");
         return mav;
     }
+
     @GetMapping("checkin")
     public ModelAndView viewCheckIn() {
         ModelAndView mav = new ModelAndView("checkinAdminDash.html");
         return mav;
     }
+
     @GetMapping("classes")
     public ModelAndView viewClasses() {
         ModelAndView mav = new ModelAndView("classAdminDash.html");
         return mav;
     }
+
     @GetMapping("addclient")
     public ModelAndView getClientForm() {
         ModelAndView mav = new ModelAndView("addClientAdminDash.html");
         return mav;
     }
-    
+
     @GetMapping("addemployee")
     public ModelAndView getEmpForm() {
         ModelAndView mav = new ModelAndView("addEmpAdminDash.html");
@@ -100,10 +101,10 @@ public class AdminController {
 
         return mav;
     }
-    
- 
+
     @PostMapping("addemployee")
-    public String saveEmployee(@ModelAttribute Employee employeeObj, @RequestParam(value = "jobTitleHidden", required = false) Integer jobTitle) {
+    public String saveEmployee(@ModelAttribute Employee employeeObj,
+            @RequestParam(value = "jobTitleHidden", required = false) Integer jobTitle) {
         if (jobTitle != null) {
             employeeObj.setJobTitle(jobTitle);
         }
@@ -112,41 +113,59 @@ public class AdminController {
             System.out.println("employee added");
             return "added";
         } catch (Exception e) {
-            return "error"; 
+            return "error";
         }
     }
-
-    
-
     @GetMapping("editemployee")
     public ModelAndView editEmpForm(@RequestParam("id") int employeeId) {
         ModelAndView mav = new ModelAndView("editEmpAdminDash.html");
         Optional<Employee> optionalEmployee = employeeRepository.findById(employeeId);
         if (optionalEmployee.isPresent()) {
-            mav.addObject("employeeObj", optionalEmployee.get());
+            Employee employee = optionalEmployee.get();
+            mav.addObject("employeeObj", employee); // Add employeeObj to the model
         } else {
             mav.addObject("errorMessage", "Employee not found");
         }
         return mav;
     }
     
+    
+    @PostMapping("editemployee")
+    public String updateEmployee(@ModelAttribute Employee employeeObj,
+            @RequestParam(value = "jobTitleHidden", required = false) Integer jobTitle) {
+        // Log the ID of the employeeObj before saving
+        System.out.println("Employee ID before saving: " + employeeObj.getId());
+
+        if (jobTitle != null) {
+            employeeObj.setJobTitle(jobTitle);
+        }
+        try {
+            this.employeeRepository.save(employeeObj);
+            System.out.println("Employee updated successfully");
+            return "Employee updated successfully";
+        } catch (Exception e) {
+            System.out.println("Error updating employee: " + e.getMessage());
+            return "Error updating employee";
+        }
+    }
 
     @GetMapping("addclass")
     public ModelAndView getClassForm() {
         ModelAndView mav = new ModelAndView("addClassAdminDash.html");
         return mav;
     }
+
     @GetMapping("addpackage")
     public ModelAndView getPackageForm() {
         ModelAndView mav = new ModelAndView("addPackageAdminDash.html");
-        mav.addObject("packageObj", new Package()); 
+        mav.addObject("packageObj", new Package());
         return mav;
     }
+
     @PostMapping("addpackage")
     public String savePackage(@ModelAttribute Package packageObj) {
         this.packageRespository.save(packageObj);
         return "Added";
     }
-    
 
 }
