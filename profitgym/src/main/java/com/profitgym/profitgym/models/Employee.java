@@ -15,7 +15,7 @@ public class Employee {
     private int PhoneNumber;
     private double Salary;
     private String Address;
-    private Integer JobTitle;
+    private int JobTitle;
     private String Password;
 
 

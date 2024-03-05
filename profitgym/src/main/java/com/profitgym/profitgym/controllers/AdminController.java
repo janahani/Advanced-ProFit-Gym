@@ -16,6 +16,7 @@ import org.springframework.web.servlet.ModelAndView;
 import com.profitgym.profitgym.models.Employee;
 import com.profitgym.profitgym.models.Package;
 import com.profitgym.profitgym.repositories.EmployeeRepository;
+import com.profitgym.profitgym.repositories.JobTitlesRepository;
 import com.profitgym.profitgym.repositories.PackageRepository;
 
 import java.util.List;
@@ -29,6 +30,9 @@ public class AdminController {
 
     @Autowired
     private EmployeeRepository employeeRepository;
+
+    @Autowired
+    private JobTitlesRepository jobTitlesRepository;
 
     @GetMapping("")
     public ModelAndView getAdminDash() {
@@ -98,7 +102,7 @@ public class AdminController {
     public ModelAndView getEmpForm() {
         ModelAndView mav = new ModelAndView("addEmpAdminDash.html");
         mav.addObject("employeeObj", new Employee()); // Add employeeObj to the model
-
+        mav.addObject("jobTitles", jobTitlesRepository.findAll());
         return mav;
     }
 

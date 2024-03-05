@@ -1,3 +1,14 @@
+function clearInputFields() {
+  var inputFields = document.querySelectorAll('.add-user-input');
+  inputFields.forEach(function(input) {
+      input.value = '';
+  });
+}
+
+window.addEventListener('DOMContentLoaded', (event) => {
+  clearInputFields();
+});
+
 function validateForm() {
     const name = document.getElementsByName('name').value.trim();
     const phoneNumber = document.getElementsByName('phoneNumber');
