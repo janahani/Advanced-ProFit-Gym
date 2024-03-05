@@ -97,66 +97,89 @@
             <div class="user-form">
               <h1>Add an Employee</h1>
               <form
-                th:action="@{/admindashboard/addemployee}"
-                th:object="${employeeObj}"
+                th:action="@{/admindashboard/editemployee(id=${employeeObj.id})}"
                 method="POST"
-                class="add-client"
-                onsubmit="return validateForm()">
+                class="edit-employee"
+                onsubmit="return validateForm()"
+              >
                 <input
                   class="add-user-input"
                   type="text"
                   th:field="*{name}"
-                  placeholder="Name" />
+                  placeholder="Name"
+                />
                 <span id="name-error" class="error-message"></span>
 
                 <input
                   class="add-user-input"
                   type="text"
                   th:field="*{email}"
-                  placeholder="Email"/>
+                  placeholder="Email"
+                />
                 <span id="email-error" class="error-message"></span>
 
                 <input
                   class="add-user-input"
                   type="text"
                   th:field="*{phoneNumber}"
-                  placeholder="Phone Number"/>
+                  placeholder="Phone Number"
+                />
                 <span id="phoneno-error" class="error-message"></span>
-                <!-- <input class="add-user-input" type="text" th:field="*{salary}" placeholder="Salary">
-                            <input class="add-user-input" type="text" th:field="*{address}" placeholder="Address"> -->
+
                 <select
                   class="add-user-input"
                   th:field="*{jobTitle}"
-                  name="jobTitle" >
-                  <span id = "jobTitle-error" class="error-message"> </span>
-
+                  name="jobTitle"
+                >
+                  <span id="jobTitle-error" class="error-message"> </span>
                   <option value="">Select Job Title</option>
                   <option value="1">Job Title 1</option>
                   <option value="2">Job Title 2</option>
                 </select>
 
+                <input
+                  type="hidden"
+                  id="jobTitleHidden"
+                  name="jobTitleHidden"
+                />
+
+                <script th:inline="javascript">
+                  // Function to set the selected job title as an integer in the hidden input field
+                  function setJobTitle() {
+                    var dropdown = document.getElementsByName("jobTitle")[0];
+                    var hiddenInput = document.getElementById("jobTitleHidden");
+                    if (dropdown.value !== "") {
+                      hiddenInput.value = parseInt(dropdown.value);
+                    } else {
+                      hiddenInput.value = null;
+                    }
+                  }
+                </script>
 
                 <input
                   class="add-user-input"
                   type="text"
                   th:field="*{salary}"
-                  placeholder="Salary"/>
+                  placeholder="Salary"
+                />
                 <span id="salary-error" class="error-message"></span>
 
                 <input
-                class="add-user-input"
-                type="text"
-                th:field="*{address}"
-                placeholder="Address"/>
-              <span id="address-error" class="error-message"></span>
-
+                  class="add-user-input"
+                  type="text"
+                  th:field="*{address}"
+                  placeholder="Address"
+                />
+                <span id="address-error" class="error-message"></span>
 
                 <input
                   class="add-user-input"
                   type="password"
                   th:field="*{password}"
-                  placeholder="Password"/>
-                  <span id="password-error" class="error-message"></span>
+                  placeholder="Password"
+                />
+                <span id="password-error" class="error-message"></span>
+
 
                 <button class="btn btn-add-form" type="submit">
                   Add Employee

@@ -41,7 +41,7 @@ public class Employee {
     }
     
 
-    public void setID(int ID) {
+    public void setId(int ID) {
         this.ID = ID;
     }
 
