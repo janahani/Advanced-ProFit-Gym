@@ -36,9 +36,10 @@ public class Employee {
     public Employee() {
     }
 
-    public int getID() {
-        return this.ID;
+    public int getId() {
+        return ID;
     }
+    
 
     public void setID(int ID) {
         this.ID = ID;
