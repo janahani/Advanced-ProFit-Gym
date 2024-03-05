@@ -73,26 +73,22 @@
                 <div class="col-lg">
                     <div class="user-form">
                         <h1>Add an Employee</h1>
-                        <form class="add-client">
-                            <input class="add-user-input" type="text" placeholder="Name">
-                            <input class="add-user-input" type="text" placeholder="Age">
-                            <input class="add-user-input" type="text" placeholder="Email">
-                            <input class="add-user-input" type="text" placeholder="Password">
-                            <input class="add-user-input" type="text" placeholder="Phone Number">
-                            <select class="add-user-input" name="gender">
-                                <option value="">Gender</option>
-                                <option value="female">Female</option>
-                                <option value="male">Male</option>
+                        <form th:action="@{/admindashboard/addemployee}" th:object="${employeeObj}" method="POST" class="add-client">
+                            <input class="add-user-input" type="text" th:field="*{name}" placeholder="Name">
+                            <input class="add-user-input" type="text" th:field="*{email}" placeholder="Email">
+                            <input class="add-user-input" type="text" th:field="*{phoneNumber}" placeholder="Phone Number">
+                            <!-- <input class="add-user-input" type="text" th:field="*{salary}" placeholder="Salary">
+                            <input class="add-user-input" type="text" th:field="*{address}" placeholder="Address"> -->
+                            <select class="add-user-input" th:field="*{jobTitle}" name="jobTitle">
+                                <option value="">Select Job Title</option>
+                                <option value="1">Job Title 1</option>
+                                <option value="2">Job Title 2</option>
                             </select>
-                            <select class="add-user-input" name="emp-type">
-                                <option value="">Job</option>
-                                <option value="female">Receptionist</option>
-                                <option value="male">Coach</option>
-                            </select>
-                            <br>
+                            <input class="add-user-input" type="password" th:field="*{password}" placeholder="Password">
                             <button class="btn btn-add-form" type="submit">Add Employee</button>
                         </form>
                     </div>
+                    
                 </div>
             </div>
         </div>
