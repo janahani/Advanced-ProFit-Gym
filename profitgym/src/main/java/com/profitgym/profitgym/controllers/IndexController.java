@@ -2,59 +2,67 @@ package com.profitgym.profitgym.controllers;
 
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.profitgym.profitgym.models.Classes;
+import com.profitgym.profitgym.models.Package;
+import com.profitgym.profitgym.repositories.PackageRepository;
 
 import ch.qos.logback.core.model.Model;
 
 @RestController
 @RequestMapping("")
 public class IndexController {
+
+    @Autowired
+    private PackageRepository packageRespository;
     
-    @GetMapping("/index")
+    @GetMapping("index")
     public ModelAndView getIndex() {
         ModelAndView mav = new ModelAndView("index.html");
         return mav;
     }
 
-    @GetMapping("/facilities")
+    @GetMapping("facilities")
     public ModelAndView getFacilities() {
         ModelAndView mav = new ModelAndView("facilities.html");
         return mav;
     }
 
-    @GetMapping("/login")
+    @GetMapping("login")
     public ModelAndView getLogin() {
         ModelAndView mav = new ModelAndView("login.html");
         return mav;
     }
 
-    @GetMapping("/contactus")
+    @GetMapping("contactus")
     public ModelAndView getContactUs() {
         ModelAndView mav = new ModelAndView("contactus.html");
         return mav;
     }
 
-    @GetMapping("/register")
+    @GetMapping("register")
         public ModelAndView getSignUp() {
             ModelAndView mav = new ModelAndView("register.html");
             return mav;
 
         }
 
-    @GetMapping("/classes")
+    @GetMapping("classes")
     public ModelAndView getClasses() {
         ModelAndView mav = new ModelAndView("classes.html");
         return mav;
     }
 
-    @GetMapping("/memberships")
+    @GetMapping("memberships")
     public ModelAndView getMemberships() {
+        System.out.println("viewPackages() method called");
         ModelAndView mav = new ModelAndView("memberships.html");
+        List<Package> packages = this.packageRespository.findAll();
+        mav.addObject("packages", packages);
         return mav;
     }
 

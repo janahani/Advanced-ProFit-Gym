@@ -167,6 +167,7 @@ public class AdminController {
         return mav;
     }
 
+    @SuppressWarnings("null")
     @PostMapping("addpackage")
     public String savePackage(@ModelAttribute Package packageObj) {
         this.packageRespository.save(packageObj);
