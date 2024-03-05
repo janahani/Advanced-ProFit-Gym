@@ -44,6 +44,8 @@ public class IndexController {
             ModelAndView mav = new ModelAndView("register.html");
             return mav;
 
+        }
+
     @GetMapping("/classes")
     public ModelAndView getClasses() {
         ModelAndView mav = new ModelAndView("classes.html");
