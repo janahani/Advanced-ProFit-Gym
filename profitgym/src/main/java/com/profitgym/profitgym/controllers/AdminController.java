@@ -1,5 +1,6 @@
 package com.profitgym.profitgym.controllers;
 
+import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -101,14 +102,32 @@ public class AdminController {
     }
     
  
-
     @PostMapping("addemployee")
     public String saveEmployee(@ModelAttribute Employee employeeObj, @RequestParam(value = "jobTitleHidden", required = false) Integer jobTitle) {
         if (jobTitle != null) {
             employeeObj.setJobTitle(jobTitle);
         }
-        this.employeeRepository.save(employeeObj);
-        return "Added";
+        try {
+            this.employeeRepository.save(employeeObj);
+            System.out.println("employee added");
+            return "added";
+        } catch (Exception e) {
+            return "error"; 
+        }
+    }
+
+    
+
+    @GetMapping("editemployee")
+    public ModelAndView editEmpForm(@RequestParam("id") int employeeId) {
+        ModelAndView mav = new ModelAndView("editEmpAdminDash.html");
+        Optional<Employee> optionalEmployee = employeeRepository.findById(employeeId);
+        if (optionalEmployee.isPresent()) {
+            mav.addObject("employeeObj", optionalEmployee.get());
+        } else {
+            mav.addObject("errorMessage", "Employee not found");
+        }
+        return mav;
     }
     
 
