@@ -33,4 +33,10 @@ public class IndexController {
         return mav;
     }
 
+    @GetMapping("/register")
+        public ModelAndView getSignUp() {
+            ModelAndView mav = new ModelAndView("register.html");
+            return mav;
+    }
+
 }
