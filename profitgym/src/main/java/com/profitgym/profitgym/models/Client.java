@@ -23,7 +23,6 @@ public class Client {
 
     }
 
-
     public int getID() {
         return this.ID;
     }
