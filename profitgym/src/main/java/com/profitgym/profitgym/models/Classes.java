@@ -11,38 +11,41 @@ public class Classes {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int ID;
-    private String name;
-    private String description;
-    private String imgPath;
+    private String Name;
+    private String Description;
+    private String ImgPath;
 
+
+    public int getID() {
+        return this.ID;
+    }
 
     public void setID(int ID) {
         this.ID = ID;
     }
 
     public String getName() {
-        return name;
+        return this.Name;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setName(String Name) {
+        this.Name = Name;
     }
 
     public String getDescription() {
-        return description;
+        return this.Description;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
+    public void setDescription(String Description) {
+        this.Description = Description;
     }
 
     public String getImgPath() {
-        return imgPath;
+        return this.ImgPath;
     }
 
-    public void setImgPath(String imgPath) {
-        this.imgPath = imgPath;
+    public void setImgPath(String ImgPath) {
+        this.ImgPath = ImgPath;
     }
-
-    // Getters and setters
+   
 }

@@ -13,15 +13,15 @@ public class Memberships {
     private int ID;
     private int ClientID;
     private int PackageID;
-    private int startDate;
-    private int endDate;
-    private int numOfVisits;
-    private int numOfInvitations;
-    private int numOfInbodySessions;
-    private int numOfPrivateTrainingSessions;
-    private int numOfFreeze;
-    private int freezed;
-    private boolean isActivated;
+    private int StartDate;
+    private int EndDate;
+    private int VisitsCount;
+    private int InvitationsCount;
+    private int InbodySessionsCount;
+    private int PrivateTrainingSessionsCount;
+    private int FreezeCount;
+    private int Freezed;
+    private String isActivated;
 
     public Memberships() {
 
@@ -51,76 +51,76 @@ public class Memberships {
         this.PackageID = PackageID;
     }
 
-    public int getstartDate() {
-        return this.startDate;
+    public int getStartDate() {
+        return this.StartDate;
     }
 
-    public void setstartDate(int startDate) {
-        this.startDate = startDate;
+    public void setStartDate(int StartDate) {
+        this.StartDate = StartDate;
     }
 
-    public int getendDate() {
-        return this.endDate;
+    public int getEndDate() {
+        return this.EndDate;
     }
 
-    public void setendDate(int endDate) {
-        this.endDate = endDate;
+    public void setEndDate(int EndDate) {
+        this.EndDate = EndDate;
     }
 
-    public int getnumOfVisits() {
-        return numOfVisits;
+    public int getVisitsCount() {
+        return this.VisitsCount;
     }
 
-    public void setnumOfVisits(int numOfVisits) {
-        this.numOfVisits = numOfVisits;
+    public void setVisitsCount(int VisitsCount) {
+        this.VisitsCount = VisitsCount;
     }
 
-    public int getNumOfInvitations() {
-        return numOfInvitations;
+    public int getInvitationsCount() {
+        return this.InvitationsCount;
     }
 
-    public void setNumOfInvitations(int numOfInvitations) {
-        this.numOfInvitations = numOfInvitations;
+    public void setInvitationsCount(int InvitationsCount) {
+        this.InvitationsCount = InvitationsCount;
     }
 
-    public int getNumOfInbodySessions() {
-        return numOfInbodySessions;
+    public int getInbodySessionsCount() {
+        return this.InbodySessionsCount;
     }
 
-    public void setNumOfInbodySessions(int numOfInbodySessions) {
-        this.numOfInbodySessions = numOfInbodySessions;
+    public void setInbodySessionsCount(int InbodySessionsCount) {
+        this.InbodySessionsCount = InbodySessionsCount;
     }
 
-    public int getNumOfPrivateTrainingSessions() {
-        return numOfPrivateTrainingSessions;
+    public int getPrivateTrainingSessionsCount() {
+        return this.PrivateTrainingSessionsCount;
     }
 
-    public void setNumOfPrivateTrainingSessions(int numOfPrivateTrainingSessions) {
-        this.numOfPrivateTrainingSessions = numOfPrivateTrainingSessions;
+    public void setPrivateTrainingSessionsCount(int PrivateTrainingSessionsCount) {
+        this.PrivateTrainingSessionsCount = PrivateTrainingSessionsCount;
     }
 
-    public int getnumOfFreeze() {
-        return numOfFreeze;
+    public int getFreezeCount() {
+        return this.FreezeCount;
     }
 
-    public void setnumOfFreeze(int numOfFreeze) {
-        this.numOfFreeze = numOfFreeze;
+    public void setFreezeCount(int FreezeCount) {
+        this.FreezeCount = FreezeCount;
     }
 
-    public int getfreezed() {
-        return freezed;
+    public int getFreezed() {
+        return this.Freezed;
     }
 
-    public void setfreezed(int freezed) {
-        this.freezed = freezed;
+    public void setFreezed(int Freezed) {
+        this.Freezed = Freezed;
     }
 
-    public boolean isActivated() {
-        return isActivated;
+    public String getIsActivated() {
+        return this.isActivated;
     }
 
-    public void setVisitsLimited(boolean isActivated) {
+    public void setIsActivated(String isActivated) {
         this.isActivated = isActivated;
     }
-
+   
 }
