@@ -70,38 +70,38 @@
       <div class="row removable">
         <div class="col-lg">
           <div class="user-form">
-            <h1>Add an Employee</h1>
-            <form th:action="@{/admindashboard/addemployee}" th:object="${employeeObj}" method="POST" class="add-client"
+            <h1 th:text="'Edit ' + ${employeeObj.Name}"></h1>
+            <form th:action="@{/admindashboard/editemployee(id=${employeeObj.id})}" method="POST" class="edit-employee"
               onsubmit="return validateForm()">
-              <div><input class="add-user-input" type="text" th:field="*{name}" placeholder="Name" /></div>
+              <div><input class="add-user-input" type="text" th:field="*{employeeObj.Name}" placeholder="Name" /></div>
               <span id="name-error" class="error-message"></span>
               <br>
-              <div><input class="add-user-input" type="text" th:field="*{email}" placeholder="Email" /></div>
+              <div><input class="add-user-input" type="text" th:field="*{employeeObj.Email}" placeholder="Email" /></div>
               <span id="email-error" class="error-message"></span>
               <br>
-              <div><input class="add-user-input" type="text" th:field="*{phoneNumber}" placeholder="Phone Number" /> </div>
+              <div><input class="add-user-input" type="text" th:field="*{employeeObj.PhoneNumber}" placeholder="Phone Number" /></div>
               <span id="phoneno-error" class="error-message"></span>
               <br>
               <div>
-                <select class="add-user-input" th:field="*{jobTitle}" name="jobTitle">
-                  <option value="">Select Job Title</option>
-                  <option th:each="jobTitle : ${jobTitles}" th:value="${jobTitle.ID}" th:text="${jobTitle.Name}"></option>
+              <select class="add-user-input" th:field="*{employeeObj.jobTitle}" name="jobTitle">
+                <option value="">Select Job Title</option>
+                <option th:each="jobTitle : ${jobTitles}" th:value="${jobTitle.ID}" th:text="${jobTitle.Name}"></option>
               </select>
               </div>
               <span id="jobTitle-error" class="error-message"> </span>
               <input type="hidden" id="jobTitleHidden" name="jobTitleHidden" />
               <br>
-              <div><input class="add-user-input" type="text" th:field="*{salary}" placeholder="Salary" /></div>
+              <div><input class="add-user-input" type="text" th:field="*{employeeObj.Salary}" placeholder="Salary" /></div>
               <span id="salary-error" class="error-message"></span>
               <br>
-              <div><input class="add-user-input" type="text" th:field="*{address}" placeholder="Address" /></div>
+              <div><input class="add-user-input" type="text" th:field="*{employeeObj.Address}" placeholder="Address" /></div>
               <span id="address-error" class="error-message"></span>
               <br>
-              <div><input class="add-user-input" type="password" th:field="*{password}" placeholder="Password" /></div>
+              <div><input class="add-user-input" type="password" th:field="*{employeeObj.Password}" placeholder="Password" /></div>
               <span id="password-error" class="error-message"></span>
               <br>
               <button class="btn btn-add-form" type="submit">
-                Add Employee
+                Update Employee
               </button>
             </form>
           </div>
@@ -110,7 +110,7 @@
     </div>
   </div>
 
-   <script src="/js/addEmployee.js"></script>
+  <script src="../static/js/addEmployee.js"></script>
 
   <script
     src="https://rawcdn.githack.com/Loopple/loopple-public-assets/5cef8f62939eeb089fa26d4c53a49198de421e3d/argon-dashboard/js/vendor/jquery.min.js"></script>
