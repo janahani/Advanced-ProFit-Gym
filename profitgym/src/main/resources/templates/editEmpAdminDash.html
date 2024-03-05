@@ -95,7 +95,7 @@
         <div class="row removable">
           <div class="col-lg">
             <div class="user-form">
-              <h1>Add an Employee</h1>
+              <h1 th:text="'Edit ' + ${employeeObj.Name}"></h1>
               <form
                 th:action="@{/admindashboard/editemployee(id=${employeeObj.id})}"
                 method="POST"
@@ -105,7 +105,7 @@
                 <input
                   class="add-user-input"
                   type="text"
-                  th:field="*{name}"
+                  th:field="*{employeeObj.Name}"
                   placeholder="Name"
                 />
                 <span id="name-error" class="error-message"></span>
@@ -113,7 +113,7 @@
                 <input
                   class="add-user-input"
                   type="text"
-                  th:field="*{email}"
+                  th:field="*{employeeObj.Email}"
                   placeholder="Email"
                 />
                 <span id="email-error" class="error-message"></span>
@@ -121,14 +121,14 @@
                 <input
                   class="add-user-input"
                   type="text"
-                  th:field="*{phoneNumber}"
+                  th:field="*{employeeObj.PhoneNumber}"
                   placeholder="Phone Number"
                 />
                 <span id="phoneno-error" class="error-message"></span>
 
                 <select
                   class="add-user-input"
-                  th:field="*{jobTitle}"
+                  th:field="*{employeeObj.JobTitle}"
                   name="jobTitle"
                 >
                   <span id="jobTitle-error" class="error-message"> </span>
@@ -159,7 +159,7 @@
                 <input
                   class="add-user-input"
                   type="text"
-                  th:field="*{salary}"
+                  th:field="*{employeeObj.Salary}"
                   placeholder="Salary"
                 />
                 <span id="salary-error" class="error-message"></span>
@@ -167,7 +167,7 @@
                 <input
                   class="add-user-input"
                   type="text"
-                  th:field="*{address}"
+                  th:field="*{employeeObj.Address}"
                   placeholder="Address"
                 />
                 <span id="address-error" class="error-message"></span>
@@ -175,14 +175,13 @@
                 <input
                   class="add-user-input"
                   type="password"
-                  th:field="*{password}"
+                  th:field="*{employeeObj.Password}"
                   placeholder="Password"
                 />
                 <span id="password-error" class="error-message"></span>
-
-
+                <br>
                 <button class="btn btn-add-form" type="submit">
-                  Add Employee
+                  Update Employee
                 </button>
               </form>
             </div>

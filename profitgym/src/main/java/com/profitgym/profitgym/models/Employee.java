@@ -18,8 +18,6 @@ public class Employee {
     private int JobTitle;
     private String Password;
 
-
-
     
     public Employee(int iD, String name, String email, int phoneNumber, double salary, String address, Integer jobTitle,
             String password) {
