@@ -1,15 +1,19 @@
 package com.profitgym.profitgym.controllers;
 
 import java.util.List;
-
+import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
+import com.profitgym.profitgym.models.Classes;
+import com.profitgym.profitgym.models.Client;
+import com.profitgym.profitgym.models.Employee;
+import com.profitgym.profitgym.repositories.ClientRepository;
 
-import com.profitgym.profitgym.models.Package;
-import com.profitgym.profitgym.repositories.PackageRepository;
 
 import ch.qos.logback.core.model.Model;
 
@@ -18,9 +22,9 @@ import ch.qos.logback.core.model.Model;
 public class IndexController {
 
     @Autowired
-    private PackageRepository packageRespository;
-    
-    @GetMapping("index")
+    private ClientRepository clientRespository;
+
+    @GetMapping("/index")
     public ModelAndView getIndex() {
         ModelAndView mav = new ModelAndView("index.html");
         return mav;
@@ -44,10 +48,21 @@ public class IndexController {
         return mav;
     }
 
-    @GetMapping("register")
-        public ModelAndView getSignUp() {
-            ModelAndView mav = new ModelAndView("register.html");
-            return mav;
+    @GetMapping("/register")
+    public ModelAndView addClient() {
+        ModelAndView mav = new ModelAndView("register.html");
+        Client newClient= new Client();
+        mav.addObject("client", newClient);
+        return mav;
+    }
+    
+    @PostMapping("register")
+    public String saveClient(@ModelAttribute Client client) {
+        String encoddedPassword=BCrypt.hashpw(client.getPassword(),BCrypt.gensalt(12));
+        client.setPassword(encoddedPassword);
+        this.clientRespository.save(client);
+        return "Added";
+    }
 
         }
 
@@ -65,5 +80,4 @@ public class IndexController {
         mav.addObject("packages", packages);
         return mav;
     }
-
 }

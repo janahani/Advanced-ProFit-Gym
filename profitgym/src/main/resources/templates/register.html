@@ -5,9 +5,9 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <!--css/icons/boostrap/jquery/fonts/images start-->
+    <!-- css/icons/boostrap/jquery/fonts/images start -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
         <link rel="stylesheet" type="text/css" th:href="@{/CSS/header.css}">
         <link rel="stylesheet" type="text/css" th:href="@{/CSS/footer.css}">
         <link rel="stylesheet" type="text/css" th:href="@{/CSS/register.css}">
@@ -29,17 +29,17 @@
   <div th:replace="~{/partials/header}"></div>
   <div class="signup-container">
     <div class="signup-form1">
-        <form method="post" autocomplete="off" id="signup-form" action="#">
+        <form th:action="@{/register}" method="post" autocomplete="off" id="signup-form" >
             <input type="hidden" name="action" value="register">
             <h3 class="signup-title">Create An Account</h3>
             <div class="signup-input-container">
-                <input type="text" name="fname" id="fname" class="signup-input" />
+                <input type="text" name="FirstName" id="fname" class="signup-input" />
                 <label class="signup-lbl" for="">First Name</label>
                 <span>First Name</span>
             </div>
             <span id="fname-error"></span>
             <div class="signup-input-container">
-                <input type="text" name="lname" id="lname" class="signup-input" />
+                <input type="text" name="LastName" id="lname" class="signup-input" />
                 <label class="signup-lbl" for="">Last Name</label>
                 <span>Last Name</span>
             </div>
@@ -117,5 +117,28 @@
             });
             </script>
 </body>
+
+<script src="/js/addclient_validation.js"></script>
+<script>
+    const inputs = document.querySelectorAll(".signup-input");
+
+    function focusFunc() {
+        let parent = this.parentNode;
+        parent.classList.add("focus");
+    }
+
+    function blurFunc() {
+        let parent = this.parentNode;
+        if (this.value == "") {
+            parent.classList.remove("focus");
+        }
+    }
+
+    inputs.forEach((input) => {
+        input.addEventListener("focus", focusFunc);
+        input.addEventListener("blur", blurFunc);
+    });
+</script>
+
 
 </html>
