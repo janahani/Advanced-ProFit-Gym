@@ -123,6 +123,7 @@ public class AdminController {
     @GetMapping("addclient")
     public ModelAndView getClientForm() {
         ModelAndView mav = new ModelAndView("addClientAdminDash.html");
+        mav.addObject("clientObj", new Client()); 
         return mav;
     }
 
