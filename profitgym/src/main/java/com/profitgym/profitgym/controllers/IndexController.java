@@ -1,9 +1,9 @@
 package com.profitgym.profitgym.controllers;
-
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
 import java.util.List;
 import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -17,6 +17,7 @@ import com.profitgym.profitgym.models.Package;
 import com.profitgym.profitgym.models.Employee;
 import com.profitgym.profitgym.repositories.ClientRepository;
 import com.profitgym.profitgym.repositories.PackageRepository;
+
 
 import ch.qos.logback.core.model.Model;
 
@@ -49,7 +50,7 @@ public class IndexController {
         mav.addObject("client", newClient);
         return mav;
     }
-
+   
     @PostMapping("/login")
     public String loginProcess(@RequestParam("email") String email, @RequestParam("Password") String password) {
         Client dbClient=this.clientRepository.findByEmail(email);
