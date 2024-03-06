@@ -60,7 +60,7 @@
             </div>
             <span id="gender-error"></span>
             <div class="signup-input-container">
-                <input type="text" name="phone" id="phone" class="signup-input" />
+                <input type="text" name="PhoneNumber" id="phone" class="signup-input" />
                 <label class="signup-lbl" for="">Phone Number</label>
                 <span>Phone Number</span>
             </div>
@@ -95,27 +95,6 @@
         </div>
         </div>
         <div th:replace="~{/partials/footer}"></div>
-
-        <script>
-            const inputs = document.querySelectorAll(".signup-input");
-            
-            function focusFunc() {
-                let parent = this.parentNode;
-                parent.classList.add("focus");
-            }
-            
-            function blurFunc() {
-                let parent = this.parentNode;
-                if (this.value == "") {
-                    parent.classList.remove("focus");
-                }
-            }
-            
-            inputs.forEach((input) => {
-                input.addEventListener("focus", focusFunc);
-                input.addEventListener("blur", blurFunc);
-            });
-            </script>
 </body>
 
 <script src="/js/addclient_validation.js"></script>
