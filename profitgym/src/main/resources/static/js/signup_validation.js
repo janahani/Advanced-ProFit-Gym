@@ -1,109 +1,74 @@
-
-
-document.addEventListener('DOMContentLoaded', function() {
-    const form = document.getElementById('signup-form');
-    form.addEventListener('submit', function(event) {
-        const isValid = validateForm();
-        if (!isValid) {
-            event.preventDefault();
-        }
+function validateForm() {
+    var fname = document.getElementById("fname").value.trim();
+    var lname = document.getElementById("lname").value.trim();
+    var age = parseInt(document.getElementById("age").value.trim());
+    var gender = document.querySelector('input[name="gender"]:checked');
+    var phone = document.getElementById("phone").value.trim();
+    var weight = parseFloat(document.getElementById("weight").value.trim());
+    var height = parseFloat(document.getElementById("height").value.trim());
+    var email = document.getElementById("email").value.trim();
+    var password = document.getElementById("password").value.trim();
+    var i=true;
+    // Clear existing error messages
+    var errorElements = document.querySelectorAll('.error-message');
+    errorElements.forEach(function(element) {
+        element.innerText = "";
     });
-
-    function validateForm() {
-        const fname = document.getElementById('fname');
-        const lname = document.getElementById('lname');
-        const age = document.getElementById('age');
-        const gender = document.querySelector('input[name="gender"]:checked');
-        const email = document.getElementById('email');
-        const password = document.getElementById('password');
-        var phoneno = document.getElementById("phone");
-
-
-        const fnameError = document.getElementById('fname-error');
-        const lnameError = document.getElementById('lname-error');
-        const ageError = document.getElementById('age-error');
-        const genderError = document.getElementById('gender-error');
-        const emailError = document.getElementById('email-error');
-        const passwordError = document.getElementById('password-error');
-        var phonenoError = document.getElementById("phoneno-error");
-
-        let isValid = true;
-
-        // First Name validation
-        if (fname.value.trim() === '') {
-            fnameError.innerText = 'First Name is required';
-            isValid = false;
-        } else {
-            fnameError.innerText = '';
-        }
-
-        // Last Name validation
-        if (lname.value.trim() === '') {
-            lnameError.innerText = 'Last Name is required';
-            isValid = false;
-        } else {
-            lnameError.innerText = '';
-        }
-
-        // Age validation
-        if (age.value.trim() === '' ) {
-            ageError.innerText = 'Age is required';
-            isValid = false;
-        }else if( age.value < 16 || age.value > 100){
-            ageError.innerText = 'Age must be between 16 and 100';
-            isValid = false;
-        }else {
-            ageError.innerText = '';
-        }
-
-        // Gender validation
-        if (!gender) {
-            genderError.innerText = 'Gender is required';
-            isValid = false;
-        } else {
-            genderError.innerText = '';
-        }
-
-        // Email validation
-        if (email.value.trim() === '') {
-            emailError.innerText = 'Email is required';
-            isValid = false;
-        }else if( !isValidEmail(email.value)){
-            emailError.innerText =  'Invalid email format';
-            isValid = false;
-        } else {
-            emailError.innerText = '';
-        }
-
-        // Password validation
-        if(password.value.trim() === ''){
-            passwordError.innerText = 'Password is required';
-            isValid = false;
-        } else if (password.value.length < 6) {
-            passwordError.innerText = 'Password must be at least 6 characters long';
-            isValid = false;
-        } else {
-            passwordError.innerText = '';
-        }
-
-                // Regular expression for a valid 10-digit phone number
-        var phoneRegex ='/^0\d{10}$/';
-
-        if (phoneno.value.trim() === '') {
-            phonenoError.innerText = 'Phone Number is required';
-            isValid = false;
-        } else if (!phoneRegex.test(phoneno.value)) {
-            phonenoError.innerText = 'Invalid phone number format';
-            isValid = false;
-        } 
-
-        return isValid;
+    
+    // Validate first name
+    if (fname === "") {
+        document.getElementById("fname-error").innerText = "Please enter your first name";
+        i= false;
     }
 
-    // Helper function to validate email format
-    function isValidEmail(email) {
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        return emailRegex.test(email);
+    // Validate last name
+    if (lname === "") {
+        document.getElementById("lname-error").innerText = "Please enter your last name";
+        i=  false;
     }
-});
 
+    // Validate age
+    if (isNaN(age) || age < 16 || age > 100) {
+        document.getElementById("age-error").innerText = "Please enter a valid age between 16 and 100";
+        i=  false;
+    }
+
+    // Validate gender
+    if (!gender) {
+        document.getElementById("gender-error").innerText = "Please select your gender";
+        i=  false;
+    }
+
+    // Validate phone number
+    if (phone === "" || isNaN(phone)) {
+        document.getElementById("phoneno-error").innerText = "Please enter a valid phone number";
+        i=  false;
+    }
+
+    // Validate weight
+    if (isNaN(weight) || weight < 40 || weight > 250) {
+        document.getElementById("weight-error").innerText = "Please enter a valid weight between 40 and 250";
+        i=  false;
+    }
+
+    // Validate height
+    if (isNaN(height) || height < 140 || height > 250) {
+        document.getElementById("height-error").innerText = "Please enter a valid height between 140 and 250";
+        i=  false;
+    }
+
+    // Validate email
+    var emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!email.match(emailPattern)) {
+        document.getElementById("email-error").innerText = "Please enter a valid email address";
+        i=  false;
+    }
+
+    // Validate password
+    if (password === "") {
+        document.getElementById("password-error").innerText = "Please enter a password";
+        i=  false;
+    }
+
+return i;
+}
