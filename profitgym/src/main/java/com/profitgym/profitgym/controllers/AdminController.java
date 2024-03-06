@@ -41,11 +41,10 @@ public class AdminController {
     @Autowired
     private JobTitlesRepository jobTitlesRepository;
 
-     @Autowired
+    @Autowired
     private JavaMailSender emailSender;
 
     private static final String RANDOMCHAR_STRING = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-
 
     private String generateRandomPassword(int length) {
         StringBuilder builder = new StringBuilder();
@@ -131,57 +130,55 @@ public class AdminController {
         return mav;
     }
 
-    // @PostMapping("addemployee")
-    // public String saveEmployee(@ModelAttribute Employee employeeObj,
-    //         @RequestParam(value = "jobTitleHidden", required = false) Integer jobTitle) {
-    //     if (jobTitle != null) {
-    //         employeeObj.setJobTitle(jobTitle);
-    //     }
-    //     try {
-    //         this.employeeRepository.save(employeeObj);
-    //         System.out.println("employee added");
-    //         return "added";
-    //     } catch (Exception e) {
-    //         return "error";
-    //     }
-    // }
-
-
     @PostMapping("addemployee")
     public String saveEmployee(@ModelAttribute Employee employeeObj,
-        @RequestParam(value = "jobTitleHidden", required = false) Integer jobTitle) {
+            @RequestParam(value = "jobTitleHidden", required = false) Integer jobTitle) {
         if (jobTitle != null) {
             employeeObj.setJobTitle(jobTitle);
         }
-    
+
         try {
             String generatedPassword = generateRandomPassword(8);
             employeeObj.setPassword(generatedPassword);
             this.employeeRepository.save(employeeObj);
-            sendEmail(employeeObj.getEmail(), "Welcome to Our Company!", "Hello,\n\nYour account has been created. Your temporary password is: " + generatedPassword + "\n\nPlease log in and change your password.");
-    
+            sendEmail(employeeObj.getEmail(), "Welcome to Our Company!",
+                    "Hello,\n\nYour account has been created. Your temporary password is: " + generatedPassword
+                            + "\n\nPlease log in and change your password.");
+
             System.out.println("Employee added");
             return "added";
         } catch (Exception e) {
             return "error";
         }
     }
-    
+
     private void sendEmail(String recipientEmail, String subject, String generatedPassword) {
         try {
             SimpleMailMessage message = new SimpleMailMessage();
             message.setTo(recipientEmail);
             message.setSubject("Welcome to Our Company!");
-            message.setText("Hello,\n\nYour account has been created. Your temporary password is: " + generatedPassword +
-             "\n\nPlease log in and change your password.");
-            
+            message.setText(
+                    "Hello,\n\nYour account has been created. Your temporary password is: " + generatedPassword +
+                            "\n\nPlease log in and change your password.");
+
             emailSender.send(message);
             System.out.println("Email sent successfully to: " + recipientEmail);
         } catch (MailException e) {
             System.err.println("Error sending email: " + e.getMessage());
         }
     }
-    
+
+    @PostMapping("deleteemployee")
+    public String deleteEmployee(@RequestParam("id") int employeeId) {
+        try {
+            employeeRepository.deleteById(employeeId);
+            System.out.println("Employee deleted");
+            return "deleted";
+        } catch (Exception e) {
+            System.out.println("Error deleting employee: " + e.getMessage());
+            return "error";
+        }
+    }
 
     @GetMapping("editemployee")
     public ModelAndView editEmpForm(@RequestParam("id") int employeeId) {
@@ -196,8 +193,7 @@ public class AdminController {
         }
         return mav;
     }
-    
-    
+
     @PostMapping("editemployee")
     public String updateEmployee(@ModelAttribute Employee employeeObj,
             @RequestParam(value = "jobTitleHidden", required = false) Integer jobTitle) {

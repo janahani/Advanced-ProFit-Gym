@@ -108,8 +108,12 @@
                                         <td>
                                             <a th:href="@{/admindashboard/editemployee(id=${employee.id})}"
                                             class="btn btn-sm btn-primary">Edit</a>
-                                            <a href="#!" class="btn btn-sm btn-delete">Delete</a>
-                                        </td>
+                                            <td>
+                                                <form th:action="@{/admindashboard/deleteemployee}" th:object="${employee}" method="post">
+                                                    <input type="hidden" name="id" th:value="${employee.id}" />
+                                                    <button type="submit" class="btn btn-sm btn-delete">Delete</button>
+                                                </form>
+                                            </td>
                                     </tr>
                                 
                                    
