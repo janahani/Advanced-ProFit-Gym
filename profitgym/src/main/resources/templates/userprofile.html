@@ -21,7 +21,7 @@
     <div th:replace="~{partials/usersidebar}"></div>
 
     <div class="greeting">
-        <p class="hello">Hello Jana! </p>
+        Hello<p class="hello" th:text="${session.FirstName}"> </p>
     </div>
     <div class="membership-details">
         <p class="currpackage">Current Package:</p>
