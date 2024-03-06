@@ -14,8 +14,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.profitgym.profitgym.models.Client;
 import com.profitgym.profitgym.models.Employee;
 import com.profitgym.profitgym.models.Package;
+import com.profitgym.profitgym.repositories.ClientRepository;
 import com.profitgym.profitgym.repositories.EmployeeRepository;
 import com.profitgym.profitgym.repositories.JobTitlesRepository;
 import com.profitgym.profitgym.repositories.PackageRepository;
@@ -37,6 +39,8 @@ public class AdminController {
 
     @Autowired
     private EmployeeRepository employeeRepository;
+    @Autowired
+    private ClientRepository clientRepository;
 
     @Autowired
     private JobTitlesRepository jobTitlesRepository;
@@ -120,6 +124,19 @@ public class AdminController {
     public ModelAndView getClientForm() {
         ModelAndView mav = new ModelAndView("addClientAdminDash.html");
         return mav;
+    }
+
+    @PostMapping("addclient")
+    public String saveClient(@ModelAttribute Client clientObj) {
+        String generatedPassword = generateRandomPassword(8);
+        clientObj.setPassword(generatedPassword);
+        this.clientRepository.save(clientObj);
+        sendEmail(clientObj.getEmail(), "Welcome to Our Profit Gym!",
+                "Hello,\n\nYour account has been created. Your temporary password is: " + generatedPassword
+                        + "\n\nPlease log in and change your password.");
+
+        System.out.println("Client added");
+        return "added";
     }
 
     @GetMapping("addemployee")

@@ -73,13 +73,17 @@
             <h1>Add an Employee</h1>
             <form th:action="@{/admindashboard/addemployee}" th:object="${employeeObj}" method="POST" class="add-client"
               onsubmit="return validateForm()">
-              <div><input class="add-user-input" type="text" th:field="*{name}" placeholder="Name" /></div>
+              <div>
+                <input class="add-user-input" type="text" th:field="*{name}" placeholder="Name" />
+              </div>
               <span id="name-error" class="error-message"></span>
               <br>
-              <div><input class="add-user-input" type="text" th:field="*{email}" placeholder="Email" /></div>
+              <div>
+                <input class="add-user-input" type="text" th:field="*{email}" placeholder="Email" /></div>
               <span id="email-error" class="error-message"></span>
               <br>
-              <div><input class="add-user-input" type="text" th:field="*{phoneNumber}" placeholder="Phone Number" /> </div>
+              <div>
+                <input class="add-user-input" type="text" th:field="*{phoneNumber}" placeholder="Phone Number" /> </div>
               <span id="phoneno-error" class="error-message"></span>
               <br>
               <div>

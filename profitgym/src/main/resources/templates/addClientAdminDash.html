@@ -73,18 +73,49 @@
                 <div class="col-lg">
                     <div class="user-form">
                         <h1>Add a Client</h1>
-                        <form class="add-client">
-                            <input class="add-user-input" type="text" placeholder="Name">
-                            <input class="add-user-input" type="text" placeholder="Age">
-                            <input class="add-user-input" type="text" placeholder="Email">
-                            <input class="add-user-input" type="text" placeholder="Password">
-                            <input class="add-user-input" type="text" placeholder="Phone Number">
-                            <select class="add-user-input" name="gender">
+                        <form th:action="@{/admindashboard/addclient}" th:object="${clientObj}" method="POST" class="add-client">
+                            <div>
+                                <input class="add-user-input" type="text" th:field="*{FirstName}" placeholder="First Name" />
+                            </div>
+                            <span id="fname-error" class="error-message"></span>
+                            <br>                            
+                            <div>
+                                <input class="add-user-input" type="text" th:field="*{LastName}" placeholder="Last Name" />
+                            </div>
+                            <span id="lname-error" class="error-message"></span>
+                            <br>                            
+                            <div>
+                                <input class="add-user-input" type="text" th:field="*{Age}" placeholder="Age"/>
+                            </div>
+                            <span id="age-error" class="error-message"></span>
+                            <br>                            
+                            <div>
+                                <input class="add-user-input" type="text" th:field="*{Weight}" placeholder="Weight" />
+                            </div>
+                            {% comment %} <span id="name-error" class="error-message"></span> {% endcomment %}
+                            <br>                            
+                            <div>
+                                <input class="add-user-input" type="text" th:field="*{Height}" placeholder="Weight" />
+                            </div>
+                            {% comment %} <span id="name-error" class="error-message"></span> {% endcomment %}
+                            <br>                            
+                                                       
+                            <select class="add-user-input" th:field="*{Gender}">
                                 <option value="">Gender</option>
                                 <option value="female">Female</option>
                                 <option value="male">Male</option>
                             </select>
                             <br>
+                            <div>
+                                <input class="add-user-input" type="text" th:field="*{Email}" placeholder="Email" />
+                            </div>
+                            <span id="email-error" class="error-message"></span>
+                            <br> 
+                            {% comment %} <div>
+                                <input class="add-user-input" type="password" th:field="*{Password}" placeholder="Email" />
+                            </div>
+                            <span id="password-error" class="error-message"></span>
+                            <br>  {% endcomment %}
                             <button class="btn btn-add-form" type="submit">Add Client</button>
                         </form>
                     </div>
