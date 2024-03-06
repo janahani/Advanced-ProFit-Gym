@@ -2,19 +2,29 @@ package com.profitgym.profitgym.controllers;
 
 import java.util.List;
 
+import org.mindrot.jbcrypt.BCrypt;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.profitgym.profitgym.models.Classes;
+import com.profitgym.profitgym.models.Client;
+import com.profitgym.profitgym.models.Employee;
+import com.profitgym.profitgym.repositories.ClientRepository;
 
 import ch.qos.logback.core.model.Model;
 
 @RestController
 @RequestMapping("")
 public class IndexController {
-    
+
+    @Autowired
+    private ClientRepository clientRespository;
+
     @GetMapping("/index")
     public ModelAndView getIndex() {
         ModelAndView mav = new ModelAndView("index.html");
@@ -40,9 +50,20 @@ public class IndexController {
     }
 
     @GetMapping("/register")
-        public ModelAndView getSignUp() {
-            ModelAndView mav = new ModelAndView("register.html");
-            return mav;
+    public ModelAndView addClient() {
+        ModelAndView mav = new ModelAndView("register.html");
+        Client newClient= new Client();
+        mav.addObject("client", newClient);
+        return mav;
+    }
+    
+    @PostMapping("register")
+    public String saveClient(@ModelAttribute Client client) {
+        String encoddedPassword=BCrypt.hashpw(client.getPassword(),BCrypt.gensalt(12));
+        client.setPassword(encoddedPassword);
+        this.clientRespository.save(client);
+        return "Added";
+    }
 
     @GetMapping("/classes")
     public ModelAndView getClasses() {
@@ -55,5 +76,4 @@ public class IndexController {
         ModelAndView mav = new ModelAndView("memberships.html");
         return mav;
     }
-
 }
