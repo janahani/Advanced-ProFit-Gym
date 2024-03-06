@@ -70,53 +70,63 @@
         <div class="container-fluid pt-3">
             <div class="row removable">
                 <div class="col-lg">
-                    <div class="user-form">
-                        <h1>Add a Class</h1>
-                        <form class="add-user">
-                            <input class="add-user-input" type="text" placeholder="Class name">
-                            <br>
-                            <textarea class="add-user-input" type="text" placeholder="Description"></textarea>
-                            <br>
-                            <input class="add-user-input" type="file" id="myFile" name="filename">
-                            <br>
-                            <div class="select-days">
-                                <p>Select Day(s)</p>
-                                <div>
-                                    <input type="checkbox" id="sunday" name="week-days[]" value="Sunday">
-                                    <label for="sunday">Sunday</label>
+                    <div class="card">
+                        <div class="card-header border-0">
+                            <div class="row align-items-center">
+                                <div class="col">
+                                    <h1 class="mb-0">Classes</h1>
                                 </div>
-                                <div>
-                                    <input type="checkbox" id="monday" name="week-days[]" value="Monday">
-                                    <label for="monday">Monday</label>
+                                <div class="col text-right">
+                                    <input class="table-search-bar" placeholder="Search for Class">
                                 </div>
-
-                                <div>
-                                    <input type="checkbox" id="tuesday" name="week-days[]" value="Tuesday">
-                                    <label for="tuesday">Tuesday</label>
-                                </div>
-
-                                <div>
-                                    <input type="checkbox" id="wednesday" name="week-days[]" value="Wednesday">
-                                    <label for="wednesday">Wednesday</label>
-                                </div>
-
-                                <div>
-                                    <input type="checkbox" id="thursday" name="week-days[]" value="Thursday">
-                                    <label for="thursday">Thursday</label>
-                                </div>
-
-                                <div>
-                                    <input type="checkbox" id="friday" name="week-days[]" value="Friday">
-                                    <label for="friday">Friday</label>
-                                </div>
-
-                                <div>
-                                    <input type="checkbox" id="saturday" name="week-days[]" value="Saturday">
-                                    <label for="saturday">Saturday</label>
+                                <div class="col text-right">
+                                    <a th:href="@{/admindashboard/addclass}" class="btn-add">Add a Class</a>
                                 </div>
                             </div>
-                            <button class="btn btn-add-form" type="submit">Add Class</button>
-                        </form>
+                        </div>
+                        <div class="table-responsive">
+                            <table class="table align-items-center table-flush">
+                                <thead class="thead-light">
+                                    <tr>
+                                        <th scope="col">ID</th>
+                                        <th scope="col">Name</th>
+                                        <th scope="col">Price</th>
+                                        <th scope="col">Actions</th>
+
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <th scope="row">
+                                            01
+                                        </th>
+                                        <td>
+                                            Yoga
+                                        </td>
+                                        <td>
+                                            200
+                                        </td>
+                                        <td>
+                                            <a href="" class="btn btn-sm btn-deactivate">Deactivate</a>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row">
+                                            02
+                                        </th>
+                                        <td>
+                                            Zumba
+                                        </td>
+                                        <td>
+                                            250
+                                        </td>
+                                        <td>
+                                            <button href="" class="btn btn-sm btn-deactivate">Deactivate</button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
             </div>

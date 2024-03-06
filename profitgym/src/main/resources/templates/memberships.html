@@ -13,13 +13,11 @@
     <link rel="stylesheet" type="text/css" th:href="@{/CSS/memberships.css}">
     <link rel="stylesheet"
         href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@48,400,0,0" />
-    <link rel="stylesheet" type="text/css"
-        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
     <link href="https://cdn.jsdelivr.net/npm/remixicon@2.5.0/fonts/remixicon.css" rel="stylesheet">
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
-    <script src="https://code.jquery.com/jquery-3.7.0.js"
-        integrity="sha256-JlqSTELeR4TLqP0OG9dxM7yDPqX1ox/HfgiSLBj8+kM=" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <!--css/icons/boostrap/jquery/fonts/images end-->
+    
     <title>ProFit Gym</title>
 
 </head>
@@ -76,13 +74,14 @@
     color: rgb(176, 37, 37);
     letter-spacing: -1px;">Types:</h2>
 
-        <div class="col" th:each="package : ${packages}">
+        <div class="row row-cols-1 row-cols-md-3 g-4 py-5">
             <!-- first membership -->
+            <div class="col" th:each="package : ${packages}">
             <div class="card">
                 <div class="card-body">
-                    <h4 class="card-title" th:text="${package.title}"></h4>
+                    <h4 class="card-title" th:text="${package.Title}"></h4>
                     <h6 class="card-text" id="visits">
-                        <i class="fa-regular fa-circle-check"></i>
+                        <i class="fa-regular fa-circle-check" style="color: #fe3401;"></i>
                         <span
                             th:text="${package.isVisitsLimited} ? ${package.numOfVisits} + ' Visits' : 'Unlimited Visits'"></span>
                     </h6>
@@ -102,6 +101,7 @@
                 <div class="d-flex justify-content-around mb-5">
                     <button class="btn btn-primary" onclick="window.location.href='login.php';">SUBSCRIBE NOW</button>
                 </div>
+            </div>
             </div>
         </div>
 

@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Profile Dashboard</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css">
-    <link href="https://unpkg.com/boxicons@2.0.9/css/boxicons.min.css" rel="stylesheet">
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700">
     <link rel="stylesheet"
         href="https://rawcdn.githack.com/Loopple/loopple-public-assets/ad60f16c8a16d1dcad75e176c00d7f9e69320cd4/argon-dashboard/css/nucleo/css/nucleo.css">
@@ -38,7 +38,7 @@
                                 aria-expanded="false">
                                 <div class="media align-items-center">
                                     <span class="avatar avatar-sm rounded-circle">
-                                        <img alt="Image placeholder" th:src="@{/images/user icon.png}">
+                                        <img alt="Image placeholder" src="assets/user icon.png">
                                     </span>
                                     <div class="media-body  ml-2  d-none d-lg-block">
                                         <span class="mb-0 text-sm  font-weight-bold">Admin</span>
@@ -75,13 +75,13 @@
                         <div class="card-header border-0">
                             <div class="row align-items-center">
                                 <div class="col">
-                                    <h1 class="mb-0">Clients</h1>
+                                    <h1 class="mb-0">Coaches</h1>
                                 </div>
                                 <div class="col text-right">
-                                    <input class="table-search-bar" placeholder="Search for Client">
+                                    <input class="table-search-bar" placeholder="Search for Coach">
                                 </div>
                                 <div class="col text-right">
-                                    <a th:href="@{/admindashboard/addclient}" class="btn-add">Add a Client</a>
+                                    <a href="addEmpAdminDash.html" class="btn-add">Add Coach</a>
                                 </div>
                             </div>
                         </div>
@@ -92,10 +92,9 @@
                                         <th scope="col">ID</th>
                                         <th scope="col">Name</th>
                                         <th scope="col">Email</th>
-                                        <th scope="col">Age</th>
                                         <th scope="col">Gender</th>
                                         <th scope="col">Phone</th>
-                                        <th scope="col">Memberships</th>
+                                        <th scope="col">Class</th>
                                         <th scope="col">Action</th>
 
                                     </tr>
@@ -111,9 +110,7 @@
                                         <td>
                                             sahwaamr@gmail.com
                                         </td>
-                                        <td>
-                                            20
-                                        </td>
+                                        
                                         <td>
                                             female
                                         </td>
@@ -121,7 +118,7 @@
                                             01127897625
                                         </td>
                                         <td>
-                                            <a href="packagesAdminDash.html" class="btn btn-sm btn-activate">Activate</a>
+                                            Cross-fit 
                                         </td>
                                         <td>
                                             <a href="#!" class="btn btn-sm btn-primary">Edit</a>
@@ -139,17 +136,13 @@
                                             sahwaamr@gmail.com
                                         </td>
                                         <td>
-                                            20
-                                        </td>
-                                        <td>
                                             female
                                         </td>
                                         <td>
                                             01127897625
                                         </td>
                                         <td>
-                                            <button href="#!" class="btn btn-sm btn-activate" disabled>Activate</button>
-                                        </td>
+                                            <a href="#!" class="btn btn-sm btn-freeze">Assign</a>
                                         <td>
                                             <a href="#!" class="btn btn-sm btn-primary">Edit</a>
                                             <a href="#!" class="btn btn-sm btn-delete">Delete</a>
@@ -163,7 +156,6 @@
             </div>
         </div>
     </div>
-
     <script
         src="https://rawcdn.githack.com/Loopple/loopple-public-assets/5cef8f62939eeb089fa26d4c53a49198de421e3d/argon-dashboard/js/vendor/jquery.min.js"></script>
     <script
