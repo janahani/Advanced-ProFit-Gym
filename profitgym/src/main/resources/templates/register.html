@@ -29,7 +29,7 @@
   <div th:replace="~{/partials/header}"></div>
   <div class="signup-container">
     <div class="signup-form1">
-        <form th:action="@{/register}" method="post" autocomplete="off" id="signup-form" >
+        <form th:action="@{/register}" method="post" autocomplete="off" id="signup-form" onsubmit="return validateForm()" >
             <input type="hidden" name="action" value="register">
             <h3 class="signup-title">Create An Account</h3>
             <div class="signup-input-container">
@@ -37,56 +37,57 @@
                 <label class="signup-lbl" for="">First Name</label>
                 <span>First Name</span>
             </div>
-            <span id="fname-error"></span>
+            <span id="fname-error" class="error-message"></span>
             <div class="signup-input-container">
                 <input type="text" name="LastName" id="lname" class="signup-input" />
                 <label class="signup-lbl" for="">Last Name</label>
                 <span>Last Name</span>
             </div>
-            <span id="lname-error"></span>
+            <span id="lname-error"class="error-message"></span>
             <div class="signup-input-container">
                 <input type="number" name="age" id="age" class="signup-input" min="16" max="100" />
                 <label class="signup-lbl" for="">Age</label>
                 <span>Age</span>
             </div>
-            <span id="age-error"></span>
+            <span id="age-error"class="error-message"></span>
             <div class="signup-input-container">
                 <label class="signup-lbl" for="">Gender</label>
                 <input type="radio" id="male" name="gender" value="male" class="radio-btn">
                 <label for="male" class="gender-lbl">Male</label>
                 <input type="radio" id="female" name="gender" value="female" class="radio-btn">
                 <label for="female" class="gender-lbl">Female</label><br>
-
             </div>
-            <span id="gender-error"></span>
+            <span id="gender-error"class="error-message"></span>
             <div class="signup-input-container">
                 <input type="text" name="PhoneNumber" id="phone" class="signup-input" />
                 <label class="signup-lbl" for="">Phone Number</label>
                 <span>Phone Number</span>
             </div>
-            <span id="phoneno-error"></span>
+            <span id="phoneno-error"class="error-message"></span>
             <div class="signup-input-container">
                 <input type="number" name="weight" id="weight" class="signup-input" min="40" max="250" />
                 <label class="signup-lbl" for="">Weight</label>
                 <span>Weight</span>
             </div>
+            <span id="weight-error"class="error-message" style="color: #b83f3f;"></span>
             <div class="signup-input-container">
                 <input type="number" name="height" id="height" class="signup-input" min="140" max="250" />
                 <label class="signup-lbl" for="">Height</label>
                 <span>Height</span>
             </div>
+            <span id="height-error"class="error-message" style="color: #b83f3f;"></span>
             <div class="signup-input-container">
                 <input type="email" name="email" id="email" class="signup-input" />
                 <label class="signup-lbl" for="">Email</label>
                 <span>Email</span>
             </div>
-            <span id="email-error"></span>
+            <span id="email-error"class="error-message"></span>
             <div class="signup-input-container">
                 <input type="password" name="password" id="password" class="signup-input" />
                 <label class="signup-lbl" for="">Password</label>
                 <span>Password</span>
             </div>
-            <span id="password-error"></span>
+            <span id="password-error" class="error-message"></span>
             <input type="submit" name="submit" value="Create Account" class="signup-btn" />
             <p class="register-text">Already Have an Account? <a class="register-link"
                     th:href="@{/login}">Login Now</a></p>
@@ -97,7 +98,7 @@
         <div th:replace="~{/partials/footer}"></div>
 </body>
 
-<script src="/js/addclient_validation.js"></script>
+<script src="/js/signup_validation.js"></script>
 <script>
     const inputs = document.querySelectorAll(".signup-input");
 

@@ -189,4 +189,9 @@ form {
         position:relative;
         right:20%;
     }
+
+    .error-message
+    {
+        color: #b83f3f;
+    }
 }
