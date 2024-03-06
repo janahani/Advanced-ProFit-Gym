@@ -11,9 +11,10 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 import com.profitgym.profitgym.models.Classes;
 import com.profitgym.profitgym.models.Client;
+import com.profitgym.profitgym.models.Package;
 import com.profitgym.profitgym.models.Employee;
 import com.profitgym.profitgym.repositories.ClientRepository;
-
+import com.profitgym.profitgym.repositories.PackageRepository;
 
 import ch.qos.logback.core.model.Model;
 
@@ -22,7 +23,10 @@ import ch.qos.logback.core.model.Model;
 public class IndexController {
 
     @Autowired
-    private ClientRepository clientRespository;
+    private ClientRepository clientRepository;
+
+    @Autowired
+    private PackageRepository packageRepository;
 
     @GetMapping("/index")
     public ModelAndView getIndex() {
@@ -60,11 +64,9 @@ public class IndexController {
     public String saveClient(@ModelAttribute Client client) {
         String encoddedPassword=BCrypt.hashpw(client.getPassword(),BCrypt.gensalt(12));
         client.setPassword(encoddedPassword);
-        this.clientRespository.save(client);
+        this.clientRepository.save(client);
         return "Added";
     }
-
-        }
 
     @GetMapping("classes")
     public ModelAndView getClasses() {
@@ -76,7 +78,7 @@ public class IndexController {
     public ModelAndView getMemberships() {
         System.out.println("viewPackages() method called");
         ModelAndView mav = new ModelAndView("memberships.html");
-        List<Package> packages = this.packageRespository.findAll();
+        List<Package> packages = this.packageRepository.findAll();
         mav.addObject("packages", packages);
         return mav;
     }
