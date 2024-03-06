@@ -1,12 +1,3 @@
-document.addEventListener('DOMContentLoaded', function() {
-    const form = document.getElementById('login-form');
-    form.addEventListener('submit', function(event) {
-        const isValid = validateForm();
-        if (!isValid) {
-            event.preventDefault();
-        }
-    });
-
     function validateForm() {
         const email = document.getElementById('email');
         const password = document.getElementById('password');
@@ -15,6 +6,11 @@ document.addEventListener('DOMContentLoaded', function() {
         const passwordError = document.getElementById('password-error');
 
         let isValid = true;
+
+        var errorElements = document.querySelectorAll('.error-message');
+        errorElements.forEach(function(element) {
+            element.innerText = "";
+        });
 
         // Email validation
         if (email.value.trim() === '') {
@@ -34,5 +30,5 @@ document.addEventListener('DOMContentLoaded', function() {
 
         return isValid;
     }
-});
+
 
