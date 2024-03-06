@@ -4,6 +4,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -19,6 +20,12 @@ import com.profitgym.profitgym.repositories.EmployeeRepository;
 import com.profitgym.profitgym.repositories.JobTitlesRepository;
 import com.profitgym.profitgym.repositories.PackageRepository;
 
+import java.util.Random;
+
+import org.springframework.mail.MailException;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
+
 import java.util.List;
 
 @RestController
@@ -33,6 +40,24 @@ public class AdminController {
 
     @Autowired
     private JobTitlesRepository jobTitlesRepository;
+
+     @Autowired
+    private JavaMailSender emailSender;
+
+    private static final String RANDOMCHAR_STRING = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+
+
+    private String generateRandomPassword(int length) {
+        StringBuilder builder = new StringBuilder();
+        Random random = new Random();
+
+        for (int i = 0; i < length; i++) {
+            int index = random.nextInt(RANDOMCHAR_STRING.length());
+            builder.append(RANDOMCHAR_STRING.charAt(index));
+        }
+
+        return builder.toString();
+    }
 
     @GetMapping("")
     public ModelAndView getAdminDash() {
@@ -106,20 +131,58 @@ public class AdminController {
         return mav;
     }
 
+    // @PostMapping("addemployee")
+    // public String saveEmployee(@ModelAttribute Employee employeeObj,
+    //         @RequestParam(value = "jobTitleHidden", required = false) Integer jobTitle) {
+    //     if (jobTitle != null) {
+    //         employeeObj.setJobTitle(jobTitle);
+    //     }
+    //     try {
+    //         this.employeeRepository.save(employeeObj);
+    //         System.out.println("employee added");
+    //         return "added";
+    //     } catch (Exception e) {
+    //         return "error";
+    //     }
+    // }
+
+
     @PostMapping("addemployee")
     public String saveEmployee(@ModelAttribute Employee employeeObj,
-            @RequestParam(value = "jobTitleHidden", required = false) Integer jobTitle) {
+        @RequestParam(value = "jobTitleHidden", required = false) Integer jobTitle) {
         if (jobTitle != null) {
             employeeObj.setJobTitle(jobTitle);
         }
+    
         try {
+            String generatedPassword = generateRandomPassword(8);
+            employeeObj.setPassword(generatedPassword);
             this.employeeRepository.save(employeeObj);
-            System.out.println("employee added");
+            sendEmail(employeeObj.getEmail(), "Welcome to Our Company!", "Hello,\n\nYour account has been created. Your temporary password is: " + generatedPassword + "\n\nPlease log in and change your password.");
+    
+            System.out.println("Employee added");
             return "added";
         } catch (Exception e) {
             return "error";
         }
     }
+    
+    private void sendEmail(String recipientEmail, String subject, String generatedPassword) {
+        try {
+            SimpleMailMessage message = new SimpleMailMessage();
+            message.setTo(recipientEmail);
+            message.setSubject("Welcome to Our Company!");
+            message.setText("Hello,\n\nYour account has been created. Your temporary password is: " + generatedPassword +
+             "\n\nPlease log in and change your password.");
+            
+            emailSender.send(message);
+            System.out.println("Email sent successfully to: " + recipientEmail);
+        } catch (MailException e) {
+            System.err.println("Error sending email: " + e.getMessage());
+        }
+    }
+    
+
     @GetMapping("editemployee")
     public ModelAndView editEmpForm(@RequestParam("id") int employeeId) {
         ModelAndView mav = new ModelAndView("editEmpAdminDash.html");
