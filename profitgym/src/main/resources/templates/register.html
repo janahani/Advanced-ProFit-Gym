@@ -29,17 +29,17 @@
   <div th:replace="~{/partials/header}"></div>
   <div class="signup-container">
     <div class="signup-form1">
-        <form th:action="@{/addclient}" method="post" autocomplete="off" id="signup-form" onsubmit="validateForm()">
+        <form th:action="@{/register}" method="post" autocomplete="off" id="signup-form" >
             <input type="hidden" name="action" value="register">
             <h3 class="signup-title">Create An Account</h3>
             <div class="signup-input-container">
-                <input type="text" name="fname" id="fname" class="signup-input" />
+                <input type="text" name="FirstName" id="fname" class="signup-input" />
                 <label class="signup-lbl" for="">First Name</label>
                 <span>First Name</span>
             </div>
             <span id="fname-error"></span>
             <div class="signup-input-container">
-                <input type="text" name="lname" id="lname" class="signup-input" />
+                <input type="text" name="LastName" id="lname" class="signup-input" />
                 <label class="signup-lbl" for="">Last Name</label>
                 <span>Last Name</span>
             </div>
