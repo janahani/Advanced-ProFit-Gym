@@ -32,17 +32,17 @@
 
     <div class="login-container">
         <div class="login-form1">
-            <form autocomplete="off" method="post" id="login-form" action="#" onsubmit="return validateForm()">
+            <form autocomplete="off" method="post" id="login-form" th:object="${client}" th:action="@{/login}" onsubmit="return validateForm()">
             <input type="hidden" name="action" value="login">
                 <h3 class="login-title">Log In</h3>
                 <div class="login-input-container">
-                    <input type="email" name="email" id="email" class="login-input" />
+                    <input type="email" th:field="*{email}" name="email" id="email" class="login-input" />
                     <label class="login-lbl" for="">Email</label>
                     <span>Email</span>
                 </div>
                 <span id="email-error" class="error-message"> </span>
                 <div class="login-input-container">
-                    <input type="password" name="password" id="password" class="login-input" />
+                    <input type="password" name="password" th:field="*{Password}" id="password" class="login-input" />
                     <label class="login-lbl" for="">Password</label>
                     <span>Password</span>
                 </div>
