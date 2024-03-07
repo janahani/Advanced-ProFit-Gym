@@ -37,22 +37,26 @@
                 <form id="profile-settings-form" th:action="@{/user/profsettings}" method="POST">
                     <div class="form-group">
                         <label for="firstname">FirstName:</label>
-                        <input type="text" id="firstname" name="firstName" placeholder="Firstname" th:value="${session.loggedInUser.firstName}">
+                        <input type="text" id="firstname" name="firstName" placeholder="Firstname"
+                            th:value="${session.loggedInUser.firstName}">
                     </div>
                     <span id="fname-error"></span>
                     <div class="form-group">
                         <label for="lastname">LastName:</label>
-                        <input type="text" id="lastname" name="lastName" placeholder="Lastname" th:value="${session.loggedInUser.lastName}">
+                        <input type="text" id="lastname" name="lastName" placeholder="Lastname"
+                            th:value="${session.loggedInUser.lastName}">
                     </div>
                     <span id="lname-error"></span>
                     <div class="form-group">
                         <label for="phoneno">Phone Number:</label>
-                        <input type="text" id="phone" name="phoneNumber" placeholder="Phone Number" th:value="${session.loggedInUser.phoneNumber}">
+                        <input type="text" id="phone" name="phoneNumber" placeholder="Phone Number"
+                            th:value="${session.loggedInUser.phoneNumber}">
                     </div>
                     <span id="phoneno-error"></span>
                     <div class="form-group">
                         <label for="email">Email:</label>
-                        <input type="email" id="email" name="email" placeholder="user@gmail.com" th:value="${session.loggedInUser.email}">
+                        <input type="email" id="email" name="email" placeholder="user@gmail.com"
+                            th:value="${session.loggedInUser.email}">
                     </div>
                     <span id="email-error"></span>
                     <div class="form-group">
@@ -63,16 +67,19 @@
                         <label for="confirm-password">Confirm Password:</label>
                         <input type="password" id="confirm-password" name="confirmPassword">
                     </div>
-                    <span id="all-error"></span> 
-                    <span id="success"></span> 
-                    <button name="action" value="update" id="update-profile-button" type="submit">Update Profile</button>
-                    <button name="action" value="delete" id="delete-profile-button" type="submit">Delete Profile</button>
+                    <span id="all-error"></span>
+                    <span id="success"></span>
+                    <!-- Other fields can be added here -->
+                    <button name="action" value="update" id="update-profile-button" type="submit">Update
+                        Profile</button>
+                    <button name="action" value="delete" id="delete-profile-button" type="submit">Delete
+                        Profile</button>
                 </form>
-                
+
             </div>
         </div>
     </div>
-
+    <script src="/js/userprofsettings.js"></script>
     <!-- footer -->
     <div th:replace="~{partials/footer}"></div>
 
@@ -81,3 +88,4 @@
 </body>
 
 </html>
+
