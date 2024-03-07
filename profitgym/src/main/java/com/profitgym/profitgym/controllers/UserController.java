@@ -6,15 +6,25 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.profitgym.profitgym.models.Client;
+
+import jakarta.servlet.http.HttpSession;
+
 @RestController
 @RequestMapping("/user")
 public class UserController {
 
-    @GetMapping("profile")
-    public ModelAndView getUserProfile() {
-        ModelAndView mav = new ModelAndView("userprofile.html");
-        return mav;
+    @GetMapping("/profile")
+public ModelAndView getUserProfile(HttpSession session) {
+    ModelAndView mav = new ModelAndView("userprofile.html");
+    Client loggedInUser = (Client) session.getAttribute("loggedInUser");
+    if (loggedInUser == null) {
+        mav.setViewName("redirect:/login");
+    } else {
+        mav.addObject("loggedInUser", loggedInUser);
     }
+    return mav;
+}
 
     @GetMapping("bookpackage")
     public ModelAndView getPackageBooking() {
