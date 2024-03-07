@@ -1,5 +1,5 @@
 package com.profitgym.profitgym.controllers;
-
+import com.profitgym.profitgym.controllers.IndexController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -14,6 +14,8 @@ import jakarta.servlet.http.HttpSession;
 @RequestMapping("/user")
 public class UserController {
 
+    @Autowired
+    IndexController indexController;
     @GetMapping("/profile")
 public ModelAndView getUserProfile(HttpSession session) {
     ModelAndView mav = new ModelAndView("userprofile.html");
@@ -62,5 +64,12 @@ public ModelAndView getUserProfile(HttpSession session) {
         return mav;
     }
 
+    @GetMapping("/logout")
+    public ModelAndView logout(HttpSession session) {
+        ModelAndView modelAndView = new ModelAndView();
+        session.invalidate();
+        modelAndView.setViewName("redirect:/index");
+        return modelAndView;
+    }
 
 }
