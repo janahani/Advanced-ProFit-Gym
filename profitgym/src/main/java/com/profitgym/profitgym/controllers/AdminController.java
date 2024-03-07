@@ -128,7 +128,7 @@ public class AdminController {
     }
 
     @PostMapping("addclient")
-    public String saveClient(@ModelAttribute Client clientObj) {
+    public ModelAndView saveClient(@ModelAttribute Client clientObj) {
         String generatedPassword = generateRandomPassword(8);
         clientObj.setPassword(generatedPassword);
         this.clientRepository.save(clientObj);
@@ -137,7 +137,9 @@ public class AdminController {
                         + "\n\nPlease log in and change your password.");
 
         System.out.println("Client added");
-        return "added";
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("redirect:/admindashboard/addclient");
+        return modelAndView;
     }
 
     @GetMapping("addemployee")
@@ -149,8 +151,9 @@ public class AdminController {
     }
 
     @PostMapping("addemployee")
-    public String saveEmployee(@ModelAttribute Employee employeeObj,
+    public ModelAndView saveEmployee(@ModelAttribute Employee employeeObj,
             @RequestParam(value = "jobTitleHidden", required = false) Integer jobTitle) {
+         ModelAndView modelAndView = new ModelAndView();
         if (jobTitle != null) {
             employeeObj.setJobTitle(jobTitle);
         }
@@ -164,10 +167,11 @@ public class AdminController {
                             + "\n\nPlease log in and change your password.");
 
             System.out.println("Employee added");
-            return "added";
+            modelAndView.setViewName("redirect:/admindashboard/addemployee");
         } catch (Exception e) {
-            return "error";
+            System.out.println("error");
         }
+        return modelAndView;
     }
 
     private void sendEmail(String recipientEmail, String subject, String generatedPassword) {
@@ -187,15 +191,16 @@ public class AdminController {
     }
 
     @PostMapping("deleteemployee")
-    public String deleteEmployee(@RequestParam("id") int employeeId) {
+    public ModelAndView deleteEmployee(@RequestParam("id") int employeeId) {
+        ModelAndView modelAndView = new ModelAndView();
         try {
             employeeRepository.deleteById(employeeId);
             System.out.println("Employee deleted");
-            return "deleted";
+            modelAndView.setViewName("redirect:/admindashboard/deleteemployee");
         } catch (Exception e) {
             System.out.println("Error deleting employee: " + e.getMessage());
-            return "error";
         }
+        return modelAndView;
     }
 
     @GetMapping("editemployee")
@@ -213,9 +218,10 @@ public class AdminController {
     }
 
     @PostMapping("editemployee")
-    public String updateEmployee(@ModelAttribute Employee employeeObj,
+    public ModelAndView updateEmployee(@ModelAttribute Employee employeeObj,
             @RequestParam(value = "jobTitleHidden", required = false) Integer jobTitle) {
         // Log the ID of the employeeObj before saving
+        ModelAndView modelAndView = new ModelAndView();
         System.out.println("Employee ID before saving: " + employeeObj.getId());
 
         if (jobTitle != null) {
@@ -224,11 +230,11 @@ public class AdminController {
         try {
             this.employeeRepository.save(employeeObj);
             System.out.println("Employee updated successfully");
-            return "Employee updated successfully";
+            modelAndView.setViewName("redirect:/admindashboard/editemployee");
         } catch (Exception e) {
             System.out.println("Error updating employee: " + e.getMessage());
-            return "Error updating employee";
         }
+        return modelAndView;
     }
 
     @GetMapping("addclass")
@@ -246,9 +252,11 @@ public class AdminController {
 
     @SuppressWarnings("null")
     @PostMapping("addpackage")
-    public String savePackage(@ModelAttribute Package packageObj) {
+    public ModelAndView savePackage(@ModelAttribute Package packageObj) {
         this.packageRespository.save(packageObj);
-        return "Added";
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("redirect:/admindashboard/addpackage");
+        return modelAndView;
     }
 
 }

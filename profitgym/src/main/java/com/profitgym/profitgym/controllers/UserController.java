@@ -76,8 +76,10 @@ public class UserController {
     }
 
     @PostMapping("profsettings")
-    public String updateClient(@ModelAttribute Client clientObj, HttpSession session,@RequestParam("action") String action){
+    public ModelAndView updateClient(@ModelAttribute Client clientObj, HttpSession session,@RequestParam("action") String action){
         Client sessionClient = (Client) session.getAttribute("loggedInUser");
+        ModelAndView modelAndView = new ModelAndView();
+
         if ("update".equals(action)) { 
         sessionClient.setFirstName(clientObj.getFirstName());
         sessionClient.setLastName(clientObj.getLastName());
@@ -93,25 +95,22 @@ public class UserController {
             this.clientRepository.save(sessionClient);
             session.setAttribute("loggedInUser", sessionClient);
             System.out.println("Client updated successfully");
-            return "redirect:/user/profsettings";
+            modelAndView.setViewName("redirect:/user/profsettings");
         } catch (Exception e) {
             System.out.println("Error updating client: " + e.getMessage());
-            return "Error updating client";
         }
         } else if ("delete".equals(action)) {
             try {
                 System.out.println(sessionClient.getID());
                 this.clientRepository.deleteById(sessionClient.getID());
                 System.out.println("Client deleted");
-                return "redirect:/index";
+                modelAndView.setViewName("redirect:/index");
             } catch (Exception e) {
                 System.out.println("Error deleting client: " + e.getMessage());
-                return "error";
             }
         }
-        return "invalid action";
       
-    
+        return modelAndView;
     }
     
 

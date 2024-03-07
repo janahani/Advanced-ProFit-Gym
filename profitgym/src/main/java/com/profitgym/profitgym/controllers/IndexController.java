@@ -89,7 +89,7 @@ public class IndexController {
     }
 
     @PostMapping("register")
-    public String saveClient(@ModelAttribute Client client) {
+    public ModelAndView saveClient(@ModelAttribute Client client) {
         String encoddedPassword = BCrypt.hashpw(client.getPassword(), BCrypt.gensalt(12));
         client.setPassword(encoddedPassword);
         this.clientRepository.save(client);
