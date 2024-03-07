@@ -20,6 +20,7 @@ import com.profitgym.profitgym.repositories.PackageRepository;
 
 
 import ch.qos.logback.core.model.Model;
+import jakarta.servlet.http.HttpSession;
 
 @RestController
 @RequestMapping("")
@@ -30,6 +31,8 @@ public class IndexController {
 
     @Autowired
     private PackageRepository packageRepository;
+
+    private final String session="session";
 
     @GetMapping("/index")
     public ModelAndView getIndex() {
@@ -50,28 +53,26 @@ public class IndexController {
         mav.addObject("client", newClient);
         return mav;
     }
-   
+
     @PostMapping("/login")
-    public String loginProcess(@RequestParam("email") String email, @RequestParam("Password") String password) {
-        Client dbClient=this.clientRepository.findByEmail(email);
-        if(dbClient!=null)
-        {
-            Boolean isPasswordMatched=BCrypt.checkpw(password, dbClient.getPassword());
-            if(isPasswordMatched)
-            {
-              return "Welcome "+dbClient.getFirstName();
-            }
-            else
-            {
-             return "Wrong password";
-            }
+public ModelAndView loginProcess(@RequestParam("email") String email, 
+                                 @RequestParam("Password") String password,
+                                 HttpSession session) {
+    ModelAndView modelAndView = new ModelAndView();
+    Client dbClient = this.clientRepository.findByEmail(email);
+    if (dbClient != null) {
+        Boolean isPasswordMatched = BCrypt.checkpw(password, dbClient.getPassword());
+        if (isPasswordMatched) {
+            session.setAttribute("loggedInUser", dbClient);
+            modelAndView.setViewName("redirect:/user/profile");
+        } else {
+            modelAndView.setViewName("redirect:/login?error=wrongPassword");
         }
-        else
-        {
-            return "User not found";
-        }
-        
+    } else {
+        modelAndView.setViewName("redirect:/login?error=userNotFound");
     }
+    return modelAndView;
+}
 
     @GetMapping("contactus")
     public ModelAndView getContactUs() {
