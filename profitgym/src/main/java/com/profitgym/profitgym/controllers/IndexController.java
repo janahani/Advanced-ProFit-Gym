@@ -1,4 +1,5 @@
 package com.profitgym.profitgym.controllers;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import java.util.List;
@@ -18,7 +19,6 @@ import com.profitgym.profitgym.models.Employee;
 import com.profitgym.profitgym.repositories.ClientRepository;
 import com.profitgym.profitgym.repositories.PackageRepository;
 
-
 import ch.qos.logback.core.model.Model;
 import jakarta.servlet.http.HttpSession;
 
@@ -32,7 +32,7 @@ public class IndexController {
     @Autowired
     private PackageRepository packageRepository;
 
-    private final String session="session";
+    private final String session = "session";
 
     @GetMapping("/index")
     public ModelAndView getIndex() {
@@ -49,30 +49,30 @@ public class IndexController {
     @GetMapping("login")
     public ModelAndView getLogin() {
         ModelAndView mav = new ModelAndView("login.html");
-        Client newClient= new Client();
+        Client newClient = new Client();
         mav.addObject("client", newClient);
         return mav;
     }
 
     @PostMapping("/login")
-public ModelAndView loginProcess(@RequestParam("email") String email, 
-                                 @RequestParam("Password") String password,
-                                 HttpSession session) {
-    ModelAndView modelAndView = new ModelAndView();
-    Client dbClient = this.clientRepository.findByEmail(email);
-    if (dbClient != null) {
-        Boolean isPasswordMatched = BCrypt.checkpw(password, dbClient.getPassword());
-        if (isPasswordMatched) {
-            session.setAttribute("loggedInUser", dbClient);
-            modelAndView.setViewName("redirect:/user/profile");
+    public ModelAndView loginProcess(@RequestParam("email") String email,
+            @RequestParam("Password") String password,
+            HttpSession session) {
+        ModelAndView modelAndView = new ModelAndView();
+        Client dbClient = this.clientRepository.findByEmail(email);
+        if (dbClient != null) {
+            Boolean isPasswordMatched = BCrypt.checkpw(password, dbClient.getPassword());
+            if (isPasswordMatched) {
+                session.setAttribute("loggedInUser", dbClient);
+                modelAndView.setViewName("redirect:/user/profile");
+            } else {
+                modelAndView.setViewName("redirect:/login?error=wrongPassword");
+            }
         } else {
-            modelAndView.setViewName("redirect:/login?error=wrongPassword");
+            modelAndView.setViewName("redirect:/login?error=userNotFound");
         }
-    } else {
-        modelAndView.setViewName("redirect:/login?error=userNotFound");
+        return modelAndView;
     }
-    return modelAndView;
-}
 
     @GetMapping("contactus")
     public ModelAndView getContactUs() {
@@ -83,17 +83,19 @@ public ModelAndView loginProcess(@RequestParam("email") String email,
     @GetMapping("/register")
     public ModelAndView addClient() {
         ModelAndView mav = new ModelAndView("register.html");
-        Client newClient= new Client();
+        Client newClient = new Client();
         mav.addObject("client", newClient);
         return mav;
     }
-    
+
     @PostMapping("register")
     public String saveClient(@ModelAttribute Client client) {
-        String encoddedPassword=BCrypt.hashpw(client.getPassword(),BCrypt.gensalt(12));
+        String encoddedPassword = BCrypt.hashpw(client.getPassword(), BCrypt.gensalt(12));
         client.setPassword(encoddedPassword);
         this.clientRepository.save(client);
-        return "Added";
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("redirect:/login");
+        return modelAndView;
     }
 
     @GetMapping("classes")

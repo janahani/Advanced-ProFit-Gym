@@ -34,20 +34,20 @@
         <div class="reminders">
             <div class="profile-settings">
                 <h2>Edit Profile Settings</h2>
-                <form id="profile-settings-form" th:action="@{/updateProfile}" method="POST">
+                <form id="profile-settings-form" th:action="@{/user/profsettings}" method="POST">
                     <div class="form-group">
                         <label for="firstname">FirstName:</label>
-                        <input type="text" id="firstname" name="firstname" placeholder="Firstname" th:value="${session.loggedInUser.FirstName}">
+                        <input type="text" id="firstname" name="firstName" placeholder="Firstname" th:value="${session.loggedInUser.firstName}">
                     </div>
                     <span id="fname-error"></span>
                     <div class="form-group">
                         <label for="lastname">LastName:</label>
-                        <input type="text" id="lastname" name="lastname" placeholder="Lastname" th:value="${session.loggedInUser.LastName}">
+                        <input type="text" id="lastname" name="lastName" placeholder="Lastname" th:value="${session.loggedInUser.lastName}">
                     </div>
                     <span id="lname-error"></span>
                     <div class="form-group">
                         <label for="phoneno">Phone Number:</label>
-                        <input type="text" id="phone" name="phone" placeholder="Phone Number" th:value="${session.loggedInUser.PhoneNumber}">
+                        <input type="text" id="phone" name="phoneNumber" placeholder="Phone Number" th:value="${session.loggedInUser.phoneNumber}">
                     </div>
                     <span id="phoneno-error"></span>
                     <div class="form-group">
@@ -61,12 +61,14 @@
                     </div>
                     <div class="form-group">
                         <label for="confirm-password">Confirm Password:</label>
-                        <input type="password" id="confirm-password" name="confirm-password">
+                        <input type="password" id="confirm-password" name="confirmPassword">
                     </div>
                     <span id="all-error"></span> 
                     <span id="success"></span> 
-                    <button id="update-profile-button" type="submit">Update Profile</button>
+                    <button name="action" value="update" id="update-profile-button" type="submit">Update Profile</button>
+                    <button name="action" value="delete" id="delete-profile-button" type="submit">Delete Profile</button>
                 </form>
+                
             </div>
         </div>
     </div>
