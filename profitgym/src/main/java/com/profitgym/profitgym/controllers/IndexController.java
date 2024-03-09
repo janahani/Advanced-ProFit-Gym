@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.view.RedirectView;
+
 import com.profitgym.profitgym.models.Classes;
 import com.profitgym.profitgym.models.Client;
 import com.profitgym.profitgym.models.Package;
@@ -31,8 +33,6 @@ public class IndexController {
 
     @Autowired
     private PackageRepository packageRepository;
-
-    private final String session = "session";
 
     @GetMapping("/index")
     public ModelAndView getIndex() {
@@ -55,25 +55,23 @@ public class IndexController {
     }
 
     @PostMapping("/login")
-    public ModelAndView loginProcess(@RequestParam("email") String email,
-            @RequestParam("Password") String password,
-            HttpSession session) {
-        ModelAndView modelAndView = new ModelAndView();
-        Client dbClient = this.clientRepository.findByEmail(email);
-        if (dbClient != null) {
-            Boolean isPasswordMatched = BCrypt.checkpw(password, dbClient.getPassword());
-            if (isPasswordMatched) {
-                session.setAttribute("loggedInUser", dbClient);
-                modelAndView.setViewName("redirect:/user/profile");
-            } else {
-                modelAndView.setViewName("redirect:/login?error=wrongPassword");
-            }
+    public RedirectView loginProcess(@RequestParam("email") String email, 
+                                 @RequestParam("Password") String password,
+                                 HttpSession session) {
+    Client dbClient = this.clientRepository.findByEmail(email);
+    if (dbClient != null) {
+        Boolean isPasswordMatched = BCrypt.checkpw(password, dbClient.getPassword());
+        if (isPasswordMatched) {
+            session.setAttribute("loggedInUser", dbClient);
+            return new RedirectView("/user/profile");
         } else {
-            modelAndView.setViewName("redirect:/login?error=userNotFound");
+            return new RedirectView("/login?error=wrongPassword");
         }
-        return modelAndView;
-    }
+    } else {
+        return new RedirectView("/login?error=userNotFound");
 
+    }
+    }
     @GetMapping("contactus")
     public ModelAndView getContactUs() {
         ModelAndView mav = new ModelAndView("contactus.html");
