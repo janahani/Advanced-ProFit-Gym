@@ -19,6 +19,7 @@ import com.profitgym.profitgym.models.Client;
 import com.profitgym.profitgym.models.Package;
 import com.profitgym.profitgym.models.Employee;
 import com.profitgym.profitgym.repositories.ClientRepository;
+import com.profitgym.profitgym.repositories.EmployeeRepository;
 import com.profitgym.profitgym.repositories.PackageRepository;
 
 import ch.qos.logback.core.model.Model;
@@ -30,6 +31,8 @@ public class IndexController {
 
     @Autowired
     private ClientRepository clientRepository;
+    @Autowired
+    private EmployeeRepository employeeRepository;
 
     @Autowired
     private PackageRepository packageRepository;
@@ -53,25 +56,51 @@ public class IndexController {
         mav.addObject("client", newClient);
         return mav;
     }
+    @GetMapping("loginemployee")
+    public ModelAndView getEmployeeLogin() {
+        ModelAndView mav = new ModelAndView("loginEmp.html");
+        Employee emp = new Employee();
+        mav.addObject("employee", emp);
+        return mav;
+    }
 
     @PostMapping("/login")
-    public RedirectView loginProcess(@RequestParam("email") String email, 
-                                 @RequestParam("Password") String password,
-                                 HttpSession session) {
-    Client dbClient = this.clientRepository.findByEmail(email);
-    if (dbClient != null) {
-        Boolean isPasswordMatched = BCrypt.checkpw(password, dbClient.getPassword());
-        if (isPasswordMatched) {
-            session.setAttribute("loggedInUser", dbClient);
-            return new RedirectView("/user/profile");
+    public RedirectView loginProcess(@RequestParam("email") String email,
+            @RequestParam("Password") String password,
+            HttpSession session) {
+        Client dbClient = this.clientRepository.findByEmail(email);
+        if (dbClient != null) {
+            Boolean isPasswordMatched = BCrypt.checkpw(password, dbClient.getPassword());
+            if (isPasswordMatched) {
+                session.setAttribute("loggedInUser", dbClient);
+                return new RedirectView("/user/profile");
+            } else {
+                return new RedirectView("/login?error=wrongPassword");
+            }
         } else {
-            return new RedirectView("/login?error=wrongPassword");
-        }
-    } else {
-        return new RedirectView("/login?error=userNotFound");
+            return new RedirectView("/login?error=userNotFound");
 
+        }
     }
+    @PostMapping("/loginemployee")
+    public RedirectView loginEmpProcess(@RequestParam("email") String email,
+            @RequestParam("Password") String password,
+            HttpSession session) {
+        Employee dbEmp = this.employeeRepository.findByEmail(email);
+        if (dbEmp != null) {
+            Boolean isPasswordMatched = BCrypt.checkpw(password, dbEmp.getPassword());
+            if (isPasswordMatched) {
+                session.setAttribute("loggedInEmp", dbEmp);
+                return new RedirectView("/admindashboard");
+            } else {
+                return new RedirectView("/loginemployee?error=wrongPassword");
+            }
+        } else {
+            return new RedirectView("/loginemployee?error=userNotFound");
+
+        }
     }
+
     @GetMapping("contactus")
     public ModelAndView getContactUs() {
         ModelAndView mav = new ModelAndView("contactus.html");

@@ -1,5 +1,7 @@
 package com.profitgym.profitgym.models;
 
+import java.util.Objects;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -11,19 +13,18 @@ public class Employee {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int ID;
     private String Name;
-    private String Email;
+    private String email;
     private int PhoneNumber;
     private double Salary;
     private String Address;
     private int JobTitle;
     private String Password;
 
-    
-    public Employee(int iD, String name, String email, int phoneNumber, double salary, String address, Integer jobTitle,
+    public Employee(int iD, String name, String Email, int phoneNumber, double salary, String address, Integer jobTitle,
             String password) {
         ID = iD;
         Name = name;
-        Email = email;
+        email = Email;
         PhoneNumber = phoneNumber;
         Salary = salary;
         Address = address;
@@ -37,7 +38,6 @@ public class Employee {
     public int getId() {
         return ID;
     }
-    
 
     public void setId(int ID) {
         this.ID = ID;
@@ -51,13 +51,12 @@ public class Employee {
         Name = name;
     }
 
-
     public String getEmail() {
-        return Email;
+        return email;
     }
 
-    public void setEmail(String email) {
-        Email = email;
+    public void setEmail(String Email) {
+        email = Email;
     }
 
     public int getPhoneNumber() {
@@ -98,6 +97,33 @@ public class Employee {
 
     public void setPassword(String password) {
         Password = password;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o)
+            return true;
+        if (!(o instanceof Employee)) {
+            return false;
+        }
+        Employee employee = (Employee) o;
+        return ID == employee.ID && PhoneNumber == employee.PhoneNumber && Double.compare(employee.Salary, Salary) == 0
+                && Objects.equals(Name, employee.Name) && Objects.equals(email, employee.email)
+                && Objects.equals(Address, employee.Address) && Objects.equals(JobTitle, employee.JobTitle)
+                && Objects.equals(Password, employee.Password);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(ID, Name, email, PhoneNumber, Salary, Address, JobTitle, Password);
+    }
+
+    @Override
+    public String toString() {
+        return "{" + " ID='" + getId() + "'" + ", Name='" + getName() + "'" + ", Email='" + getEmail() + "'"
+                + ", PhoneNumber='" + getPhoneNumber() + "'" + ", Salary='" + getSalary() + "'" + ", Address='"
+                + getAddress() + "'" + ", JobTitle='" + getJobTitle() + "'" + ", Password='" + getPassword() + "'"
+                + "}";
     }
 
 }

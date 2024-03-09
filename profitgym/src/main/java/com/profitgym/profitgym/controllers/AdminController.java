@@ -1,6 +1,8 @@
 package com.profitgym.profitgym.controllers;
 
 import java.util.Optional;
+
+import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -123,7 +125,7 @@ public class AdminController {
     @GetMapping("addclient")
     public ModelAndView getClientForm() {
         ModelAndView mav = new ModelAndView("addClientAdminDash.html");
-        mav.addObject("clientObj", new Client()); 
+        mav.addObject("clientObj", new Client());
         return mav;
     }
 
@@ -153,14 +155,15 @@ public class AdminController {
     @PostMapping("addemployee")
     public ModelAndView saveEmployee(@ModelAttribute Employee employeeObj,
             @RequestParam(value = "jobTitleHidden", required = false) Integer jobTitle) {
-         ModelAndView modelAndView = new ModelAndView();
+        ModelAndView modelAndView = new ModelAndView();
         if (jobTitle != null) {
             employeeObj.setJobTitle(jobTitle);
         }
 
         try {
             String generatedPassword = generateRandomPassword(8);
-            employeeObj.setPassword(generatedPassword);
+            String encoddedPassword = BCrypt.hashpw(generatedPassword, BCrypt.gensalt(12));
+            employeeObj.setPassword(encoddedPassword);
             this.employeeRepository.save(employeeObj);
             sendEmail(employeeObj.getEmail(), "Welcome to Our Company!",
                     "Hello,\n\nYour account has been created. Your temporary password is: " + generatedPassword

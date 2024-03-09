@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign in </title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@48,400,0,0" />
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@2.5.0/fonts/remixicon.css" rel="stylesheet">
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <link rel="stylesheet" type="text/css" th:href="@{/CSS/loginEmp.css}">
+
+</head>
+
+<body>
+    <div class="login-page">
+        <h1 class="title">ProFit Gym Employee Log in</h1>
+        <div class="form">
+            <form autocomplete="off" method="post" class="login-form" th:object="${employee}" th:action="@{/loginemployee}" onsubmit="return validateForm()">
+                <input id="email" type="email" placeholder="email" th:field="*{email}" name="email" />
+                <span id="email-error" class="error-message"> </span>
+                <input type="password" name="password" th:field="*{Password}" id="password"/>
+                <span id="password-error" class="error-message"> </span>
+                <span id="all-error"> </span>
+                <button type="submit">login</button>
+            </form>
+        </div>
+    </div>
+    <script th:src="@{/js/login_validation.js}"></script>
+</body>
+</html>
