@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Profile Dashboard</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css">
-    <link href="https://unpkg.com/boxicons@2.0.9/css/boxicons.min.css" rel="stylesheet">
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700">
     <link rel="stylesheet"
         href="https://rawcdn.githack.com/Loopple/loopple-public-assets/ad60f16c8a16d1dcad75e176c00d7f9e69320cd4/argon-dashboard/css/nucleo/css/nucleo.css">
@@ -71,64 +71,61 @@
         <div class="container-fluid pt-3">
             <div class="row removable">
                 <div class="col-lg">
-                    <div class="card">
-                        <div class="card-header border-0">
-                            <div class="row align-items-center">
-                                <div class="col">
-                                    <h1 class="mb-0">Clients</h1>
-                                </div>
-                                <div class="col text-right">
-                                    <input class="table-search-bar" placeholder="Search for Client">
-                                </div>
-                                <div class="col text-right">
-                                    <a th:href="@{/admindashboard/addclient}" class="btn-add">Add Client</a>
-                                </div>
+                    <div class="user-form">
+                        <h1 th:text="'Edit ' + ${clientObj.FirstName}"></h1>
+                        <form th:action="@{/admindashboard/editclient(id=${clientObj.ID})}" method="POST" class="edit-employee" onsubmit="return validateForm()">
+                            <div><input class="add-user-input" type="text" th:field="*{clientObj.FirstName}" th:placeholder="*{clientObj.FirstName}" /></div>
+                            <span id="fname-error" class="error-message"></span>
+                            <br>                            
+                            <div><input class="add-user-input" type="text" th:field="*{clientObj.LastName}" th:placeholder="*{clientObj.LastName}" /></div>
+                            <span id="lname-error" class="error-message"></span>
+                            <br>                            
+                            <div>
+                                <input class="add-user-input" type="text" th:field="*{clientObj.Age}" th:placeholder="*{clientObj.Age}"/>
                             </div>
-                        </div>
-                        <div class="table-responsive">
-                            <table class="table align-items-center table-flush">
-                                <thead class="thead-light">
-                                    <tr>
-                                        <th scope="col">ID</th>
-                                        <th scope="col">Name</th>
-                                        <th scope="col">Email</th>
-                                        <th scope="col">Age</th>
-                                        <th scope="col">Gender</th>
-                                        <th scope="col">Phone</th>
-                                        <th scope="col">Memberships</th>
-                                        <th scope="col">Action</th>
-
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr th:each="client : ${clients}">
-                                        <th scope="row" th:text="${client.ID}"></th>
-                                        <td th:text="${client.FirstName + ' ' + client.LastName}"></td>
-                                        <td th:text="${client.Email}"></td>
-                                        <td th:text="${client.Age}"></td>
-                                        <td th:text="${client.Gender}"></td>
-                                        <td th:text="${client.PhoneNumber}"></td>
-                                        <td>
-                                            <a th:href="@{/admindashboard/packages}" class="btn btn-sm btn-activate">Activate</a>
-                                        </td>
-                                        <td>
-                                            <a th:href="@{/admindashboard/editclient(id=${client.ID})}" class="btn btn-sm btn-primary">Edit</a>
-                                            <form th:action="@{/admindashboard/deleteclient}" th:object="${client}" method="post" style="display: inline;">
-                                                <input type="hidden" name="id" th:value="${client.ID}" />
-                                                <button type="submit" class="btn btn-sm btn-delete">Delete</button>
-                                            </form>
-                                        </td>
-                                    </tr>
-                                    
-                                </tbody>
-                            </table>
-                        </div>
+                            <span id="age-error" class="error-message"></span>
+                            <br>                            
+                            <div>
+                                <input class="add-user-input" type="text" th:field="*{clientObj.Weight}" th:placeholder="*{clientObj.Weight}" />
+                            </div>
+                            <br>                            
+                            <div>
+                                <input class="add-user-input" type="text" th:field="*{clientObj.Height}" th:placeholder="*{clientObj.Height}" />
+                            </div>
+                            <br>                            
+                                                       
+                            <select class="add-user-input" th:value="*{clientObj.Gender}">
+                                <option value="">Gender</option>
+                                <option value="female">Female</option>
+                                <option value="male">Male</option>
+                            </select>
+                            <br>
+                            <div><input class="add-user-input" type="text" th:field="*{clientObj.Email}" placeholder="Email" /></div>
+                            <span id="email-error" class="error-message"></span>
+                            <div>
+                                <input class="add-user-input" type="password" th:field="*{clientObj.Password}" th:placeholder="*{clientObj.Password}"/>
+                            </div>
+                            <span id="password-error" class="error-message"></span>
+                            <br> 
+                            <button class="btn btn-add-form" type="submit">Edit Client</button>
+                        </form>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+    <script>
+        window.addEventListener('DOMContentLoaded', (event) => {
+            clearInputFields();
+    });
 
+        function clearInputFields() {
+    var inputFields = document.querySelectorAll('.add-user-input');
+    inputFields.forEach(function(input) {
+        input.value = '';
+    });
+    }
+    </script>
     <script
         src="https://rawcdn.githack.com/Loopple/loopple-public-assets/5cef8f62939eeb089fa26d4c53a49198de421e3d/argon-dashboard/js/vendor/jquery.min.js"></script>
     <script

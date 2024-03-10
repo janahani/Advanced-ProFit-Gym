@@ -16,13 +16,17 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.profitgym.profitgym.models.Authority;
 import com.profitgym.profitgym.models.Client;
 import com.profitgym.profitgym.models.Employee;
 import com.profitgym.profitgym.models.Package;
+import com.profitgym.profitgym.repositories.AuthorityRepository;
 import com.profitgym.profitgym.repositories.ClientRepository;
 import com.profitgym.profitgym.repositories.EmployeeRepository;
 import com.profitgym.profitgym.repositories.JobTitlesRepository;
 import com.profitgym.profitgym.repositories.PackageRepository;
+
+import jakarta.annotation.PostConstruct;
 
 import java.util.Random;
 
@@ -48,6 +52,10 @@ public class AdminController {
     private JobTitlesRepository jobTitlesRepository;
 
     @Autowired
+    private AuthorityRepository authorityRepository;
+
+
+    @Autowired
     private JavaMailSender emailSender;
 
     private static final String RANDOMCHAR_STRING = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
@@ -64,6 +72,21 @@ public class AdminController {
         return builder.toString();
     }
 
+    //  @PostConstruct
+    // public void insertMockData() {
+    //     authorityRepository.saveAll(List.of(
+    //             new Authority("Dashboard", "Dashboard", "@{/admindashboard}"),
+    //             new Authority("Clients", "View Clients", "@{/admindashboard/clients}"),
+    //             new Authority("Clients", "Add Client", "@{/admindashboard/addclient}"),
+    //             new Authority("Clients", "Edit Client", "@{/admindashboard/editclient}"),
+    //             new Authority("Clients", "Check in", "@{/admindashboard/checkin}"),
+    //             new Authority("Clients", "Client Requests", "@{/admindashboard/clientrequests}"),
+    //             new Authority("Packages", "View Packages", "@{/admindashboard/packages}"),
+    //             new Authority("Memberships", "View Memberships", "@{/admindashboard/memberships}"),
+    //             new Authority("Classes", "View Classes", "@{/admindashboard/classes}")
+    //     ));
+    // }
+
     @GetMapping("")
     public ModelAndView getAdminDash() {
         ModelAndView mav = new ModelAndView("adminDash.html");
@@ -72,7 +95,12 @@ public class AdminController {
 
     @GetMapping("clients")
     public ModelAndView viewClients() {
+        System.out.println("viewClients() method called");
+
         ModelAndView mav = new ModelAndView("clientAdminDash.html");
+        List<Client> clients = this.clientRepository.findAll();
+        mav.addObject("clients", clients);
+        
         return mav;
     }
 
@@ -206,6 +234,18 @@ public class AdminController {
         return modelAndView;
     }
 
+    @GetMapping("editclient")
+    public ModelAndView editClientForm(@RequestParam("id") int clientId) {
+        ModelAndView mav = new ModelAndView("editClientAdminDash.html");
+        Optional<Client> clientOptional = clientRepository.findById(clientId);
+        if (clientOptional.isPresent()) {
+            Client client = clientOptional.get();
+            mav.addObject("clientObj", client); 
+        } else {
+            mav.addObject("errorMessage", "Client not found");
+        }
+        return mav;
+    }
     @GetMapping("editemployee")
     public ModelAndView editEmpForm(@RequestParam("id") int employeeId) {
         ModelAndView mav = new ModelAndView("editEmpAdminDash.html");
@@ -220,6 +260,19 @@ public class AdminController {
         return mav;
     }
 
+    @PostMapping("editclient")
+    public ModelAndView updateClient(@ModelAttribute Client clientObj) {
+        ModelAndView modelAndView = new ModelAndView();
+        System.out.println("Client ID before saving: " + clientObj.getID());
+        try {
+            this.clientRepository.save(clientObj);
+            System.out.println("Client updated successfully");
+            modelAndView.setViewName("redirect:/admindashboard/clients");
+        } catch (Exception e) {
+            System.out.println("Error updating client: " + e.getMessage());
+        }
+        return modelAndView;
+    }
     @PostMapping("editemployee")
     public ModelAndView updateEmployee(@ModelAttribute Employee employeeObj,
             @RequestParam(value = "jobTitleHidden", required = false) Integer jobTitle) {
