@@ -1,15 +1,23 @@
 package com.profitgym.profitgym.models;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 
 @Entity
+
+@Table(name = "employee_authorities")
 public class EmployeeAuthorities {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int ID;
-    private int JobTitleID;
+
+    @Column(name = "job_titleid")
+    private int jobTitleID;
+
+    @Column(name = "authorityid")
     private int AuthorityID;
 
     public EmployeeAuthorities()
@@ -26,11 +34,11 @@ public class EmployeeAuthorities {
     }
 
     public int getJobTitleID() {
-        return this.JobTitleID;
+        return this.jobTitleID;
     }
 
     public void setJobTitleID(int JobTitleID) {
-        this.JobTitleID = JobTitleID;
+        this.jobTitleID = JobTitleID;
     }
 
     public int getAuthorityID() {

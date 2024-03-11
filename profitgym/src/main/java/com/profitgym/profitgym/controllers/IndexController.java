@@ -2,6 +2,8 @@ package com.profitgym.profitgym.controllers;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+
+import java.util.ArrayList;
 import java.util.List;
 import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,11 +16,15 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
 
+import com.profitgym.profitgym.models.Authority;
 import com.profitgym.profitgym.models.Classes;
 import com.profitgym.profitgym.models.Client;
 import com.profitgym.profitgym.models.Package;
 import com.profitgym.profitgym.models.Employee;
+import com.profitgym.profitgym.models.EmployeeAuthorities;
+import com.profitgym.profitgym.repositories.AuthorityRepository;
 import com.profitgym.profitgym.repositories.ClientRepository;
+import com.profitgym.profitgym.repositories.EmployeeAuthoritiesRepository;
 import com.profitgym.profitgym.repositories.EmployeeRepository;
 import com.profitgym.profitgym.repositories.PackageRepository;
 
@@ -33,9 +39,12 @@ public class IndexController {
     private ClientRepository clientRepository;
     @Autowired
     private EmployeeRepository employeeRepository;
-
     @Autowired
     private PackageRepository packageRepository;
+    @Autowired
+    private EmployeeAuthoritiesRepository employeeAuthoritiesRepository;
+    @Autowired
+    private AuthorityRepository authorityRepository;
 
     @GetMapping("/index")
     public ModelAndView getIndex() {
@@ -56,6 +65,7 @@ public class IndexController {
         mav.addObject("client", newClient);
         return mav;
     }
+
     @GetMapping("loginemployee")
     public ModelAndView getEmployeeLogin() {
         ModelAndView mav = new ModelAndView("loginEmp.html");
@@ -86,11 +96,29 @@ public class IndexController {
     public RedirectView loginEmpProcess(@RequestParam("email") String email,
             @RequestParam("Password") String password,
             HttpSession session) {
+
         Employee dbEmp = this.employeeRepository.findByEmail(email);
+        System.out.println(dbEmp);
         if (dbEmp != null) {
             Boolean isPasswordMatched = BCrypt.checkpw(password, dbEmp.getPassword());
             if (isPasswordMatched) {
                 session.setAttribute("loggedInEmp", dbEmp);
+                int jobTitle = dbEmp.getJobTitle();
+                List<EmployeeAuthorities> employeeAuthorities = employeeAuthoritiesRepository
+                        .findByJobTitleID(jobTitle);
+                List<Authority> authorities = new ArrayList<>();
+                for (EmployeeAuthorities employeeAuthority : employeeAuthorities) {
+                    int authorityId = employeeAuthority.getAuthorityID();
+                    Authority authority = authorityRepository.findById(authorityId).orElse(null);
+
+                    if (authority != null) {
+                        authorities.add(authority);
+                        System.out.println("Authority Name: " + authority.getFriendlyName());
+                        System.out.println("Authority Link: " + authority.getLinkAddress());
+                    }
+                }
+                ModelAndView mav = new ModelAndView("partials/adminDashSideBar.html");
+                mav.addObject("authorities", authorities); 
                 return new RedirectView("/admindashboard");
             } else {
                 return new RedirectView("/loginemployee?error=wrongPassword");

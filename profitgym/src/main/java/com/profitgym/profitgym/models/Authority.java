@@ -12,7 +12,7 @@ public class Authority {
     private String Header;
     private String FriendlyName;
     private String LinkAddress;
-
+    private String Icon;
     public Authority()
     {
 
@@ -48,6 +48,13 @@ public class Authority {
 
     public void setLinkAddress(String LinkAddress) {
         this.LinkAddress = LinkAddress;
+    }
+    public String getIcon() {
+        return this.Icon;
+    }
+
+    public void setIcon(String Icon) {
+        this.Icon = Icon;
     }
 
 

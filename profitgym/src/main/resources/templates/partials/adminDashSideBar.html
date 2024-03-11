@@ -15,6 +15,12 @@
             >
           </div>
         </li>
+        <li th:each="authority : ${authorities}" class="nav-item">
+            <a class="nav-link" th:href="${authority.LinkAddress}">
+                <i th:class="${authority.Icon}"></i>
+                <span class="nav-link-text" th:text="${authority.FriendlyName}"></span>
+            </a>
+        </li>
         <li class="nav-item">
           <a class="nav-link" th:href="@{/admindashboard}">
             <i class="bx bxs-grid-alt"></i>
