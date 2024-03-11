@@ -15,86 +15,34 @@
 <body>
     <div th:replace="~{partials/adminDashSideBar}"></div>
     <div class="main-content" id="panel">
-        <nav class="navbar navbar-top navbar-expand navbar-dark border-bottom bg-warning" id="navbarTop">
-            <div class="container-fluid">
-                <div class="collapse navbar-collapse" id="navbarSupportedContent">
-
-                    <ul class="navbar-nav align-items-center  ml-md-auto ">
-                        <li class="nav-item d-xl-none">
-                            <div class="pr-3 sidenav-toggler sidenav-toggler-dark active" data-action="sidenav-pin"
-                                data-target="#sidenav-main">
-                                <div class="sidenav-toggler-inner">
-                                    <i class="sidenav-toggler-line"></i>
-                                    <i class="sidenav-toggler-line"></i>
-                                    <i class="sidenav-toggler-line"></i>
-                                </div>
-                            </div>
-                        </li>
-
-                    </ul>
-                    <ul class="navbar-nav align-items-center  ml-auto ml-md-0 ">
-                        <li class="nav-item dropdown">
-                            <a class="nav-link pr-0" href="#" role="button" data-toggle="dropdown" aria-haspopup="true"
-                                aria-expanded="false">
-                                <div class="media align-items-center">
-                                    <span class="avatar avatar-sm rounded-circle">
-                                        <img alt="Image placeholder" th:src="@{/images/user icon.png}">
-                                    </span>
-                                    <div class="media-body  ml-2  d-none d-lg-block">
-                                        <span class="mb-0 text-sm  font-weight-bold">Admin</span>
-                                    </div>
-                                </div>
-                            </a>
-                            <div class="dropdown-menu  dropdown-menu-right ">
-                                <div class="dropdown-header noti-title">
-                                    <h6 class="text-overflow m-0">Welcome</h6>
-                                </div>
-                                <a href="#!" class="dropdown-item">
-                                    <i class="fa fa-user"></i>
-                                    <span>My profile</span>
-                                </a>
-                                <a href="#!" class="dropdown-item">
-                                    <i class="fa fa-tools"></i>
-                                    <span>Settings</span>
-                                </a>
-                                <div class="dropdown-divider"></div>
-                                <a href="#!" class="dropdown-item">
-                                    <i class="fa fa-sign-out-alt"></i>
-                                    <span>Logout</span>
-                                </a>
-                            </div>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </nav>
+        <nav th:replace="~{partials/adminNavBar}"></nav>
         <div class="container-fluid pt-3">
             <div class="row removable">
                 <div class="col-lg">
                     <div class="user-form">
                         <h1 th:text="'Edit ' + ${clientObj.FirstName}"></h1>
                         <form th:action="@{/admindashboard/editclient(id=${clientObj.ID})}" method="POST" class="edit-employee" onsubmit="return validateForm()">
-                            <div><input class="add-user-input" type="text" th:field="*{clientObj.FirstName}" th:placeholder="*{clientObj.FirstName}" /></div>
+                            <div><input class="add-user-input" type="text" th:field="*{clientObj.FirstName}" placeholder="First Name" /></div>
                             <span id="fname-error" class="error-message"></span>
                             <br>                            
-                            <div><input class="add-user-input" type="text" th:field="*{clientObj.LastName}" th:placeholder="*{clientObj.LastName}" /></div>
+                            <div><input class="add-user-input" type="text" th:field="*{clientObj.LastName}" placeholder="Last Name" /></div>
                             <span id="lname-error" class="error-message"></span>
                             <br>                            
                             <div>
-                                <input class="add-user-input" type="text" th:field="*{clientObj.Age}" th:placeholder="*{clientObj.Age}"/>
+                                <input class="add-user-input" type="number" th:field="*{clientObj.Age}" placeholder="Age" />
                             </div>
                             <span id="age-error" class="error-message"></span>
                             <br>                            
                             <div>
-                                <input class="add-user-input" type="text" th:field="*{clientObj.Weight}" th:placeholder="*{clientObj.Weight}" />
+                                <input class="add-user-input" type="number" th:field="*{clientObj.Weight}" placeholder="Weight" />
                             </div>
                             <br>                            
                             <div>
-                                <input class="add-user-input" type="text" th:field="*{clientObj.Height}" th:placeholder="*{clientObj.Height}" />
+                                <input class="add-user-input" type="number" th:field="*{clientObj.Height}" placeholder="Height"/>
                             </div>
                             <br>                            
                                                        
-                            <select class="add-user-input" th:value="*{clientObj.Gender}">
+                            <select class="add-user-input" th:field="*{clientObj.Gender}">
                                 <option value="">Gender</option>
                                 <option value="female">Female</option>
                                 <option value="male">Male</option>
@@ -103,7 +51,7 @@
                             <div><input class="add-user-input" type="text" th:field="*{clientObj.Email}" placeholder="Email" /></div>
                             <span id="email-error" class="error-message"></span>
                             <div>
-                                <input class="add-user-input" type="password" th:field="*{clientObj.Password}" th:placeholder="*{clientObj.Password}"/>
+                                <input class="add-user-input" type="password" th:field="*{clientObj.Password}" placeholder="Password"/>
                             </div>
                             <span id="password-error" class="error-message"></span>
                             <br> 

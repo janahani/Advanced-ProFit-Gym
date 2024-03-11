@@ -54,7 +54,6 @@ public class AdminController {
     @Autowired
     private AuthorityRepository authorityRepository;
 
-
     @Autowired
     private JavaMailSender emailSender;
 
@@ -72,19 +71,21 @@ public class AdminController {
         return builder.toString();
     }
 
-    //  @PostConstruct
+    // @PostConstruct
     // public void insertMockData() {
-    //     authorityRepository.saveAll(List.of(
-    //             new Authority("Dashboard", "Dashboard", "@{/admindashboard}"),
-    //             new Authority("Clients", "View Clients", "@{/admindashboard/clients}"),
-    //             new Authority("Clients", "Add Client", "@{/admindashboard/addclient}"),
-    //             new Authority("Clients", "Edit Client", "@{/admindashboard/editclient}"),
-    //             new Authority("Clients", "Check in", "@{/admindashboard/checkin}"),
-    //             new Authority("Clients", "Client Requests", "@{/admindashboard/clientrequests}"),
-    //             new Authority("Packages", "View Packages", "@{/admindashboard/packages}"),
-    //             new Authority("Memberships", "View Memberships", "@{/admindashboard/memberships}"),
-    //             new Authority("Classes", "View Classes", "@{/admindashboard/classes}")
-    //     ));
+    // authorityRepository.saveAll(List.of(
+    // new Authority("Dashboard", "Dashboard", "@{/admindashboard}"),
+    // new Authority("Clients", "View Clients", "@{/admindashboard/clients}"),
+    // new Authority("Clients", "Add Client", "@{/admindashboard/addclient}"),
+    // new Authority("Clients", "Edit Client", "@{/admindashboard/editclient}"),
+    // new Authority("Clients", "Check in", "@{/admindashboard/checkin}"),
+    // new Authority("Clients", "Client Requests",
+    // "@{/admindashboard/clientrequests}"),
+    // new Authority("Packages", "View Packages", "@{/admindashboard/packages}"),
+    // new Authority("Memberships", "View Memberships",
+    // "@{/admindashboard/memberships}"),
+    // new Authority("Classes", "View Classes", "@{/admindashboard/classes}")
+    // ));
     // }
 
     @GetMapping("")
@@ -100,7 +101,7 @@ public class AdminController {
         ModelAndView mav = new ModelAndView("clientAdminDash.html");
         List<Client> clients = this.clientRepository.findAll();
         mav.addObject("clients", clients);
-        
+
         return mav;
     }
 
@@ -239,13 +240,68 @@ public class AdminController {
         ModelAndView mav = new ModelAndView("editClientAdminDash.html");
         Optional<Client> clientOptional = clientRepository.findById(clientId);
         if (clientOptional.isPresent()) {
-            Client client = clientOptional.get();
-            mav.addObject("clientObj", client); 
+            Client clientObj = clientOptional.get();
+            mav.addObject("clientObj", clientObj);
+
         } else {
             mav.addObject("errorMessage", "Client not found");
         }
         return mav;
     }
+
+    @PostMapping("editclient")
+    public ModelAndView updateClient(@ModelAttribute Client clientObj, @RequestParam("id") int clientId) {
+        ModelAndView modelAndView = new ModelAndView();
+        try {
+            Optional<Client> existingClientOptional = clientRepository.findById(clientId);
+            if (existingClientOptional.isPresent()) {
+                Client existingClient = existingClientOptional.get();
+
+                // Check for null before updating each property
+                if (clientObj.getFirstName() != null) {
+                    existingClient.setFirstName(clientObj.getFirstName());
+                }
+                if (clientObj.getLastName() != null) {
+                    existingClient.setLastName(clientObj.getLastName());
+                }
+                if (clientObj.getAge() != 0) {
+                    existingClient.setAge(clientObj.getAge());
+                }
+                if (clientObj.getGender() != null) {
+                    existingClient.setGender(clientObj.getGender());
+                }
+                if (clientObj.getWeight() != 0) {
+                    existingClient.setWeight(clientObj.getWeight());
+                }
+                if (clientObj.getHeight() != 0) {
+                    existingClient.setHeight(clientObj.getHeight());
+                }
+                if (clientObj.getEmail() != null) {
+                    existingClient.setEmail(clientObj.getEmail());
+                }
+                if (clientObj.getPassword() != null) {
+                    existingClient.setPassword(clientObj.getPassword());
+                }
+                if (clientObj.getPhoneNumber() != null) {
+                    existingClient.setPhoneNumber(clientObj.getPhoneNumber());
+                }
+
+                // Save the updated client
+                clientRepository.save(existingClient);
+
+                System.out.println("Client updated successfully");
+                modelAndView.setViewName("redirect:/admindashboard/clients");
+            } else {
+                System.out.println("Error updating client: Client not found");
+                modelAndView.setViewName("redirect:/admindashboard/clients");
+            }
+        } catch (Exception e) {
+            System.out.println("Error updating client: " + e.getMessage());
+        }
+
+        return modelAndView;
+    }
+
     @GetMapping("editemployee")
     public ModelAndView editEmpForm(@RequestParam("id") int employeeId) {
         ModelAndView mav = new ModelAndView("editEmpAdminDash.html");
@@ -260,19 +316,6 @@ public class AdminController {
         return mav;
     }
 
-    @PostMapping("editclient")
-    public ModelAndView updateClient(@ModelAttribute Client clientObj) {
-        ModelAndView modelAndView = new ModelAndView();
-        System.out.println("Client ID before saving: " + clientObj.getID());
-        try {
-            this.clientRepository.save(clientObj);
-            System.out.println("Client updated successfully");
-            modelAndView.setViewName("redirect:/admindashboard/clients");
-        } catch (Exception e) {
-            System.out.println("Error updating client: " + e.getMessage());
-        }
-        return modelAndView;
-    }
     @PostMapping("editemployee")
     public ModelAndView updateEmployee(@ModelAttribute Employee employeeObj,
             @RequestParam(value = "jobTitleHidden", required = false) Integer jobTitle) {
