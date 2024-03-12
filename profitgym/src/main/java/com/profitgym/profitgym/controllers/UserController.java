@@ -80,17 +80,11 @@ public class UserController {
         return mav;
     }
 
-    @PostMapping("profsettings")
-    public ModelAndView updateClient(@Valid @ModelAttribute Client clientObj, BindingResult bindingResult,
-            HttpSession session, @RequestParam("action") String action) {
+
+    @PostMapping("/profsettings")
+    public ModelAndView updateClient(@Valid @ModelAttribute Client clientObj,BindingResult bindingResult,HttpSession session,@RequestParam("action") String action) {
         Client sessionClient = (Client) session.getAttribute("loggedInUser");
         ModelAndView modelAndView = new ModelAndView();
-
-        if (bindingResult.hasErrors()) {
-            modelAndView.addObject("errors", bindingResult.getAllErrors());
-            modelAndView.setViewName("redirect:/user/profsettings");
-            return modelAndView;
-        }
 
         if ("update".equals(action)) {
             sessionClient.setFirstName(clientObj.getFirstName());

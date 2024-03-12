@@ -36,7 +36,7 @@
                 <h2>Edit Profile Settings</h2>
                 <form id="profile-settings-form" th:action="@{/user/profsettings}" method="POST">
                     <div class="form-group">
-                        <label for="firstname">FirstName:</label>
+                        <label for="firstname">FirstName: </label>
                         <input type="text" id="firstname" name="firstName" placeholder="Firstname"
                             th:value="${session.loggedInUser.firstName}">
                     </div>
@@ -70,16 +70,14 @@
                     <span id="all-error"></span>
                     <span id="success"></span>
                     <!-- Other fields can be added here -->
-                    <button name="action" value="update" id="update-profile-button" type="submit">Update
-                        Profile</button>
-                    <button name="action" value="delete" id="delete-profile-button" type="submit">Delete
-                        Profile</button>
+                    <button name="action" value="update" id="update-profile-button" type="submit">Update Profile</button>
+                    <button name="action" value="delete" id="delete-profile-button" type="submit">Delete Profile</button>
                 </form>
 
             </div>
         </div>
     </div>
-    <script src="/js/userprofsettings.js"></script>
+    <!-- <script src="/js/userprofsettings.js"></script> -->
     <!-- footer -->
     <div th:replace="~{partials/footer}"></div>
 
