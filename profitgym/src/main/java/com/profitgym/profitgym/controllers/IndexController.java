@@ -113,12 +113,11 @@ public class IndexController {
 
                     if (authority != null) {
                         authorities.add(authority);
-                        System.out.println("Authority Name: " + authority.getFriendlyName());
-                        System.out.println("Authority Link: " + authority.getLinkAddress());
+                        // System.out.println("Authority Name: " + authority.getFriendlyName());
+                        // System.out.println("Authority Link: " + authority.getLinkAddress());
                     }
                 }
-                ModelAndView mav = new ModelAndView("partials/adminDashSideBar.html");
-                mav.addObject("authorities", authorities); 
+                session.setAttribute("authorities", authorities);
                 return new RedirectView("/admindashboard");
             } else {
                 return new RedirectView("/loginemployee?error=wrongPassword");
