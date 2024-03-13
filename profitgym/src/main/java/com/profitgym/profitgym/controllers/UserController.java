@@ -109,6 +109,7 @@ public class UserController {
             try {
                 System.out.println(sessionClient.getID());
                 this.clientRepository.deleteById(sessionClient.getID());
+                session.invalidate();
                 System.out.println("Client deleted");
                 modelAndView.setViewName("redirect:/index");
             } catch (Exception e) {
