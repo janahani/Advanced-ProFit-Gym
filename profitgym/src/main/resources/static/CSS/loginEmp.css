@@ -50,6 +50,10 @@
   background: #704426;
   transition: all .3s ease-in;
 }
+.error-message {
+  color: rgb(171, 0, 0);
+  transition: .3s ease-in;
+}
 .form .message {
   margin: 15px 0 0;
   color: #b3b3b3;
