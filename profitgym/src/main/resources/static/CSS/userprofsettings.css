@@ -24,7 +24,7 @@ label {
 }
 
 
-#fname-error,#lname-error,#email-error,#all-error,#success,#phoneno-error{
+#fname-error,#lname-error,#email-error,#all-error,#success,#phoneno-error,#password-error,#confirmpassword-error{
     color:#b83f3f;
     font-size:16px;
 }
