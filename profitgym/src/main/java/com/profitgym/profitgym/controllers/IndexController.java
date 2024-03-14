@@ -46,6 +46,12 @@ public class IndexController {
     @Autowired
     private AuthorityRepository authorityRepository;
 
+
+    public IndexController(ClientRepository clientRepository) {
+        this.clientRepository = clientRepository;
+    }
+
+
     @GetMapping("/index")
     public ModelAndView getIndex() {
         ModelAndView mav = new ModelAndView("index.html");
