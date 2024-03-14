@@ -19,7 +19,7 @@ import com.profitgym.profitgym.models.Client;
 import jakarta.servlet.http.HttpSession;
 
 @SpringBootTest
-public class LoginTests {
+public class LoginTest {
     	
 	private IndexController indexController;
     private ClientRepository clientRepository;

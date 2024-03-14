@@ -10,5 +10,4 @@ class ProfitgymApplicationTests {
 	void contextLoads() {
 	}
 
-
 }
