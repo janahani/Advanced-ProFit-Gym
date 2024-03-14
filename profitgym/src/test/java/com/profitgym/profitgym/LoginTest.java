@@ -33,45 +33,45 @@ public class LoginTest {
         indexController = new IndexController(clientRepository);
     }
 
+    //login successful
     @Test
     public void testLoginProcessSuccess() {
         Client client = new Client();
-        client.setEmail("test@example.com");
-        client.setPassword(BCrypt.hashpw("password123", BCrypt.gensalt(12)));
-        when(clientRepository.findByEmail("test@example.com")).thenReturn(client);
+        client.setEmail("janahani@gmail.com");
+        client.setPassword(BCrypt.hashpw("jana123", BCrypt.gensalt(12)));
+        when(clientRepository.findByEmail("janahani@gmail.com")).thenReturn(client);
 
-        RedirectView result = indexController.loginProcess("test@example.com", "password123", session);
+        RedirectView result = indexController.loginProcess("janahani@gmail.com", "jana123", session);
 
         assertEquals("/user/profile", result.getUrl());
+        //confirm user set in session
         verify(session).setAttribute(eq("loggedInUser"), any());
     }
 
-        @Test
+    //login with incorrect password
+    @Test
     public void testLoginProcessIncorrectPassword() {
         Client client = new Client();
-        client.setEmail("test@example.com");
-        // Set a different password than the one expected in the test
-        client.setPassword(BCrypt.hashpw("differentpassword", BCrypt.gensalt(12)));
-        when(clientRepository.findByEmail("test@example.com")).thenReturn(client);
+        client.setEmail("janahani@gmail.com");
+        client.setPassword(BCrypt.hashpw("jana123", BCrypt.gensalt(12)));
+        when(clientRepository.findByEmail("janahani@gmail.com")).thenReturn(client);
 
-        RedirectView result = indexController.loginProcess("test@example.com", "password123", session);
+        RedirectView result = indexController.loginProcess("janahani@gmail.com", "janahani123", session);
 
-        // Assert that the user is redirected to the login page or an error page
         assertEquals("/login?error=wrongPassword", result.getUrl());
-        // Optionally, verify that no user session is set
+        // confirm that no user session is set
         verify(session, never()).setAttribute(eq("loggedInUser"), any());
     }
 
+    //login with non-existing email
     @Test
     public void testLoginProcessUserNotFound() {
-        // Simulate scenario where user is not found in the database
-        when(clientRepository.findByEmail("nonexistent@example.com")).thenReturn(null);
+        when(clientRepository.findByEmail("malakhelmy@example.com")).thenReturn(null);
 
-        RedirectView result = indexController.loginProcess("nonexistent@example.com", "password123", session);
+        RedirectView result = indexController.loginProcess("malakhelmy@example.com", "jana123", session);
 
-        // Assert that the user is redirected to the login page or an error page
         assertEquals("/login?error=userNotFound", result.getUrl());
-        // Optionally, verify that no user session is set
+        // confirm that no user session is set
         verify(session, never()).setAttribute(eq("loggedInUser"), any());
     }
 }
