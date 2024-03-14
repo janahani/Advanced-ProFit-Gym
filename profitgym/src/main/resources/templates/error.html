@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" th:href="@{/CSS/error.css}">
+    <title>404</title>
+</head>
+
+<body>
+    <section class="block-notfound">
+        <div class="notfound">
+            <div class="notfound-404">
+                404
+            </div>
+            <p class="notfound-subtext">we are sorry, but the page you requested was not found</p>
+            <a th:href="@{/index}" class="home-btn">Return to Homepage</a>
+        </div>
+    </section>
+</body>
+
+</html>

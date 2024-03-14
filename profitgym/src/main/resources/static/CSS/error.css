@@ -1,0 +1,109 @@
+@import url("https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap");
+*,
+*::before,
+*::after {
+	box-sizing: border-box;
+	margin: 0;
+	padding: 0;
+}
+body {
+	padding: 0;
+	margin: 0;
+	color: var(--dark);
+	font-family: montserrat, sans-serif;
+}
+/* ================================ */
+.block-notfound {
+	--dark: #331e0a;
+	--light: #fffff0;
+
+	position: relative;
+	height: 100vh;
+}
+.notfound {
+	position: absolute;
+	left: 50%;
+	top: 50%;
+	-webkit-transform: translate(-50%, -50%);
+	-ms-transform: translate(-50%, -50%);
+	transform: translate(-50%, -50%);
+
+	max-width: 910px;
+	width: 100%;
+	line-height: 1.4;
+	text-align: center;
+}
+.notfound-404 {
+	color: var(--dark);
+	font-size: clamp(80px, 22vw, 220px);
+	font-weight: 900;
+	line-height: 1;
+	text-transform: uppercase;
+	letter-spacing: 10px;
+}
+.notfound-subtext {
+	margin-top: 20px;
+	margin-bottom: 15px;
+	color: var(--dark);
+	font-size: 22px;
+	font-weight: 700;
+	text-transform: uppercase;
+}
+.home-btn,
+.contact-btn {
+	font-family: inherit;
+	display: inline-block;
+	font-weight: 700;
+	text-decoration: none;
+	background-color: transparent;
+	border: 2px solid transparent;
+	text-transform: uppercase;
+	padding: 13px 25px;
+	font-size: 18px;
+	border-radius: 40px;
+	margin: 7px;
+	transition: 0.2s all;
+}
+.home-btn:hover,
+.contact-btn:hover {
+	opacity: 0.9;
+}
+.home-btn {
+	color: var(--light);
+	background-color: var(--dark);
+}
+.contact-btn {
+	border: 2px solid var(--dark);
+	color: var(--dark);
+}
+.notfound-social {
+	margin-top: 25px;
+}
+.notfound-social > a {
+	display: inline-block;
+	padding: 0 20px;
+	text-decoration: none;
+	height: 40px;
+	line-height: 40px;
+	font-size: 14px;
+	color: var(--dark);
+	margin: 0 6px;
+	-webkit-transition: 0.2s all;
+	transition: 0.2s all;
+}
+.notfound-social > a:hover {
+	background-color: var(--dark);
+	color: var(--light);
+	border-radius: 25px;
+}
+
+@media only screen and (max-width: 480px) {
+	.notfound .notfound-subtext {
+		font-size: 16px;
+	}
+
+	.home-btn,
+	.contact-btn {
+		font-size: 14px;
+	}
+}
