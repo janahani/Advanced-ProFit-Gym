@@ -32,6 +32,10 @@ public class UserController {
     @Autowired
     IndexController indexController;
 
+    public UserController(ClientRepository clientRepository) {
+        this.clientRepository=clientRepository;
+    }
+
     @GetMapping("/profile")
     public ModelAndView getUserProfile(HttpSession session) {
         ModelAndView mav = new ModelAndView("userprofile.html");
