@@ -1,4 +1,5 @@
 package com.profitgym.profitgym;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
@@ -10,7 +11,6 @@ import static org.mockito.Mockito.when;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mindrot.jbcrypt.BCrypt;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.web.servlet.view.RedirectView;
 
 import com.profitgym.profitgym.controllers.IndexController;
@@ -19,10 +19,9 @@ import com.profitgym.profitgym.models.Client;
 
 import jakarta.servlet.http.HttpSession;
 
-@SpringBootTest
 public class LoginTest {
-    	
-	private IndexController indexController;
+    
+    private IndexController indexController;
     private ClientRepository clientRepository;
     private HttpSession session;
 
@@ -33,18 +32,18 @@ public class LoginTest {
         indexController = new IndexController(clientRepository);
     }
 
-    //login successful
     @Test
     public void testLoginProcessSuccess() {
-        Client client = new Client();
-        client.setEmail("janahani@gmail.com");
-        client.setPassword(BCrypt.hashpw("jana123", BCrypt.gensalt(12)));
-        when(clientRepository.findByEmail("janahani@gmail.com")).thenReturn(client);
+        System.out.println("hi");
 
-        RedirectView result = indexController.loginProcess("janahani@gmail.com", "jana123", session);
+        Client client = new Client();
+        client.setEmail("test@example.com");
+        client.setPassword(BCrypt.hashpw("password123", BCrypt.gensalt(12)));
+        when(clientRepository.findByEmail("test@example.com")).thenReturn(client);
+
+        RedirectView result = indexController.loginProcess("test@example.com", "password123", session);
 
         assertEquals("/user/profile", result.getUrl());
-        //confirm user set in session
         verify(session).setAttribute(eq("loggedInUser"), any());
     }
 
