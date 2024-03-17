@@ -163,7 +163,7 @@ public class AdminController {
         String generatedPassword = generateRandomPassword(8);
         clientObj.setPassword(generatedPassword);
         this.clientRepository.save(clientObj);
-        sendEmail(clientObj.getEmail(), "Welcome to Our Profit Gym!",
+        sendEmail(clientObj.getEmail(), "Welcome to Profit Gym!",
                 "Hello,\n\nYour account has been created. Your temporary password is: " + generatedPassword
                         + "\n\nPlease log in and change your password.");
 

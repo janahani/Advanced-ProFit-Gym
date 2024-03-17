@@ -18,10 +18,12 @@ public class EmailController {
 
     @PostMapping("/sendEmail")
     public String sendEmail(@RequestBody EmailData emailData) {
+        String body = "Test:,\n\n" + emailData.getBody();
+
         SimpleMailMessage message = new SimpleMailMessage();
         message.setTo(emailData.getRecipient());
         message.setSubject(emailData.getSubject());
-        message.setText(emailData.getBody());
+        message.setText(body);
 
         try {
             emailSender.send(message);
