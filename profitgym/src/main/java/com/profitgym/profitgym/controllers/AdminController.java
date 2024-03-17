@@ -161,7 +161,8 @@ public class AdminController {
     @PostMapping("addclient")
     public ModelAndView saveClient(@ModelAttribute Client clientObj) {
         String generatedPassword = generateRandomPassword(8);
-        clientObj.setPassword(generatedPassword);
+        String encoddedPassword = BCrypt.hashpw(generatedPassword, BCrypt.gensalt(12));
+        clientObj.setPassword(encoddedPassword);
         this.clientRepository.save(clientObj);
         sendEmail(clientObj.getEmail(), "Welcome to Profit Gym!",
                 "Hello,\n\nYour account has been created. Your temporary password is: " + generatedPassword
