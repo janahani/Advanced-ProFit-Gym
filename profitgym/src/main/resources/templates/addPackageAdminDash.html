@@ -39,21 +39,11 @@
                             <span class="error" id="numOfMonthsError"></span><br>
                             
                             <div class="visits-container">
-                                <div class="visits-title">Visits:</div>
-                                <div class="radio-buttons">
-                                    <input type="radio" id="limitedRadio" name="visits" value="limited" class="radio-btn"
-                                           th:checked="${packageObj.isVisitsLimited == 'limited'}" onclick="showLimitField()">
-                                    <label for="limitedRadio">Limited</label>
-                                
-                                    <input type="radio" id="unlimitedRadio" name="visits" value="unlimited" class="radio-btn"
-                                           th:checked="${packageObj.isVisitsLimited == 'unlimited'}" onclick="hideLimitField()">
-                                    <label for="unlimitedRadio">Unlimited</label>
-                                </div>
-                                
-                                <div id="limitField" class="hidden" style="display:none;">
-                                    <input th:field="*{VisitsLimit}" class="add-user-input" type="number" placeholder="Limit (Days)" value="" id="visitsLimit">
+                                <div id="limitField" class="hidden" >
+                                    <input th:field="*{visitsLimit}" class="add-user-input" type="number" placeholder="Limit (Days)" value="" id="visitsLimit">
                                 </div>
                             </div>
+                            
                             <span class="error" id="visitsLimitError"></span><br>
                         
                             <div>

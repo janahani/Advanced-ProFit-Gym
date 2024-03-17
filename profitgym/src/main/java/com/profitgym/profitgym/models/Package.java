@@ -12,7 +12,6 @@ public class Package {
     private int ID;
     private String Title;
     private int NumOfMonths;
-    private String isVisitsLimited;
     private int VisitsLimit;
     private int FreezeLimit;
     private int NumOfInvitations;
@@ -47,14 +46,6 @@ public class Package {
 
     public void setNumOfMonths(int NumOfMonths) {
         this.NumOfMonths = NumOfMonths;
-    }
-
-    public String getIsVisitsLimited() {
-        return this.isVisitsLimited;
-    }
-
-    public void setIsVisitsLimited(String isVisitsLimited) {
-        this.isVisitsLimited = isVisitsLimited;
     }
 
     public int getVisitsLimit() {

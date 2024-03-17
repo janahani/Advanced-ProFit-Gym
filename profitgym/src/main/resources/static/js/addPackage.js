@@ -26,7 +26,6 @@ function validateForm() {
     
     var title = document.getElementById("title").value.trim();
     var numOfMonths = document.getElementById("numOfMonths").value;
-    var isVisitsLimited = document.querySelector('input[name="visits"]:checked');
     var visitsLimit = document.getElementById("visitsLimit").value;
     var freezeLimit = document.getElementById("freezeLimit").value;
     var numOfInvitations = document.getElementById("numOfInvitations").value;
@@ -64,27 +63,12 @@ function validateForm() {
         numOfMonthsError.innerHTML = "Please enter a valid Number of Months";
         isValid = false;
     }
-
-    if (!isVisitsLimited) {
-        visitsLimitError.innerHTML = "Please select Limited or Unlimited visits";
+    
+    if (visitsLimit <= 0) {
+        visitsLimitError.innerHTML = "Please enter a valid Visit Limit";
         isValid = false;
-
-    } else {
-        if (isVisitsLimited.value === "limited" && visitsLimit < 0) {
-            visitsLimitError.innerHTML = "Please enter a valid Visits Limit";
-            isValid = false;
-        }
-        if (isVisitsLimited.value === "limited" && visitsLimit === "" && document.getElementById("limitField").style.display !== "none") {
-            visitsLimitError.innerHTML = "Please enter a Visits Limit";
-            isValid = false;
-        }
-        if(isVisitsLimited.value === "unlimited")
-        {
-            console.log(isVisitsLimited);
-
-            document.getElementById("visitsLimit").value=0;
-        }
     }
+
 
     if (freezeLimit <= 0) {
         freezeLimitError.innerHTML = "Please enter a valid Freeze Limit";
