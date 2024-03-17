@@ -63,8 +63,8 @@ function validateForm() {
         numOfMonthsError.innerHTML = "Please enter a valid Number of Months";
         isValid = false;
     }
-    
-    if (visitsLimit <= 0) {
+
+    if (visitsLimit < 0) {
         visitsLimitError.innerHTML = "Please enter a valid Visit Limit";
         isValid = false;
     }
