@@ -165,7 +165,7 @@ public class AdminController {
         clientObj.setPassword(encoddedPassword);
         this.clientRepository.save(clientObj);
         sendEmail(clientObj.getEmail(), "Welcome to Profit Gym!",
-                "Hello,\n\nYour account has been created. Your temporary password is: " + generatedPassword
+                "Hello, " +clientObj.getFirstName()+ ". \n\nYour account has been created. Your temporary password is: " + generatedPassword
                         + "\n\nPlease log in and change your password.");
 
         System.out.println("Client added");
@@ -195,7 +195,7 @@ public class AdminController {
             String encoddedPassword = BCrypt.hashpw(generatedPassword, BCrypt.gensalt(12));
             employeeObj.setPassword(encoddedPassword);
             this.employeeRepository.save(employeeObj);
-            String emailBody = "Hello,\n\nYour account has been created. Your temporary password is: " + generatedPassword
+            String emailBody = "Hello, "+ employeeObj.getName() + ". \n\nYour account has been created. Your temporary password is: " + generatedPassword
                             + "\n\nPlease log in and change your password.";
         sendEmail(employeeObj.getEmail(), "Welcome to Our Company!", emailBody);
 
@@ -228,7 +228,7 @@ public class AdminController {
         try {
             employeeRepository.deleteById(employeeId);
             System.out.println("Employee deleted");
-            modelAndView.setViewName("redirect:/admindashboard/deleteemployee");
+            modelAndView.setViewName("redirect:/admindashboard/employees");
         } catch (Exception e) {
             System.out.println("Error deleting employee: " + e.getMessage());
         }
