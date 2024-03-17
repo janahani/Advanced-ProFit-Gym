@@ -1,4 +1,6 @@
 package com.profitgym.profitgym.models;
+import java.io.Serializable;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -9,7 +11,7 @@ import jakarta.persistence.Table;
 @Entity
 
 @Table(name = "employee_authorities")
-public class EmployeeAuthorities {
+public class EmployeeAuthorities implements Serializable{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int ID;
