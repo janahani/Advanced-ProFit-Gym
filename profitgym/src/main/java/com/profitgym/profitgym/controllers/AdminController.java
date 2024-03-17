@@ -165,7 +165,7 @@ public class AdminController {
         clientObj.setPassword(encoddedPassword);
         this.clientRepository.save(clientObj);
         sendEmail(clientObj.getEmail(), "Welcome to Profit Gym!",
-                "Hello,\n\nYour account has been created. Your temporary password is: " + generatedPassword
+                "Hello, " +clientObj.getFirstName()+ ". \n\nYour account has been created. Your temporary password is: " + generatedPassword
                         + "\n\nPlease log in and change your password.");
 
         System.out.println("Client added");
@@ -195,9 +195,9 @@ public class AdminController {
             String encoddedPassword = BCrypt.hashpw(generatedPassword, BCrypt.gensalt(12));
             employeeObj.setPassword(encoddedPassword);
             this.employeeRepository.save(employeeObj);
-            sendEmail(employeeObj.getEmail(), "Welcome to Our Company!",
-                    "Hello,\n\nYour account has been created. Your temporary password is: " + generatedPassword
-                            + "\n\nPlease log in and change your password.");
+            String emailBody = "Hello, "+ employeeObj.getName() + ". \n\nYour account has been created. Your temporary password is: " + generatedPassword
+                            + "\n\nPlease log in and change your password.";
+        sendEmail(employeeObj.getEmail(), "Welcome to Our Company!", emailBody);
 
             System.out.println("Employee added");
             modelAndView.setViewName("redirect:/admindashboard/addemployee");
@@ -207,21 +207,20 @@ public class AdminController {
         return modelAndView;
     }
 
-    private void sendEmail(String recipientEmail, String subject, String generatedPassword) {
+    private void sendEmail(String recipientEmail, String subject, String body) {
         try {
             SimpleMailMessage message = new SimpleMailMessage();
             message.setTo(recipientEmail);
-            message.setSubject("Welcome to Our Company!");
-            message.setText(
-                    "Hello,\n\nYour account has been created. Your temporary password is: " + generatedPassword +
-                            "\n\nPlease log in and change your password.");
-
+            message.setSubject(subject);
+            message.setText(body);
+    
             emailSender.send(message);
             System.out.println("Email sent successfully to: " + recipientEmail);
         } catch (MailException e) {
             System.err.println("Error sending email: " + e.getMessage());
         }
     }
+    
 
     @PostMapping("deleteemployee")
     public ModelAndView deleteEmployee(@RequestParam("id") int employeeId) {
@@ -229,7 +228,7 @@ public class AdminController {
         try {
             employeeRepository.deleteById(employeeId);
             System.out.println("Employee deleted");
-            modelAndView.setViewName("redirect:/admindashboard/deleteemployee");
+            modelAndView.setViewName("redirect:/admindashboard/employees");
         } catch (Exception e) {
             System.out.println("Error deleting employee: " + e.getMessage());
         }
