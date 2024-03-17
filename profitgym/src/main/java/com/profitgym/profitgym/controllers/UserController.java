@@ -2,6 +2,8 @@ package com.profitgym.profitgym.controllers;
 
 import com.profitgym.profitgym.controllers.IndexController;
 
+import java.util.List;
+
 import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.BindingResult;
@@ -13,11 +15,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.validation.BindingResult;
 
 import com.profitgym.profitgym.models.Client;
 import com.profitgym.profitgym.models.Employee;
+import com.profitgym.profitgym.models.Package;
 import com.profitgym.profitgym.repositories.ClientRepository;
+import com.profitgym.profitgym.repositories.PackageRepository;
 
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
@@ -28,6 +31,9 @@ public class UserController {
 
     @Autowired
     private ClientRepository clientRepository;
+
+    @Autowired
+    private PackageRepository packageRepository;
 
     @Autowired
     IndexController indexController;
@@ -50,7 +56,10 @@ public class UserController {
 
     @GetMapping("bookpackage")
     public ModelAndView getPackageBooking() {
+        System.out.println("viewPackages() method called");
         ModelAndView mav = new ModelAndView("packagebooking.html");
+        List<Package> packages = this.packageRepository.findAll();
+        mav.addObject("packages", packages);
         return mav;
     }
 
