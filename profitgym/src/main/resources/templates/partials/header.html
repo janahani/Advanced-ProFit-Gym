@@ -15,7 +15,7 @@
         <a th:href="@{/memberships}" id="memberships">MEMBERSHIPS</a>
         <a th:href="@{/facilities}" id="facilities">FACILITIES</a>
         <a th:href="@{/contactus}" id="contactus">CONTACT US</a>
-        <a th:href="@{/login}"><i class="ri-account-circle-line"></i></a>
+        <a th:href="${session.loggedInUser != null ? '/user/profile' : '/login'}"><i class="ri-account-circle-line"></i></a>
     </nav>
 </header>
 <!-- Include your JavaScript files here -->
