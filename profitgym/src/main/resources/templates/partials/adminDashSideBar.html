@@ -17,9 +17,9 @@
           </div>
         </li>
         <li th:each="authority : ${session.authorities}" class="nav-item">
-            <a class="nav-link" th:href="${authority.LinkAddress}">
-                <i th:class="${authority.Icon}"></i>
-                <span class="nav-link-text" th:text="${authority.Header}"></span>
+          <a class="nav-link" th:href="@{${authority.LinkAddress}}">
+            <i th:class="${authority.Icon}"></i>
+                <span class="nav-link-text" th:text="${authority.FriendlyName}"></span>
             </a>
         </li>
         
