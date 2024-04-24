@@ -8,6 +8,7 @@ import org.springframework.cglib.core.ClassInfo;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.util.ResourceUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -362,27 +363,17 @@ public class AdminController {
     @PostMapping("/addclass")
     public ModelAndView addClass(@ModelAttribute("classObj") @Valid Classes classObj,
                                  @RequestParam("week-days[]") List<String> weekDays,
-                                 @RequestParam("file") MultipartFile file,
-                                 BindingResult result) {
+                                 @RequestParam("file") MultipartFile file) {
         ModelAndView modelAndView = new ModelAndView();
-    
-        // Check for validation errors
-        if (result.hasErrors()) {
-            // Handle validation errors, e.g., return to the form with error messages
-            modelAndView.setViewName("your_form_view");
-            return modelAndView;
-        }
     
         try {
             // Handle file upload and get file path
-            String filePath = handleFileUpload(file);
-    
-            // Set the file path in the classObj if file uploaded successfully
-            if (filePath != null) {
-                classObj.setImgPath(filePath);
+            String fileName = handleFileUpload(file);
+
+            if (fileName != null) {
+                classObj.setImgPath(fileName);
             }
-    
-            // Save the classObj to the database
+
             this.classesRepository.save(classObj);
     
             // Save the selected weekdays
@@ -396,9 +387,7 @@ public class AdminController {
             // Redirect to a success page
             modelAndView.setViewName("redirect:/admindashboard/classes");
         } catch (Exception e) {
-            // Handle exceptions
             System.out.println("Error adding class: " + e.getMessage());
-            // Redirect to an error page or show an error message
             modelAndView.setViewName("error_page");
         }
     
@@ -406,23 +395,24 @@ public class AdminController {
     }
     
     
-    // Method to handle file upload and return file path
     private String handleFileUpload(MultipartFile file) {
         String filePath = null;
+        String fileName = null;
         try {
             if (!file.isEmpty()) {
-                String fileName = file.getOriginalFilename();
-                filePath = "/static/images/" + fileName; // Adjust the path to match your project structure
+                fileName = file.getOriginalFilename();
+                String uploadDir = System.getProperty("user.dir") + "/profitgym/src/main/resources/static/images/";
+                filePath = uploadDir + fileName;
+                
     
                 // Save the uploaded file to the desired location
                 File destFile = new File(filePath);
                 file.transferTo(destFile);
             }
         } catch (Exception e) {
-            // Handle file upload exception
             System.out.println("Error storing file: " + e.getMessage());
         }
-        return filePath;
+        return fileName;
     }
     
 
