@@ -4,9 +4,11 @@ import java.util.Optional;
 
 import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cglib.core.ClassInfo;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -14,19 +16,25 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.profitgym.profitgym.models.Authority;
+import com.profitgym.profitgym.models.ClassDays;
+import com.profitgym.profitgym.models.Classes;
 import com.profitgym.profitgym.models.Client;
 import com.profitgym.profitgym.models.Employee;
 import com.profitgym.profitgym.models.Package;
 import com.profitgym.profitgym.repositories.AuthorityRepository;
+import com.profitgym.profitgym.repositories.ClassDaysRepository;
+import com.profitgym.profitgym.repositories.ClassesRepository;
 import com.profitgym.profitgym.repositories.ClientRepository;
 import com.profitgym.profitgym.repositories.EmployeeRepository;
 import com.profitgym.profitgym.repositories.JobTitlesRepository;
 import com.profitgym.profitgym.repositories.PackageRepository;
 
 import jakarta.annotation.PostConstruct;
+import jakarta.validation.Valid;
 
 import java.util.Random;
 
@@ -34,6 +42,7 @@ import org.springframework.mail.MailException;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 
+import java.io.File;
 import java.util.List;
 
 @RestController
@@ -53,6 +62,12 @@ public class AdminController {
 
     @Autowired
     private AuthorityRepository authorityRepository;
+
+    @Autowired
+    private ClassesRepository classesRepository;
+
+    @Autowired
+    private ClassDaysRepository classDaysRepository;
 
     @Autowired
     private JavaMailSender emailSender;
@@ -165,7 +180,8 @@ public class AdminController {
         clientObj.setPassword(encoddedPassword);
         this.clientRepository.save(clientObj);
         sendEmail(clientObj.getEmail(), "Welcome to Profit Gym!",
-                "Hello, " +clientObj.getFirstName()+ ". \n\nYour account has been created. Your temporary password is: " + generatedPassword
+                "Hello, " + clientObj.getFirstName()
+                        + ". \n\nYour account has been created. Your temporary password is: " + generatedPassword
                         + "\n\nPlease log in and change your password.");
 
         System.out.println("Client added");
@@ -195,9 +211,10 @@ public class AdminController {
             String encoddedPassword = BCrypt.hashpw(generatedPassword, BCrypt.gensalt(12));
             employeeObj.setPassword(encoddedPassword);
             this.employeeRepository.save(employeeObj);
-            String emailBody = "Hello, "+ employeeObj.getName() + ". \n\nYour account has been created. Your temporary password is: " + generatedPassword
-                            + "\n\nPlease log in and change your password.";
-        sendEmail(employeeObj.getEmail(), "Welcome to Our Company!", emailBody);
+            String emailBody = "Hello, " + employeeObj.getName()
+                    + ". \n\nYour account has been created. Your temporary password is: " + generatedPassword
+                    + "\n\nPlease log in and change your password.";
+            sendEmail(employeeObj.getEmail(), "Welcome to Our Company!", emailBody);
 
             System.out.println("Employee added");
             modelAndView.setViewName("redirect:/admindashboard/addemployee");
@@ -213,14 +230,13 @@ public class AdminController {
             message.setTo(recipientEmail);
             message.setSubject(subject);
             message.setText(body);
-    
+
             emailSender.send(message);
             System.out.println("Email sent successfully to: " + recipientEmail);
         } catch (MailException e) {
             System.err.println("Error sending email: " + e.getMessage());
         }
     }
-    
 
     @PostMapping("deleteemployee")
     public ModelAndView deleteEmployee(@RequestParam("id") int employeeId) {
@@ -339,8 +355,76 @@ public class AdminController {
     @GetMapping("addclass")
     public ModelAndView getClassForm() {
         ModelAndView mav = new ModelAndView("addClassAdminDash.html");
+        mav.addObject("classObj", new Classes());
         return mav;
     }
+
+    @PostMapping("/addclass")
+    public ModelAndView addClass(@ModelAttribute("classObj") @Valid Classes classObj,
+                                 @RequestParam("week-days[]") List<String> weekDays,
+                                 @RequestParam("file") MultipartFile file,
+                                 BindingResult result) {
+        ModelAndView modelAndView = new ModelAndView();
+    
+        // Check for validation errors
+        if (result.hasErrors()) {
+            // Handle validation errors, e.g., return to the form with error messages
+            modelAndView.setViewName("your_form_view");
+            return modelAndView;
+        }
+    
+        try {
+            // Handle file upload and get file path
+            String filePath = handleFileUpload(file);
+    
+            // Set the file path in the classObj if file uploaded successfully
+            if (filePath != null) {
+                classObj.setImgPath(filePath);
+            }
+    
+            // Save the classObj to the database
+            this.classesRepository.save(classObj);
+    
+            // Save the selected weekdays
+            for (String day : weekDays) {
+                ClassDays classDay = new ClassDays();
+                classDay.setClassID(classObj.getID());
+                classDay.setDays(day);
+                this.classDaysRepository.save(classDay);
+            }
+    
+            // Redirect to a success page
+            modelAndView.setViewName("redirect:/admindashboard/classes");
+        } catch (Exception e) {
+            // Handle exceptions
+            System.out.println("Error adding class: " + e.getMessage());
+            // Redirect to an error page or show an error message
+            modelAndView.setViewName("error_page");
+        }
+    
+        return modelAndView;
+    }
+    
+    
+    // Method to handle file upload and return file path
+    private String handleFileUpload(MultipartFile file) {
+        String filePath = null;
+        try {
+            if (!file.isEmpty()) {
+                String fileName = file.getOriginalFilename();
+                filePath = "/static/images/" + fileName; // Adjust the path to match your project structure
+    
+                // Save the uploaded file to the desired location
+                File destFile = new File(filePath);
+                file.transferTo(destFile);
+            }
+        } catch (Exception e) {
+            // Handle file upload exception
+            System.out.println("Error storing file: " + e.getMessage());
+        }
+        return filePath;
+    }
+    
 
     @GetMapping("addpackage")
     public ModelAndView getPackageForm() {

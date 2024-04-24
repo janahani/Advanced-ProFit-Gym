@@ -1,5 +1,8 @@
 package com.profitgym.profitgym.models;
 
+import org.springframework.web.multipart.MultipartFile;
+
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -13,8 +16,10 @@ public class Classes {
     private int ID;
     private String Name;
     private String Description;
-    private String ImgPath;
+    private String imgPath;
 
+    public Classes() {
+    }
 
     public int getID() {
         return this.ID;
@@ -41,11 +46,13 @@ public class Classes {
     }
 
     public String getImgPath() {
-        return this.ImgPath;
+        return this.imgPath;
     }
 
-    public void setImgPath(String ImgPath) {
-        this.ImgPath = ImgPath;
+    public void setImgPath(String imgPath) {
+        this.imgPath = imgPath;
     }
+
+
    
 }

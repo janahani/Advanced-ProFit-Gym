@@ -83,7 +83,7 @@
                     <h6 class="card-text" id="visits">
                         <i class="fa-regular fa-circle-check" style="color: #fe3401;"></i>
                         <span
-                            th:text="${package.isVisitsLimited} ? ${package.numOfVisits} + ' Visits' : 'Unlimited Visits'"></span>
+                            th:text="${package.VisitsLimit} + ' Visits Limit' "></span>
                     </h6>
                     <h6 class="card-text" id="invitations">
                         <i class="fa-regular fa-circle-check"></i>

@@ -10,13 +10,12 @@ public class ClassDays {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int ID;
     private int ClassID;
-    private String Day;
+    private String Days;
 
-    ClassDays()
+    public ClassDays()
     {
 
     }
-
     public int getID() {
         return this.ID;
     }
@@ -33,12 +32,15 @@ public class ClassDays {
         this.ClassID = ClassID;
     }
 
-    public String getDay() {
-        return this.Day;
+    public String getDays() {
+        return this.Days;
     }
 
-    public void setDay(String Day) {
-        this.Day = Day;
+    public void setDays(String Days) {
+        this.Days = Days;
     }
+
+
+
     
 }
