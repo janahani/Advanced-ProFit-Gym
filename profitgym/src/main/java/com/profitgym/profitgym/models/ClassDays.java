@@ -9,7 +9,7 @@ public class ClassDays {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int ID;
-    private int ClassID;
+    private int classID;
     private String Days;
 
     public ClassDays()
@@ -25,11 +25,11 @@ public class ClassDays {
     }
 
     public int getClassID() {
-        return this.ClassID;
+        return this.classID;
     }
 
-    public void setClassID(int ClassID) {
-        this.ClassID = ClassID;
+    public void setClassID(int classID) {
+        this.classID = classID;
     }
 
     public String getDays() {

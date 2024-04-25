@@ -44,7 +44,16 @@ import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 
 import java.io.File;
+import java.time.DayOfWeek;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.TextStyle;
+import java.time.temporal.TemporalAdjusters;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/admindashboard")
@@ -362,10 +371,10 @@ public class AdminController {
 
     @PostMapping("/addclass")
     public ModelAndView addClass(@ModelAttribute("classObj") @Valid Classes classObj,
-                                 @RequestParam("week-days[]") List<String> weekDays,
-                                 @RequestParam("file") MultipartFile file) {
+            @RequestParam("week-days[]") List<String> weekDays,
+            @RequestParam("file") MultipartFile file) {
         ModelAndView modelAndView = new ModelAndView();
-    
+
         try {
             // Handle file upload and get file path
             String fileName = handleFileUpload(file);
@@ -375,7 +384,7 @@ public class AdminController {
             }
 
             this.classesRepository.save(classObj);
-    
+
             // Save the selected weekdays
             for (String day : weekDays) {
                 ClassDays classDay = new ClassDays();
@@ -383,18 +392,17 @@ public class AdminController {
                 classDay.setDays(day);
                 this.classDaysRepository.save(classDay);
             }
-    
+
             // Redirect to a success page
             modelAndView.setViewName("redirect:/admindashboard/classes");
         } catch (Exception e) {
             System.out.println("Error adding class: " + e.getMessage());
             modelAndView.setViewName("error_page");
         }
-    
+
         return modelAndView;
     }
-    
-    
+
     private String handleFileUpload(MultipartFile file) {
         String filePath = null;
         String fileName = null;
@@ -403,8 +411,7 @@ public class AdminController {
                 fileName = file.getOriginalFilename();
                 String uploadDir = System.getProperty("user.dir") + "/profitgym/src/main/resources/static/images/";
                 filePath = uploadDir + fileName;
-                
-    
+
                 // Save the uploaded file to the desired location
                 File destFile = new File(filePath);
                 file.transferTo(destFile);
@@ -414,7 +421,6 @@ public class AdminController {
         }
         return fileName;
     }
-    
 
     @GetMapping("addpackage")
     public ModelAndView getPackageForm() {
@@ -439,7 +445,37 @@ public class AdminController {
         mav.addObject("classes", classes);
         List<Employee> coaches = this.employeeRepository.findByJobTitle(3);
         mav.addObject("coaches", coaches);
-    
+
+        LocalDate currentDate = LocalDate.now();
+
+        List<String> availableClassDays = new ArrayList<>();
+
+        // Iterate through the classes to find the upcoming class days
+        for (Classes classObj : classes) {
+            int classId = classObj.getID();
+            List<ClassDays> classDays = this.classDaysRepository.findByClassID(classId);
+
+            Map<String, DayOfWeek> dayNameToDayOfWeek = new HashMap<>();
+            dayNameToDayOfWeek.put("Monday", DayOfWeek.MONDAY);
+            dayNameToDayOfWeek.put("Tuesday", DayOfWeek.TUESDAY);
+            dayNameToDayOfWeek.put("Wednesday", DayOfWeek.WEDNESDAY);
+            dayNameToDayOfWeek.put("Thursday", DayOfWeek.THURSDAY);
+            dayNameToDayOfWeek.put("Friday", DayOfWeek.FRIDAY);
+            dayNameToDayOfWeek.put("Saturday", DayOfWeek.SATURDAY);
+            dayNameToDayOfWeek.put("Sunday", DayOfWeek.SUNDAY);
+
+            // Iterate through the class days to find the upcoming dates
+            for (ClassDays day : classDays) {
+                String dayOfWeekStr = day.getDays();
+                DayOfWeek dayOfWeek = dayNameToDayOfWeek.get(dayOfWeekStr);
+                LocalDate upcomingDate = currentDate.with(TemporalAdjusters.nextOrSame(dayOfWeek));
+                String formattedDate = upcomingDate.format(DateTimeFormatter.ofPattern("EEEE dd-MM-yyyy"));
+                availableClassDays.add(formattedDate);
+            }
+        }
+
+        mav.addObject("availableClassDays", availableClassDays);
+
         return mav;
     }
 

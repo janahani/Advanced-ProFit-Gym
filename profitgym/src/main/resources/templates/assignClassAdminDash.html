@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700">
     <link rel="stylesheet"
         href="https://rawcdn.githack.com/Loopple/loopple-public-assets/ad60f16c8a16d1dcad75e176c00d7f9e69320cd4/argon-dashboard/css/nucleo/css/nucleo.css">
-        <link rel="stylesheet" type="text/css" th:href="@{/CSS/theme.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/CSS/theme.css}">
 </head>
 
 <body>
@@ -21,19 +21,19 @@
                 <div class="col-lg">
                     <div class="user-form">
                         <h1>Assign Class to Coach</h1>
-                        <form class="add-user">
+                        <form class="add-user" th:action="@{/admindashboard/addclass}" th:object="${classObj}" method="POST">
                             <label for="class">Class</label>
                             <select class="add-user-input" name="Class">
                                 <div th:each="class: ${classes}" class="classBox">
-                                <option value="" th:text="${class.Name}"></option>
+                                    <option value="" th:text="${class.Name}"></option>
                                 </div>
                             </select>
                             <hr>
-                            
+
                             <label for="coach">Coach</label>
                             <select class="add-user-input" name="Coach">
                                 <div th:each="coach: ${coaches}" class="coachBox">
-                                <option value="" th:text="${coach.Name}"></option>
+                                    <option value="" th:text="${coach.Name}"></option>
                                 </div>
                             </select>
                             <hr>
@@ -61,14 +61,24 @@
                                 placeholder="Number Of Attendants">
 
                             <br>
+
+                            <label for="class-day">Days</label>
+                            <select class="add-user-input" name="ClassDay">
+                                <div th:each="day: ${availableClassDays}" class="dayBox">
+                                    <option value="" th:text="${day}"></option>
+                                </div>
+                            </select>
+
+                            <hr>
                             <br>
+
                             <button class="btn btn-add-form" type="submit">Assign Class</button>
                         </form>
                         <script>
                             function togglePriceField() {
                                 var freeSelect = document.getElementById("free-select");
                                 var priceField = document.getElementById("price-field");
-                        
+
                                 if (freeSelect.value === "yes") {
                                     priceField.style.display = "none";
                                 } else {
