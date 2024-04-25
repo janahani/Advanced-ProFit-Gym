@@ -20,15 +20,24 @@
             <div class="row removable">
                 <div class="col-lg">
                     <div class="user-form">
-                        <h1>Assign a Class to Lamees</h1>
+                        <h1>Assign Class to Coach</h1>
                         <form class="add-user">
+                            <label for="class">Class</label>
                             <select class="add-user-input" name="Class">
-                                <option value="">Class</option>
-                                <option value="cross-fit">Cross Fit</option>
-                                <option value="cardio">Cardio </option>
+                                <div th:each="class: ${classes}" class="classBox">
+                                <option value="" th:text="${class.Name}"></option>
+                                </div>
                             </select>
                             <hr>
                             
+                            <label for="coach">Coach</label>
+                            <select class="add-user-input" name="Coach">
+                                <div th:each="coach: ${coaches}" class="coachBox">
+                                <option value="" th:text="${coach.Name}"></option>
+                                </div>
+                            </select>
+                            <hr>
+
                             <label for="start-time">Start Time</label>
                             <input class="add-user-input" type="time" name="start-time" id="">
                             <br>
@@ -36,19 +45,37 @@
                             <input class="add-user-input" type="time" name="end-time" id="">
                             <br>
                             <hr>
-                            <select class="add-user-input" name="availablilty">
-                                <option value="">Availablilty</option>
-                                <option value="cross-fit">Available</option>
-                                <option value="cardio">Unavailable</option>
+
+                            <label for="free">Free</label>
+                            <select class="add-user-input" id="free-select" onchange="togglePriceField()">
+                                <option value="yes">Yes</option>
+                                <option value="no">No</option>
                             </select>
+                            <br>
+
+                            <div id="price-field" style="display:none;">
+                                <input class="add-user-input" type="text" name="price" placeholder="Price">
+                            </div>
+
                             <input class="add-user-input" type="text" name="no-of-attendants" id=""
                                 placeholder="Number Of Attendants">
-
 
                             <br>
                             <br>
                             <button class="btn btn-add-form" type="submit">Assign Class</button>
                         </form>
+                        <script>
+                            function togglePriceField() {
+                                var freeSelect = document.getElementById("free-select");
+                                var priceField = document.getElementById("price-field");
+                        
+                                if (freeSelect.value === "yes") {
+                                    priceField.style.display = "none";
+                                } else {
+                                    priceField.style.display = "block";
+                                }
+                            }
+                        </script>
                     </div>
                 </div>
             </div>

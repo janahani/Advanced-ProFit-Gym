@@ -26384,3 +26384,8 @@ pre>code.highlight {
   {
     color: #ffffff
   }
+
+  #price-field {
+    display: flex;
+    align-items: center;
+  }

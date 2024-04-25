@@ -3,6 +3,7 @@ package com.profitgym.profitgym.models;
 import java.io.Serializable;
 import java.util.Objects;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -18,7 +19,7 @@ public class Employee implements Serializable {
     private int PhoneNumber;
     private double Salary;
     private String Address;
-    private int JobTitle;
+    private int jobTitle;
     private String Password;
 
     public Employee(int iD, String name, String Email, int phoneNumber, double salary, String address, Integer jobTitle,
@@ -29,7 +30,7 @@ public class Employee implements Serializable {
         PhoneNumber = phoneNumber;
         Salary = salary;
         Address = address;
-        JobTitle = jobTitle;
+        this.jobTitle = jobTitle;
         Password = password;
     }
 
@@ -84,12 +85,12 @@ public class Employee implements Serializable {
         Address = address;
     }
 
-    public Integer getJobTitle() {
-        return JobTitle;
+    public int getJobTitle() {
+        return jobTitle;
     }
 
-    public void setJobTitle(Integer jobTitle) {
-        JobTitle = jobTitle;
+    public void setJobTitle(int jobTitle) {
+        this.jobTitle = jobTitle;
     }
 
     public String getPassword() {
@@ -100,31 +101,5 @@ public class Employee implements Serializable {
         Password = password;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o)
-            return true;
-        if (!(o instanceof Employee)) {
-            return false;
-        }
-        Employee employee = (Employee) o;
-        return ID == employee.ID && PhoneNumber == employee.PhoneNumber && Double.compare(employee.Salary, Salary) == 0
-                && Objects.equals(Name, employee.Name) && Objects.equals(email, employee.email)
-                && Objects.equals(Address, employee.Address) && Objects.equals(JobTitle, employee.JobTitle)
-                && Objects.equals(Password, employee.Password);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(ID, Name, email, PhoneNumber, Salary, Address, JobTitle, Password);
-    }
-
-    @Override
-    public String toString() {
-        return "{" + " ID='" + getId() + "'" + ", Name='" + getName() + "'" + ", Email='" + getEmail() + "'"
-                + ", PhoneNumber='" + getPhoneNumber() + "'" + ", Salary='" + getSalary() + "'" + ", Address='"
-                + getAddress() + "'" + ", JobTitle='" + getJobTitle() + "'" + ", Password='" + getPassword() + "'"
-                + "}";
-    }
 
 }

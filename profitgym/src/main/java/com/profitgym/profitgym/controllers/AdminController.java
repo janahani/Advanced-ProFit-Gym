@@ -432,4 +432,15 @@ public class AdminController {
         return modelAndView;
     }
 
+    @GetMapping("assignclass")
+    public ModelAndView getClasses() {
+        ModelAndView mav = new ModelAndView("assignClassAdminDash.html");
+        List<Classes> classes = this.classesRepository.findAll();
+        mav.addObject("classes", classes);
+        List<Employee> coaches = this.employeeRepository.findByJobTitle(3);
+        mav.addObject("coaches", coaches);
+    
+        return mav;
+    }
+
 }
