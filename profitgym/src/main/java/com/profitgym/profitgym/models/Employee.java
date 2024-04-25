@@ -35,11 +35,11 @@ public class Employee implements Serializable {
     public Employee() {
     }
 
-    public int getId() {
-        return ID;
+    public int getID() {
+        return this.ID;
     }
 
-    public void setId(int ID) {
+    public void setID(int ID) {
         this.ID = ID;
     }
 

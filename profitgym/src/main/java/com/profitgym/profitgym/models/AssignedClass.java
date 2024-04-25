@@ -22,7 +22,7 @@ public class AssignedClass {
     private int NumOfAttendants;
     private int AvailablePlaces;
 
-    AssignedClass()
+    public AssignedClass()
     {
 
     }
@@ -106,6 +106,7 @@ public class AssignedClass {
     public void setAvailablePlaces(int AvailablePlaces) {
         this.AvailablePlaces = AvailablePlaces;
     }
+
 
 
 

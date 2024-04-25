@@ -21,53 +21,61 @@
                 <div class="col-lg">
                     <div class="user-form">
                         <h1>Assign Class to Coach</h1>
-                        <form class="add-user" th:action="@{/admindashboard/addclass}" th:object="${classObj}" method="POST">
+                        <form class="add-user" th:action="@{/admindashboard/assignclass}" th:object="${assignClassObj}"
+                            method="POST">
                             <label for="class">Class</label>
-                            <select class="add-user-input" name="Class">
+                            <select class="add-user-input" name="ClassID">
                                 <div th:each="class: ${classes}" class="classBox">
-                                    <option value="" th:text="${class.Name}"></option>
+                                    <option th:value="${class.ID}" th:text="${class.Name}"></option>
                                 </div>
                             </select>
                             <hr>
 
                             <label for="coach">Coach</label>
-                            <select class="add-user-input" name="Coach">
+                            <select class="add-user-input" name="CoachID">
                                 <div th:each="coach: ${coaches}" class="coachBox">
-                                    <option value="" th:text="${coach.Name}"></option>
+                                    <option th:value="${coach.ID}" th:text="${coach.Name}"></option>
                                 </div>
                             </select>
                             <hr>
 
                             <label for="start-time">Start Time</label>
-                            <input class="add-user-input" type="time" name="start-time" id="">
+                            <input class="add-user-input" type="time" name="startTime" id="">
                             <br>
+
                             <label for="end-time">End Time</label>
-                            <input class="add-user-input" type="time" name="end-time" id="">
+                            <input class="add-user-input" type="time" name="endTime" id="">
                             <br>
                             <hr>
+                     
+
+                            <br>
 
                             <label for="free">Free</label>
-                            <select class="add-user-input" id="free-select" onchange="togglePriceField()">
-                                <option value="yes">Yes</option>
-                                <option value="no">No</option>
+                            <select class="add-user-input" id="free-select" onchange="togglePriceField()" name="isFree">
+                                <option value="yes" th:selected="${assignClassObj.isFree eq 'yes'}">Yes</option>
+                                <option value="no" th:selected="${assignClassObj.isFree eq 'no'}">No</option>
                             </select>
                             <br>
 
                             <div id="price-field" style="display:none;">
-                                <input class="add-user-input" type="text" name="price" placeholder="Price">
+                                <label for="price">Price</label>
+                                <input class="add-user-input" type="number" name="price" placeholder="Price"
+                                    th:field="*{Price}">
                             </div>
-
-                            <input class="add-user-input" type="text" name="no-of-attendants" id=""
-                                placeholder="Number Of Attendants">
-
                             <br>
 
+                            <label for="num-of-attendants">Number Of Attendants</label>
+                            <input class="add-user-input" type="number" name="no-of-attendants" id="" th:field="*{NumOfAttendants}">
+
+                            <br>
                             <label for="class-day">Days</label>
                             <select class="add-user-input" name="ClassDay">
                                 <div th:each="day: ${availableClassDays}" class="dayBox">
-                                    <option value="" th:text="${day}"></option>
+                                    <option th:value="${day}" th:text="${day}"></option>
                                 </div>
                             </select>
+
 
                             <hr>
                             <br>

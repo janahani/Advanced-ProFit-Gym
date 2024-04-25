@@ -5,6 +5,7 @@ import java.util.Optional;
 import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cglib.core.ClassInfo;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -20,12 +21,14 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.profitgym.profitgym.models.AssignedClass;
 import com.profitgym.profitgym.models.Authority;
 import com.profitgym.profitgym.models.ClassDays;
 import com.profitgym.profitgym.models.Classes;
 import com.profitgym.profitgym.models.Client;
 import com.profitgym.profitgym.models.Employee;
 import com.profitgym.profitgym.models.Package;
+import com.profitgym.profitgym.repositories.AssignedClassRepository;
 import com.profitgym.profitgym.repositories.AuthorityRepository;
 import com.profitgym.profitgym.repositories.ClassDaysRepository;
 import com.profitgym.profitgym.repositories.ClassesRepository;
@@ -46,6 +49,7 @@ import org.springframework.mail.javamail.JavaMailSender;
 import java.io.File;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.TextStyle;
 import java.time.temporal.TemporalAdjusters;
@@ -75,6 +79,9 @@ public class AdminController {
 
     @Autowired
     private ClassesRepository classesRepository;
+
+    @Autowired
+    private AssignedClassRepository assignedClassRepository;
 
     @Autowired
     private ClassDaysRepository classDaysRepository;
@@ -347,7 +354,7 @@ public class AdminController {
             @RequestParam(value = "jobTitleHidden", required = false) Integer jobTitle) {
         // Log the ID of the employeeObj before saving
         ModelAndView modelAndView = new ModelAndView();
-        System.out.println("Employee ID before saving: " + employeeObj.getId());
+        System.out.println("Employee ID before saving: " + employeeObj.getID());
 
         if (jobTitle != null) {
             employeeObj.setJobTitle(jobTitle);
@@ -446,6 +453,8 @@ public class AdminController {
         List<Employee> coaches = this.employeeRepository.findByJobTitle(3);
         mav.addObject("coaches", coaches);
 
+        mav.addObject("assignClassObj", new AssignedClass());
+
         LocalDate currentDate = LocalDate.now();
 
         List<String> availableClassDays = new ArrayList<>();
@@ -477,6 +486,37 @@ public class AdminController {
         mav.addObject("availableClassDays", availableClassDays);
 
         return mav;
+    }
+
+    @PostMapping("assignclass")
+    public ModelAndView assignClass(@ModelAttribute("assignClassObj") AssignedClass assignedClass,
+            @RequestParam("startTime") @DateTimeFormat(pattern = "HH:mm") LocalTime startTime,
+            @RequestParam("endTime") @DateTimeFormat(pattern = "HH:mm") LocalTime endTime,
+            @RequestParam("ClassDay") String classDay) {
+
+        ModelAndView modelAndView = new ModelAndView();
+        try {
+            assignedClass.setClassID(assignedClass.getClassID());
+            assignedClass.setCoachID(assignedClass.getCoachID());
+
+            assignedClass.setAvailablePlaces(assignedClass.getNumOfAttendants());
+
+            assignedClass.setStartTime(startTime);
+            assignedClass.setEndTime(endTime);
+
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("EEEE dd-MM-yyyy", Locale.ENGLISH);
+            LocalDate selectedDate = LocalDate.parse(classDay, formatter);
+
+            assignedClass.setDate(selectedDate);
+
+            this.assignedClassRepository.save(assignedClass);
+
+            modelAndView.setViewName("redirect:/admindashboard/assignclass");
+        } catch (Exception ex) {
+            System.out.println("Error: " + ex.getMessage());
+            modelAndView.setViewName("error_page");
+        }
+        return modelAndView;
     }
 
 }
