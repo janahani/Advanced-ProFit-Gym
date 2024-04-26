@@ -21,12 +21,12 @@
 <body>
        <!-- usersidebar -->
        <div th:replace="~{partials/usersidebar}"></div>
-
-    <div class="profile">
-        <div th:if="${membership != null && membership.isActivated == 'Activated' }">
         <div class="greeting">
             <p class="hello" style="font-weight: bold;">Your Package Details </p>
         </div>
+    <div class="profile">
+        <div th:if="${membership != null && membership.isActivated == 'Activated' }">
+        
         <div class="membership-details">
             <p class="currpackage">Current Package:</p>
             <div class="membership-title">
