@@ -21,43 +21,49 @@
 <body>
        <!-- usersidebar -->
        <div th:replace="~{partials/usersidebar}"></div>
-
-    <div class="profile">
-
         <div class="greeting">
             <p class="hello" style="font-weight: bold;">Your Package Details </p>
         </div>
+    <div class="profile">
+        <div th:if="${membership != null && membership.isActivated == 'Activated' }">
+        
         <div class="membership-details">
             <p class="currpackage">Current Package:</p>
-            <div class="membership-title">2 MONTHS</div>
+            <div class="membership-title">
+                <h4 th:text="${package.Title}"></h4>
+            </div>
             <div class="dates">
                 <div class="date">
                     <p>Start Date:</p>
-                    <div class="start-date">21-06-2023</div>
+                    <div class="start-date">
+                        <h4 th:text="${membership.StartDate}"></h4>
+                    </div>
                 </div>
                 <div class="date">
                     <p>End Date:</p>
-                    <div class="end-date">21-08-2023</div>
+                    <div class="end-date">
+                        <h4 th:text="${membership.EndDate}"></h4>
+                    </div>
                 </div>
             </div>
 
             <div class="rem-info">
                 <p>Remaining Invitations:</p>
-                <p class="actual-rem">2 Out of 4 Invitations Left.</p>
+                <p class="actual-rem"><span th:text="${membership.InvitationsCount}"></span> Out of <span th:text="${package.NumOfInvitations}"></span> Invitations Left.</p>
                 <p>Remaining Inbodies:</p>
-                <p class="actual-rem"> 2 Out of 4 Inbodies Left.</p>
+                <p class="actual-rem"> <span th:text="${membership.InbodySessionsCount}"></span> Out of <span th:text="${package.NumOfInbodySessions}"></span> Inbodies Left.</p>
                 <p>Remaining PT Sessions: </p>
-                <p class="actual-rem">2 Out of 2 PT Sessions Left.</p>
+                <p class="actual-rem"> <span th:text="${membership.PrivateTrainingSessionsCount}"></span> Out of <span th:text="${package.NumOfPrivateTrainingSessions}"></span> PT Sessions Left.</p>
                 <p>Remaining Freeze Attempts: </p>
-                <p class="actual-rem">3 Weeks Out of 5 Left.</p>
+                <p class="actual-rem"> <span th:text="${membership.FreezeCount}"></span> Days Out of <span th:text="${package.FreezeLimit}"></span> Left.</p>
             </div>
         </div>
         <h2 class="reminder-title" style="padding-top: 50px">Package Summary:</h2>
-        <p class="pack-sum"> You're currently subscribed to the 2 Months membership package for 2500 L.E. You have
+        <p class="pack-sum"> You're currently subscribed to the <span th:text="${package.Title}"></span> membership package for <span th:text="${package.Price}"></span> L.E. You have
             full access to the gym facilities as you desire anytime. You're also free to attend as
             many classes as you'd prefer. Please, make sure to reserve first to secure your spot.
         </p>
-
+        </div>
     </div>
 
     <!-- footer -->
@@ -66,3 +72,5 @@
 </body>
 
 </html>
+
+
