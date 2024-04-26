@@ -1,5 +1,7 @@
 package com.profitgym.profitgym.models;
 
+import java.time.LocalDate;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -13,14 +15,14 @@ public class Memberships {
     private int ID;
     private int ClientID;
     private int PackageID;
-    private int StartDate;
-    private int EndDate;
+    private LocalDate StartDate;
+    private LocalDate EndDate;
     private int VisitsCount;
     private int InvitationsCount;
     private int InbodySessionsCount;
     private int PrivateTrainingSessionsCount;
     private int FreezeCount;
-    private int Freezed;
+    private String Freezed;
     private String isActivated;
 
     public Memberships() {
@@ -49,22 +51,6 @@ public class Memberships {
 
     public void setPackageID(int PackageID) {
         this.PackageID = PackageID;
-    }
-
-    public int getStartDate() {
-        return this.StartDate;
-    }
-
-    public void setStartDate(int StartDate) {
-        this.StartDate = StartDate;
-    }
-
-    public int getEndDate() {
-        return this.EndDate;
-    }
-
-    public void setEndDate(int EndDate) {
-        this.EndDate = EndDate;
     }
 
     public int getVisitsCount() {
@@ -107,11 +93,11 @@ public class Memberships {
         this.FreezeCount = FreezeCount;
     }
 
-    public int getFreezed() {
+    public String getFreezed() {
         return this.Freezed;
     }
 
-    public void setFreezed(int Freezed) {
+    public void setFreezed(String Freezed) {
         this.Freezed = Freezed;
     }
 
@@ -122,5 +108,23 @@ public class Memberships {
     public void setIsActivated(String isActivated) {
         this.isActivated = isActivated;
     }
-   
+
+
+    public LocalDate getStartDate() {
+        return this.StartDate;
+    }
+
+    public void setStartDate(LocalDate StartDate) {
+        this.StartDate = StartDate;
+    }
+
+    public LocalDate getEndDate() {
+        return this.EndDate;
+    }
+
+    public void setEndDate(LocalDate EndDate) {
+        this.EndDate = EndDate;
+    }
+
+
 }

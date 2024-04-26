@@ -2,7 +2,10 @@ package com.profitgym.profitgym.controllers;
 
 import com.profitgym.profitgym.controllers.IndexController;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Optional;
 
 import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,9 +21,11 @@ import org.springframework.validation.annotation.Validated;
 
 import com.profitgym.profitgym.models.Client;
 import com.profitgym.profitgym.models.Employee;
+import com.profitgym.profitgym.models.Memberships;
 import com.profitgym.profitgym.models.Package;
 import com.profitgym.profitgym.repositories.ClientRepository;
 import com.profitgym.profitgym.repositories.PackageRepository;
+import com.profitgym.profitgym.repositories.MembershipsRepository;
 
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
@@ -37,6 +42,9 @@ public class UserController {
 
     @Autowired
     IndexController indexController;
+
+    @Autowired
+    private MembershipsRepository membershipsRepository;
 
     public UserController(ClientRepository clientRepository) {
         this.clientRepository=clientRepository;
@@ -60,8 +68,51 @@ public class UserController {
         ModelAndView mav = new ModelAndView("packagebooking.html");
         List<Package> packages = this.packageRepository.findAll();
         mav.addObject("packages", packages);
+        mav.addObject("MembershipObj", new Memberships());
         return mav;
     }
+
+    @PostMapping("bookpackage")
+    public ModelAndView RequestPackage(@ModelAttribute("MembershipObj") Memberships membership, 
+                                    HttpSession session) {
+        
+        ModelAndView modelAndView = new ModelAndView();
+        Client loggedInUser = (Client) session.getAttribute("loggedInUser");
+        int numOfMonths = 0;
+        int freezeCount = 0;
+        try {
+            membership.setClientID(loggedInUser.getID());
+
+            Optional<Package> packageOptional = this.packageRepository.findById(membership.getPackageID());
+
+            if (packageOptional.isPresent()) {
+                Package Package = packageOptional.get();
+                numOfMonths = Package.getNumOfMonths();
+                freezeCount = Package.getFreezeLimit();
+            }
+
+            LocalDate startDate = LocalDate.now();
+            membership.setStartDate(startDate);
+
+            LocalDate endDate = startDate.plusMonths(numOfMonths);
+            membership.setEndDate(endDate);
+            
+            membership.setFreezeCount(freezeCount);
+            
+            membership.setFreezed("Not Freezed");
+
+            membership.setIsActivated("Not Activated");
+
+            this.membershipsRepository.save(membership);
+
+            modelAndView.setViewName("redirect:/user/bookpackage");
+        } catch (Exception ex) {
+            System.out.println("Error: " + ex.getMessage());
+            modelAndView.setViewName("error_page");
+        }
+        return modelAndView;
+    }
+
 
     @GetMapping("bookclass")
     public ModelAndView getClassBooking() {

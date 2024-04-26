@@ -33,31 +33,35 @@
     margin-bottom:3%;">Types:</h2>
 
         <div class="row row-cols-1 row-cols-md-3 g-4 py-5">
-
-            <!-- first membership -->
+            
             <div th:each="package: ${packages}" class="col">
-                <div class="card">
-                    <div  class="card-body">
-                        <h4 th:text="${package.Title}" class="card-title"></h4>
+                <form th:action="@{/user/bookpackage}" th:object="${MembershipObj}" method="POST">
+                    <div class="card">
+                        <div class="card-body">
+                            <input type="hidden" name="PackageID" th:value="${package.ID}" />
 
-                        <h6  th:text="${package.VisitsLimit + ' Visits Limit'}" 
-                        class="card-text" id="visitslimit"><i class="fa-regular fa-circle-check"></i></h6>
-
-                        <h6   th:text="${package.NumOfInvitations + ' Invitations'}" 
-                        class="card-text" id="invitations"><i class="fa-regular fa-circle-check"></i></h6>
-
-                        <h6 th:text="${package.NumOfInbodySessions + ' Inbody Sessions'}" 
-                        class="card-text" id="inbody"><i class="fa-regular fa-circle-check"></i></h6>
-
-                        <h6 th:text="${package.NumOfPrivateTrainingSessions + ' Private Training Sessions'}"
-                        class="card-text" id="ptsessions"><i class="fa-regular fa-circle-check"></i></h6>
-
-                        <h5 th:text="${package.price + ' L.E'}" class="card-text" id="price"></h5>
+                            <h4 th:text="${package.Title}" class="card-title"></h4>
+                
+                            <h6 th:text="${package.VisitsLimit + ' Visits Limit'}" class="card-text" id="visitslimit"></h6>
+                            <input type="hidden" name="VisitsCount" th:value="${package.VisitsLimit}" />
+                
+                            <h6 th:text="${package.NumOfInvitations + ' Invitations'}"  class="card-text" id="invitations"></h6>
+                            <input type="hidden" name="InvitationsCount" th:value="${package.NumOfInvitations}" />
+                
+                            <h6 th:text="${package.NumOfInbodySessions + ' Inbody Sessions'}"  class="card-text" id="inbody"></h6>
+                            <input type="hidden" name="InbodySessionsCount" th:value="${package.NumOfInbodySessions}" />
+                
+                            <h6 th:text="${package.NumOfPrivateTrainingSessions + ' Private Training Sessions'}"  class="card-text" id="ptsessions"></h6>
+                            <input type="hidden" name="PrivateTrainingSessionsCount" th:value="${package.NumOfPrivateTrainingSessions}" />
+                
+                            <h5 th:text="${package.price + ' L.E'}" class="card-text" id="price"></h5>
+                        </div>
+                        <div class="d-flex justify-content-around mb-5">
+                            <button class="btn btn-primary" type="submit">SUBSCRIBE NOW</button>
+                        </div>
                     </div>
-                    <div class="d-flex justify-content-around mb-5">
-                        <button class="btn btn-primary">SUBSCRIBE NOW</button>
-                    </div>
-                </div>
+                </form>
+                
             </div>
 
 
