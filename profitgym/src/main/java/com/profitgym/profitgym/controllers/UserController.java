@@ -121,8 +121,19 @@ public class UserController {
     }
 
     @GetMapping("viewpackage")
-    public ModelAndView viewPackage() {
+    public ModelAndView viewPackage(HttpSession session) {
         ModelAndView mav = new ModelAndView("viewpackage.html");
+        Client loggedInUser = (Client) session.getAttribute("loggedInUser");
+        int id=loggedInUser.getID();
+        Memberships membership = this.membershipsRepository.findByClientID(id);
+
+           if(membership!=null)
+            {
+                Package packages = this.packageRepository.findByID(membership.getPackageID());
+                mav.addObject("membership", membership);
+                mav.addObject("package", packages);
+            }
+            
         return mav;
     }
 
