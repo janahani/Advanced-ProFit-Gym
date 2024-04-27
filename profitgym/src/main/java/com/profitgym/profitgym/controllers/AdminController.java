@@ -4,17 +4,11 @@ import java.util.Optional;
 
 import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cglib.core.ClassInfo;
 import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.util.ResourceUtils;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -22,14 +16,12 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.profitgym.profitgym.models.AssignedClass;
-import com.profitgym.profitgym.models.Authority;
 import com.profitgym.profitgym.models.ClassDays;
 import com.profitgym.profitgym.models.Classes;
 import com.profitgym.profitgym.models.Client;
 import com.profitgym.profitgym.models.Employee;
 import com.profitgym.profitgym.models.Package;
 import com.profitgym.profitgym.repositories.AssignedClassRepository;
-import com.profitgym.profitgym.repositories.AuthorityRepository;
 import com.profitgym.profitgym.repositories.ClassDaysRepository;
 import com.profitgym.profitgym.repositories.ClassesRepository;
 import com.profitgym.profitgym.repositories.ClientRepository;
@@ -37,21 +29,18 @@ import com.profitgym.profitgym.repositories.EmployeeRepository;
 import com.profitgym.profitgym.repositories.JobTitlesRepository;
 import com.profitgym.profitgym.repositories.PackageRepository;
 
-import jakarta.annotation.PostConstruct;
 import jakarta.validation.Valid;
 
 import java.util.Random;
 
 import org.springframework.mail.MailException;
 import org.springframework.mail.SimpleMailMessage;
-import org.springframework.mail.javamail.JavaMailSender;
 
 import java.io.File;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
-import java.time.format.TextStyle;
 import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -73,9 +62,6 @@ public class AdminController {
 
     @Autowired
     private JobTitlesRepository jobTitlesRepository;
-
-    @Autowired
-    private AuthorityRepository authorityRepository;
 
     @Autowired
     private ClassesRepository classesRepository;
@@ -102,23 +88,6 @@ public class AdminController {
 
         return builder.toString();
     }
-
-    // @PostConstruct
-    // public void insertMockData() {
-    // authorityRepository.saveAll(List.of(
-    // new Authority("Dashboard", "Dashboard", "@{/admindashboard}"),
-    // new Authority("Clients", "View Clients", "@{/admindashboard/clients}"),
-    // new Authority("Clients", "Add Client", "@{/admindashboard/addclient}"),
-    // new Authority("Clients", "Edit Client", "@{/admindashboard/editclient}"),
-    // new Authority("Clients", "Check in", "@{/admindashboard/checkin}"),
-    // new Authority("Clients", "Client Requests",
-    // "@{/admindashboard/clientrequests}"),
-    // new Authority("Packages", "View Packages", "@{/admindashboard/packages}"),
-    // new Authority("Memberships", "View Memberships",
-    // "@{/admindashboard/memberships}"),
-    // new Authority("Classes", "View Classes", "@{/admindashboard/classes}")
-    // ));
-    // }
 
     @GetMapping("")
     public ModelAndView getAdminDash() {

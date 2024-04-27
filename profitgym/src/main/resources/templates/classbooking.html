@@ -30,106 +30,30 @@
     letter-spacing: -1px;
     margin-bottom:3%;">Types:</h2>
         <div class="card-container">
-
-            <div class="card">
-                <img th:src="@{/Images/yoga.jpg}" style="width:310px; height:240px;">
-                <h3>Power Yoga Class</h3>
-                <section class="class-details">
-                    <div class="class-item">
-                        <div class="class-info">
-                            <p class="class-time"><strong>Time:</strong> 7:00 AM - 8:30 AM</p>
-                            <p class="class-date"><strong>Date:</strong> Every Monday and Wednesday</p>
-                            <p class="class-level"><strong>Level:</strong> Moderate</p>
-                            <p class="class-participants"><strong>Limit of Participants:</strong> 20</p>
-                            <div class="class-availability">
-                                <p class="availspaces" id="availability-text"><strong>Availability:</strong>
-                                    <span id="availability-count">10</span> Places Left
+            <div th:each="assignedClass : ${classes}">
+                <div class="card">
+                    <!-- <img th:src="@{${assignedClass.classes != null} ? 'Images/' + ${assignedClass.classes.imgPath} : '/Images/default.jpg'}"
+                        style="width: 310px; height: 240px;">
+                    <h3 th:if="${assignedClass.classes != null}" th:text="${assignedClass.classes.Name}"></h3> -->
+                    <section class="class-details">
+                        <div class="class-item">
+                            <div class="class-info">
+                                <p class="class-time"
+                                    th:text="'Time: ' + ${assignedClass.StartTime} + ' - ' + ${assignedClass.EndTime}">
                                 </p>
+                                <p class="class-date" th:text="'Date: ' + ${assignedClass.Date}"></p>
+                                <p class="class-participants"
+                                    th:text="'Limit of Participants: ' + ${assignedClass.NumOfAttendants}"></p>
+                                <p class="class-price" th:text="'Price: ' + ${assignedClass.Price}"></p>
+                                <button class="reserve-class">Reserve Now</button>
                             </div>
-
-                            <button class="reserve-class">Reserve Now</button>
-
                         </div>
-                    </div>
-                </section>
+                    </section>
+                </div>
             </div>
-
-            <div class="card">
-                <img th:src="@{/Images/aerial.jpg}" style="width:310px; height:240px;">
-                <h3>Aerial Class</h3>
-                <section class="class-details">
-                    <div class="class-item">
-                        <div class="class-info">
-                            <p class="class-time"><strong>Time:</strong> 7:00 AM - 8:30 AM</p>
-                            <p class="class-date"><strong>Date:</strong> Every Monday and Wednesday</p>
-                            <p class="class-level"><strong>Level:</strong> Moderate</p>
-                            <p class="class-participants"><strong>Limit of Participants:</strong> 20</p>
-                            <div class="class-availability">
-                                <p class="availspaces" id="availability-text"><strong>Availability:</strong>
-                                    <span id="availability-count">10</span> Places Left
-                                </p>
-                            </div>
-
-                            <button class="reserve-class">Reserve Now</button>
-
-                        </div>
-                    </div>
-                </section>
-            </div>
-
-
-
-            <div class="card">
-                <img th:src="@{/Images/circuit.jpg}" style="width:310px; height:240px;">
-                <h3>Circuit Class</h3>
-                <section class="class-details">
-                    <div class="class-item">
-                        <div class="class-info">
-                            <p class="class-time"><strong>Time:</strong> 7:00 AM - 8:30 AM</p>
-                            <p class="class-date"><strong>Date:</strong> Every Monday and Wednesday</p>
-                            <p class="class-level"><strong>Level:</strong> Moderate</p>
-                            <p class="class-participants"><strong>Limit of Participants:</strong> 20</p>
-                            <div class="class-availability">
-                                <p class="availspaces" id="availability-text"><strong>Availability:</strong>
-                                    <span id="availability-count">10</span> Places Left
-                                </p>
-                            </div>
-
-                            <button class="reserve-class">Reserve Now</button>
-
-                        </div>
-                    </div>
-                </section>
-            </div>
-
-
-
-            <div class="card">
-                <img th:src="@{/Images/parkour.jpg}" style="width:310px; height:240px;">
-                <h3>Parkour Class</h3>
-                <section class="class-details">
-                    <div class="class-item">
-                        <div class="class-info">
-                            <p class="class-time"><strong>Time:</strong> 7:00 AM - 8:30 AM</p>
-                            <p class="class-date"><strong>Date:</strong> Every Monday and Wednesday</p>
-                            <p class="class-level"><strong>Level:</strong> Moderate</p>
-                            <p class="class-participants"><strong>Limit of Participants:</strong> 20</p>
-                            <div class="class-availability">
-                                <p class="availspaces" id="availability-text"><strong>Availability:</strong>
-                                    <span id="availability-count">10</span> Places Left
-                                </p>
-                            </div>
-
-                            <button class="reserve-class">Reserve Now</button>
-
-                        </div>
-                    </div>
-                </section>
-
         </div>
+    </div>
 
-    </div>
-    </div>
 
 
 

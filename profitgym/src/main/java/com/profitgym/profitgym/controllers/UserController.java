@@ -19,10 +19,14 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.validation.annotation.Validated;
 
+import com.profitgym.profitgym.models.AssignedClass;
+import com.profitgym.profitgym.models.Classes;
 import com.profitgym.profitgym.models.Client;
 import com.profitgym.profitgym.models.Employee;
 import com.profitgym.profitgym.models.Memberships;
 import com.profitgym.profitgym.models.Package;
+import com.profitgym.profitgym.repositories.AssignedClassRepository;
+import com.profitgym.profitgym.repositories.ClassesRepository;
 import com.profitgym.profitgym.repositories.ClientRepository;
 import com.profitgym.profitgym.repositories.PackageRepository;
 import com.profitgym.profitgym.repositories.MembershipsRepository;
@@ -45,6 +49,12 @@ public class UserController {
 
     @Autowired
     private MembershipsRepository membershipsRepository;
+    
+    @Autowired
+    private AssignedClassRepository assignedClassRepository;
+
+    @Autowired
+    private ClassesRepository classesRepository;
 
     public UserController(ClientRepository clientRepository) {
         this.clientRepository=clientRepository;
@@ -117,6 +127,8 @@ public class UserController {
     @GetMapping("bookclass")
     public ModelAndView getClassBooking() {
         ModelAndView mav = new ModelAndView("classbooking.html");
+        List<AssignedClass> classes = this.assignedClassRepository.findAll(); 
+        mav.addObject("classes",classes);
         return mav;
     }
 
