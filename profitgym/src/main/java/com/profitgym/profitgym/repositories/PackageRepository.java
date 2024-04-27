@@ -5,4 +5,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import com.profitgym.profitgym.models.Package;
 
 public interface PackageRepository extends JpaRepository<Package,Integer>{
+    Package findByID(int ID);
 }
