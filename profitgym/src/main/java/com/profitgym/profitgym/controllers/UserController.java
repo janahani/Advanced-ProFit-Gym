@@ -4,6 +4,7 @@ import com.profitgym.profitgym.controllers.IndexController;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -127,8 +128,19 @@ public class UserController {
     @GetMapping("bookclass")
     public ModelAndView getClassBooking() {
         ModelAndView mav = new ModelAndView("classbooking.html");
-        List<AssignedClass> classes = this.assignedClassRepository.findAll(); 
-        mav.addObject("classes",classes);
+    
+        List<AssignedClass> assignedClasses = this.assignedClassRepository.findAll();
+        List<Classes> classes = new ArrayList<>();
+    
+        for (AssignedClass assignedClass : assignedClasses) {
+            int classId = assignedClass.getClassID();
+            Optional<Classes> classOptional = this.classesRepository.findById(classId);
+            
+            classOptional.ifPresent(classes::add);
+        }
+    
+        mav.addObject("assignedClasses", assignedClasses);
+        mav.addObject("classes", classes);
         return mav;
     }
 

@@ -30,32 +30,33 @@
     letter-spacing: -1px;
     margin-bottom:3%;">Types:</h2>
         <div class="card-container">
-            <div th:each="assignedClass : ${classes}">
+            <div th:each="assignedClass : ${assignedClasses}">
                 <div class="card">
-                    <!-- <img th:src="@{${assignedClass.classes != null} ? 'Images/' + ${assignedClass.classes.imgPath} : '/Images/default.jpg'}"
-                        style="width: 310px; height: 240px;">
-                    <h3 th:if="${assignedClass.classes != null}" th:text="${assignedClass.classes.Name}"></h3> -->
-                    <section class="class-details">
-                        <div class="class-item">
-                            <div class="class-info">
-                                <p class="class-time"
-                                    th:text="'Time: ' + ${assignedClass.StartTime} + ' - ' + ${assignedClass.EndTime}">
-                                </p>
-                                <p class="class-date" th:text="'Date: ' + ${assignedClass.Date}"></p>
-                                <p class="class-participants"
-                                    th:text="'Limit of Participants: ' + ${assignedClass.NumOfAttendants}"></p>
-                                <p class="class-price" th:text="'Price: ' + ${assignedClass.Price}"></p>
-                                <button class="reserve-class">Reserve Now</button>
+                    <!-- Get corresponding Classes object for the assignedClass -->
+                    <div th:with="classObj=${classes.?[ID == assignedClass.ClassID][0]}">
+                        <img th:src="@{${classObj != null} ? 'Images/' + ${classObj.imgPath} : '/Images/default.jpg'}"
+                            style="width: 310px; height: 240px;">
+                        <h3 th:if="${classObj != null}" th:text="${classObj.Name}"></h3>
+
+                        <section class="class-details">
+                            <div class="class-item">
+                                <div class="class-info">
+                                    <p class="class-time"
+                                        th:text="'Time: ' + ${assignedClass.StartTime} + ' - ' + ${assignedClass.EndTime}">
+                                    </p>
+                                    <p class="class-date" th:text="'Date: ' + ${assignedClass.Date}"></p>
+                                    <p class="class-participants"
+                                        th:text="'Limit of Participants: ' + ${assignedClass.NumOfAttendants}"></p>
+                                    <p class="class-price" th:text="'Price: ' + ${assignedClass.Price}"></p>
+                                    <button class="reserve-class">Reserve Now</button>
+                                </div>
                             </div>
-                        </div>
-                    </section>
+                        </section>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-
-
-
 
     <!-- footer -->
     <div th:replace="~{partials/footer}"></div>

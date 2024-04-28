@@ -23,6 +23,7 @@ import com.profitgym.profitgym.models.Package;
 import com.profitgym.profitgym.models.Employee;
 import com.profitgym.profitgym.models.EmployeeAuthorities;
 import com.profitgym.profitgym.repositories.AuthorityRepository;
+import com.profitgym.profitgym.repositories.ClassesRepository;
 import com.profitgym.profitgym.repositories.ClientRepository;
 import com.profitgym.profitgym.repositories.EmployeeAuthoritiesRepository;
 import com.profitgym.profitgym.repositories.EmployeeRepository;
@@ -45,6 +46,9 @@ public class IndexController {
     private EmployeeAuthoritiesRepository employeeAuthoritiesRepository;
     @Autowired
     private AuthorityRepository authorityRepository;
+    @Autowired
+    private ClassesRepository classesRepository;
+
 
 
     public IndexController(ClientRepository clientRepository) {
@@ -161,6 +165,8 @@ public class IndexController {
     @GetMapping("classes")
     public ModelAndView getClasses() {
         ModelAndView mav = new ModelAndView("classes.html");
+        List<Classes>classes= this.classesRepository.findAll();
+        mav.addObject("classes", classes);
         return mav;
     }
 
