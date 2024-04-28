@@ -134,11 +134,10 @@ public class UserController {
     
         for (AssignedClass assignedClass : assignedClasses) {
             int classId = assignedClass.getClassID();
-            Optional<Classes> classOptional = this.classesRepository.findById(classId);
-            
-            classOptional.ifPresent(classes::add);
+            Classes classInformation = this.classesRepository.findByID(classId);
+            classes.add(classInformation);
         }
-    
+
         mav.addObject("assignedClasses", assignedClasses);
         mav.addObject("classes", classes);
         return mav;
