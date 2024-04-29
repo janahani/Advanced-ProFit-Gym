@@ -32,9 +32,10 @@
         <div class="card-container">
             <div th:each="assignedClass : ${assignedClasses}">
                 <div class="card">
-                    <!-- Get corresponding Classes object for the assignedClass -->
-                    <div th:with="classObj=${classes.?[ID == assignedClass.ClassID][0]}">
-                        <img th:src="@{${classObj != null} ? 'Images/' + ${classObj.imgPath} : '/Images/default.jpg'}"
+                    <div th:unless="${#lists.isEmpty(classes)}">
+                       <div th:each="classObj : ${classes}">
+                         <div th:if="${classObj.ID == assignedClass.ClassID}">
+                        <img th:src="@{ 'Images/' + classObj.imgPath}"
                             style="width: 310px; height: 240px;">
                         <h3 th:if="${classObj != null}" th:text="${classObj.Name}"></h3>
 
@@ -55,8 +56,15 @@
                     </div>
                 </div>
             </div>
+
+            <div th:if="${#lists.isEmpty(classes)}">
+                No classes found.
+              </div>
         </div>
     </div>
+
+ </div>
+ </div>
 
     <!-- footer -->
     <div th:replace="~{partials/footer}"></div>
