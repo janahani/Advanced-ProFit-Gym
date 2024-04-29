@@ -15,7 +15,7 @@ public class ReservedClass {
     private String Attended;
     private String isActivated;
 
-    ReservedClass()
+    public ReservedClass()
     {
 
     }
