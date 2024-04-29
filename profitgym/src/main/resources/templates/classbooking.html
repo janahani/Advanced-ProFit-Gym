@@ -30,12 +30,17 @@
     letter-spacing: -1px;
     margin-bottom:3%;">Types:</h2>
         <div class="card-container">
-            <div th:each="assignedClass : ${assignedClasses}">
+            <div th:each="assignedClass : ${assignedClasses}" >
+               <form th:action="@{/user/bookclass}" th:object="${ReservedClassObj}" method="POST">
                 <div class="card">
+                        <input type="hidden" name="AssignedClassID" th:value="${assignedClass.ID}" />
+                        <input type="hidden" name="Attended" th:value="'Not Attended'" />
+                        <input type="hidden" name="CoachID" th:value="${assignedClass.CoachID}" />
+                        <input type="hidden" name="ClientID" th:value="${loggedInUser.ID}" />
                     <div th:unless="${#lists.isEmpty(classes)}">
                        <div th:each="classObj : ${classes}">
                          <div th:if="${classObj.ID == assignedClass.ClassID}">
-                            <img th:src="@{ '/Images/' + ${classObj.imgPath}}"
+                        <img th:src="@{ '/Images/' + ${classObj.imgPath}}"
                             style="width: 310px; height: 240px;">
                         <h3 th:if="${classObj != null}" th:text="${classObj.Name}"></h3>
 
@@ -49,20 +54,24 @@
                                     <p class="class-participants"
                                         th:text="'Limit of Participants: ' + ${assignedClass.NumOfAttendants}"></p>
                                     <p class="class-price" th:text="'Price: ' + ${assignedClass.Price}"></p>
-                                    <button class="reserve-class">Reserve Now</button>
+                                    <button class="reserve-class" type="submit">Reserve Now</button>
                                 </div>
                             </div>
+                        
                         </section>
                     </div>
                 </div>
             </div>
+        </form>
+        
+    
 
             <div th:if="${#lists.isEmpty(classes)}">
                 No classes found.
               </div>
-        </div>
+        
     </div>
-
+</div>
  </div>
  </div>
 
