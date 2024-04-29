@@ -26,10 +26,12 @@ import com.profitgym.profitgym.models.Client;
 import com.profitgym.profitgym.models.Employee;
 import com.profitgym.profitgym.models.Memberships;
 import com.profitgym.profitgym.models.Package;
+import com.profitgym.profitgym.models.ReservedClass;
 import com.profitgym.profitgym.repositories.AssignedClassRepository;
 import com.profitgym.profitgym.repositories.ClassesRepository;
 import com.profitgym.profitgym.repositories.ClientRepository;
 import com.profitgym.profitgym.repositories.PackageRepository;
+import com.profitgym.profitgym.repositories.ReservedClassRepository;
 import com.profitgym.profitgym.repositories.MembershipsRepository;
 
 import jakarta.servlet.http.HttpSession;
@@ -56,6 +58,9 @@ public class UserController {
 
     @Autowired
     private ClassesRepository classesRepository;
+
+    @Autowired
+    private ReservedClassRepository reservedClassRepository;
 
     public UserController(ClientRepository clientRepository) {
         this.clientRepository=clientRepository;
@@ -126,9 +131,10 @@ public class UserController {
 
 
     @GetMapping("bookclass")
-    public ModelAndView getClassBooking() {
+    public ModelAndView getClassBooking(HttpSession session) {
         ModelAndView mav = new ModelAndView("classbooking.html");
-    
+
+        Client loggedInUser = (Client) session.getAttribute("loggedInUser");
         List<AssignedClass> assignedClasses = this.assignedClassRepository.findAll();
         List<Classes> classes = new ArrayList<>();
     
@@ -137,11 +143,41 @@ public class UserController {
             Classes classInformation = this.classesRepository.findByID(classId);
             classes.add(classInformation);
         }
-
+        mav.addObject("loggedInUser", loggedInUser);
         mav.addObject("assignedClasses", assignedClasses);
         mav.addObject("classes", classes);
+        mav.addObject("ReservedClassObj", new ReservedClass());
         return mav;
     }
+
+
+    @PostMapping("bookclass")
+    public ModelAndView RequestClass(@ModelAttribute("ReservedClassObj") ReservedClass reservedClass) {
+        
+        ModelAndView modelAndView = new ModelAndView();
+        try {
+
+            AssignedClass assignedClass= this.assignedClassRepository.findByID(reservedClass.getAssignedClassID());
+            double price=assignedClass.getPrice();
+            if(price>0)
+            {
+                reservedClass.setIsActivated("Not Activated");
+            }
+            else
+            {
+                reservedClass.setIsActivated("Activated");
+
+            }
+            this.reservedClassRepository.save(reservedClass);
+
+            modelAndView.setViewName("redirect:/user/bookclass");
+        } catch (Exception ex) {
+            System.out.println("Error: " + ex.getMessage());
+            modelAndView.setViewName("error_page");
+        }
+        return modelAndView;
+    }
+
 
     @GetMapping("viewpackage")
     public ModelAndView viewPackage(HttpSession session) {
