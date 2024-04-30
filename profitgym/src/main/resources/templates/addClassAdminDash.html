@@ -22,13 +22,17 @@
                 <div class="col-lg">
                     <div class="user-form">
                         <h1>Add a Class</h1>
-                        <form th:action="@{/admindashboard/addclass}" th:object="${classObj}" method="POST" class="add-class" enctype="multipart/form-data">
+                        <form th:action="@{/admindashboard/addclass}" th:object="${classObj}" method="POST" class="add-class" enctype="multipart/form-data" onsubmit="return validateForm()">
                             <input class="add-user-input" type="text" th:field="*{Name}" placeholder="Class name">
+                            <span class="error-message" id="name-error"></span>
                             <br>
                             <textarea class="add-user-input" type="text" th:field="*{Description}"  placeholder="Description"></textarea>
+                            <span class="error-message" id="description-error"></span>
                             <br>
                             <br>
+                            <label for="image">Image</label>
                             <input class="add-user-input" type="file" id="myFile" name="file">
+                            <span class="error-message" id="file-error"></span>
                             <br>
                             <div class="select-days">
                                 <p>Select Day(s)</p>
@@ -67,6 +71,7 @@
                                     <label for="sunday">Sunday</label>
                                 </div>
                             </div>
+                            <span class="error-message" id="days-error"></span>
                             <button class="btn btn-add-form" type="submit">Add Class</button>
                         </form>
                     </div>
@@ -74,6 +79,7 @@
             </div>
         </div>
 
+    <script src="/js/addClass.js"></script>
     <script
         src="https://rawcdn.githack.com/Loopple/loopple-public-assets/5cef8f62939eeb089fa26d4c53a49198de421e3d/argon-dashboard/js/vendor/jquery.min.js"></script>
     <script

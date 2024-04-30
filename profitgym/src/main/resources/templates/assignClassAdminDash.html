@@ -21,67 +21,71 @@
                 <div class="col-lg">
                     <div class="user-form">
                         <h1>Assign Class to Coach</h1>
-                        <form class="add-user" th:action="@{/admindashboard/assignclass}" th:object="${assignClassObj}"
-                            method="POST">
+                        <form class="add-user" th:action="@{/admindashboard/assignclass}" th:object="${assignClassObj}" method="POST">
                             <label for="class">Class</label>
                             <select class="add-user-input" name="ClassID">
                                 <div th:each="class: ${classes}" class="classBox">
                                     <option th:value="${class.ID}" th:text="${class.Name}"></option>
                                 </div>
                             </select>
+                            <span class="error-message" id="classID-error"></span>
                             <hr>
-
+                        
                             <label for="coach">Coach</label>
                             <select class="add-user-input" name="CoachID">
                                 <div th:each="coach: ${coaches}" class="coachBox">
                                     <option th:value="${coach.ID}" th:text="${coach.Name}"></option>
                                 </div>
                             </select>
+                            <span class="error-message" id="coachID-error"></span>
                             <hr>
-
+                        
                             <label for="start-time">Start Time</label>
                             <input class="add-user-input" type="time" name="startTime" id="">
+                            <span class="error-message" id="startTime-error"></span>
                             <br>
-
+                        
                             <label for="end-time">End Time</label>
                             <input class="add-user-input" type="time" name="endTime" id="">
+                            <span class="error-message" id="endTime-error"></span>
                             <br>
                             <hr>
-                     
-
+                        
                             <br>
-
+                        
                             <label for="free">Free</label>
                             <select class="add-user-input" id="free-select" onchange="togglePriceField()" name="isFree">
                                 <option value="yes" th:selected="${assignClassObj.isFree eq 'yes'}">Yes</option>
                                 <option value="no" th:selected="${assignClassObj.isFree eq 'no'}">No</option>
                             </select>
+                            <span class="error-message" id="price-error"></span>
                             <br>
-
+                        
                             <div id="price-field" style="display:none;">
                                 <label for="price">Price</label>
-                                <input class="add-user-input" type="number" name="price" placeholder="Price"
-                                    th:field="*{Price}">
+                                <input class="add-user-input" type="number" name="price" placeholder="Price" th:field="*{Price}">
+                                <span class="error-message" id="price-error"></span>
                             </div>
                             <br>
-
+                        
                             <label for="num-of-attendants">Number Of Attendants</label>
                             <input class="add-user-input" type="number" name="no-of-attendants" id="" th:field="*{NumOfAttendants}">
-
+                            <span class="error-message" id="numOfAttendants-error"></span>
                             <br>
+                        
                             <label for="class-day">Days</label>
                             <select class="add-user-input" name="ClassDay">
                                 <div th:each="day: ${availableClassDays}" class="dayBox">
                                     <option th:value="${day}" th:text="${day}"></option>
                                 </div>
                             </select>
-
-
+                            <span class="error-message" id="classDay-error"></span>
+                        
                             <hr>
                             <br>
-
+                        
                             <button class="btn btn-add-form" type="submit">Assign Class</button>
-                        </form>
+                        </form>                        
                         <script>
                             function togglePriceField() {
                                 var freeSelect = document.getElementById("free-select");
@@ -99,6 +103,7 @@
             </div>
         </div>
     </div>
+    <script src="/js/assignClass.js"></script>
     <script
         src="https://rawcdn.githack.com/Loopple/loopple-public-assets/5cef8f62939eeb089fa26d4c53a49198de421e3d/argon-dashboard/js/vendor/jquery.min.js"></script>
     <script
