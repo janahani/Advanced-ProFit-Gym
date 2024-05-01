@@ -47,33 +47,20 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr>
-                                        <th scope="row">
-                                            01
-                                        </th>
-                                        <td>
-                                            Yoga
-                                        </td>
-                                        <td>
-                                            200
-                                        </td>
-                                        <td>
-                                            <a href="" class="btn btn-sm btn-deactivate">Deactivate</a>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <th scope="row">
-                                            02
-                                        </th>
-                                        <td>
-                                            Zumba
-                                        </td>
-                                        <td>
-                                            250
-                                        </td>
-                                        <td>
-                                            <button href="" class="btn btn-sm btn-deactivate">Deactivate</button>
-                                        </td>
+                                   
+                                    <tr th:each="assignedClass : ${assignedClasses}" >
+                                        <div th:unless="${#lists.isEmpty(classes)}">
+                                            <div th:each="classObj : ${classes}">
+                                                <div th:if="${classObj.ID == assignedClass.ClassID}">
+                                                   <th th:if="${classObj != null}" th:text="${classObj.ID}"></th>
+                                                   <td th:text="${classObj.Name}"></td>
+                                                   <td th:text="${assignedClass.Price}"></td>
+                                                   <td>
+                                                      <button href="" class="btn btn-sm btn-deactivate">Deactivate</button>
+                                                   </td>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </tr>
                                 </tbody>
                             </table>
