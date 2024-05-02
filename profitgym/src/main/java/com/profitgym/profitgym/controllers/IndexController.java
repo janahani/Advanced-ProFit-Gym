@@ -83,7 +83,7 @@ public class IndexController {
         mav.addObject("employee", emp);
         return mav;
     }
-
+    
     @PostMapping("/login")
     public RedirectView loginProcess(@RequestParam("email") String email,
             @RequestParam("Password") String password,
@@ -102,6 +102,7 @@ public class IndexController {
 
         }
     }
+    
     @PostMapping("/loginemployee")
     public RedirectView loginEmpProcess(@RequestParam("email") String email,
             @RequestParam("Password") String password,
