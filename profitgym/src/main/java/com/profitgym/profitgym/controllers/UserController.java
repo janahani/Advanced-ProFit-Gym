@@ -77,7 +77,7 @@ public class UserController {
             Package pack = new Package();
             if(membership != null)
             {
-                pack = packageRepository.findByID(membership.getID());
+                pack = this.packageRepository.findById(membership.getID());
             }
             mav.addObject("package", pack);
             mav.addObject("membership", membership);
