@@ -52,7 +52,7 @@ public class UserController {
 
     @Autowired
     private MembershipsRepository membershipsRepository;
-    
+
     @Autowired
     private AssignedClassRepository assignedClassRepository;
 
@@ -63,7 +63,7 @@ public class UserController {
     private ReservedClassRepository reservedClassRepository;
 
     public UserController(ClientRepository clientRepository) {
-        this.clientRepository=clientRepository;
+        this.clientRepository = clientRepository;
     }
 
     @GetMapping("/profile")
@@ -73,7 +73,16 @@ public class UserController {
         if (loggedInUser == null) {
             mav.setViewName("redirect:/login");
         } else {
+            Memberships membership = membershipsRepository.findByClientID(loggedInUser.getID());
+            Package pack = new Package();
+            if(membership != null)
+            {
+                pack = packageRepository.findByID(membership.getID());
+            }
+            mav.addObject("package", pack);
+            mav.addObject("membership", membership);
             mav.addObject("loggedInUser", loggedInUser);
+
         }
         return mav;
     }
@@ -89,9 +98,9 @@ public class UserController {
     }
 
     @PostMapping("bookpackage")
-    public ModelAndView RequestPackage(@ModelAttribute("MembershipObj") Memberships membership, 
-                                    HttpSession session) {
-        
+    public ModelAndView RequestPackage(@ModelAttribute("MembershipObj") Memberships membership,
+            HttpSession session) {
+
         ModelAndView modelAndView = new ModelAndView();
         Client loggedInUser = (Client) session.getAttribute("loggedInUser");
         int numOfMonths = 0;
@@ -112,9 +121,9 @@ public class UserController {
 
             LocalDate endDate = startDate.plusMonths(numOfMonths);
             membership.setEndDate(endDate);
-            
+
             membership.setFreezeCount(freezeCount);
-            
+
             membership.setFreezed("Not Freezed");
 
             membership.setIsActivated("Not Activated");
@@ -129,7 +138,6 @@ public class UserController {
         return modelAndView;
     }
 
-
     @GetMapping("bookclass")
     public ModelAndView getClassBooking(HttpSession session) {
         ModelAndView mav = new ModelAndView("classbooking.html");
@@ -137,7 +145,7 @@ public class UserController {
         Client loggedInUser = (Client) session.getAttribute("loggedInUser");
         List<AssignedClass> assignedClasses = this.assignedClassRepository.findAll();
         List<Classes> classes = new ArrayList<>();
-    
+
         for (AssignedClass assignedClass : assignedClasses) {
             int classId = assignedClass.getClassID();
             Classes classInformation = this.classesRepository.findByID(classId);
@@ -150,21 +158,17 @@ public class UserController {
         return mav;
     }
 
-
     @PostMapping("bookclass")
     public ModelAndView RequestClass(@ModelAttribute("ReservedClassObj") ReservedClass reservedClass) {
-        
+
         ModelAndView modelAndView = new ModelAndView();
         try {
 
-            AssignedClass assignedClass= this.assignedClassRepository.findByID(reservedClass.getAssignedClassID());
-            double price=assignedClass.getPrice();
-            if(price>0)
-            {
+            AssignedClass assignedClass = this.assignedClassRepository.findByID(reservedClass.getAssignedClassID());
+            double price = assignedClass.getPrice();
+            if (price > 0) {
                 reservedClass.setIsActivated("Not Activated");
-            }
-            else
-            {
+            } else {
                 reservedClass.setIsActivated("Activated");
 
             }
@@ -178,12 +182,11 @@ public class UserController {
         return modelAndView;
     }
 
-
     @GetMapping("viewpackage")
     public ModelAndView viewPackage(HttpSession session) {
         ModelAndView mav = new ModelAndView("viewpackage.html");
         Client loggedInUser = (Client) session.getAttribute("loggedInUser");
-        int id=loggedInUser.getID();
+        int id = loggedInUser.getID();
         Memberships membership = this.membershipsRepository.findByClientID(id);
 
            if(membership!=null)
@@ -214,9 +217,9 @@ public class UserController {
         return mav;
     }
 
-
     @PostMapping("/profsettings")
-    public ModelAndView updateClient(@Valid @ModelAttribute Client clientObj,BindingResult bindingResult,HttpSession session,@RequestParam("action") String action) {
+    public ModelAndView updateClient(@Valid @ModelAttribute Client clientObj, BindingResult bindingResult,
+            HttpSession session, @RequestParam("action") String action) {
         Client sessionClient = (Client) session.getAttribute("loggedInUser");
         ModelAndView modelAndView = new ModelAndView();
 
