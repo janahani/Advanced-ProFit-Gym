@@ -74,10 +74,10 @@ public class UserController {
             mav.setViewName("redirect:/login");
         } else {
             Memberships membership = membershipsRepository.findByClientID(loggedInUser.getID());
-            Package pack = new Package();
+            Package pack = null;
             if(membership != null)
             {
-                pack = packageRepository.findByID(membership.getID());
+                pack = packageRepository.findByID(membership.getPackageID());
             }
             mav.addObject("package", pack);
             mav.addObject("membership", membership);
