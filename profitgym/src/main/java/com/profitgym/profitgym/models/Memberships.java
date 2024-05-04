@@ -25,13 +25,12 @@ public class Memberships {
     private int FreezeCount;
     private String Freezed;
     private String isActivated;
-
-
+    public LocalDate createdAt;
 
     public Memberships() {
     }
 
-    public Memberships(int ID, int clientID, int PackageID, LocalDate StartDate, LocalDate EndDate, int VisitsCount, int InvitationsCount, int InbodySessionsCount, int PrivateTrainingSessionsCount, int FreezeCount, String Freezed, String isActivated) {
+    public Memberships(int ID, int clientID, int PackageID, LocalDate StartDate, LocalDate EndDate, int VisitsCount, int InvitationsCount, int InbodySessionsCount, int PrivateTrainingSessionsCount, int FreezeCount, String Freezed, String isActivated, LocalDate createdAt) {
         this.ID = ID;
         this.clientID = clientID;
         this.PackageID = PackageID;
@@ -44,6 +43,7 @@ public class Memberships {
         this.FreezeCount = FreezeCount;
         this.Freezed = Freezed;
         this.isActivated = isActivated;
+        this.createdAt = createdAt;
     }
 
     public int getID() {
@@ -200,6 +200,14 @@ public class Memberships {
     public Memberships isActivated(String isActivated) {
         setIsActivated(isActivated);
         return this;
+    }
+
+    public LocalDate getCreatedAt() {
+        return this.createdAt;
+    }
+
+    public void setCreatedAt(LocalDate createdAt) {
+        this.createdAt = createdAt;
     }
 
     @Override

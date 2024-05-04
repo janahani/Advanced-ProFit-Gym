@@ -5,6 +5,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 
 import java.io.Serializable;
+import java.time.LocalDate;
 import java.util.Objects;
 
 @Entity
@@ -21,13 +22,12 @@ public class Client implements Serializable {
     private String email;
     private String Password;
     private String PhoneNumber;
-
-    
+    private LocalDate createdAt;
 
     public Client() {
     }
 
-    public Client(int ID, String FirstName, String LastName, int Age, String Gender, double Weight, double Height, String email, String Password, String PhoneNumber) {
+    public Client(int ID, String FirstName, String LastName, int Age, String Gender, double Weight, double Height, String email, String Password, String PhoneNumber, LocalDate createdAt) {
         this.ID = ID;
         this.FirstName = FirstName;
         this.LastName = LastName;
@@ -38,6 +38,7 @@ public class Client implements Serializable {
         this.email = email;
         this.Password = Password;
         this.PhoneNumber = PhoneNumber;
+        this.createdAt = createdAt;
     }
 
     public int getID() {
@@ -168,6 +169,14 @@ public class Client implements Serializable {
     public Client PhoneNumber(String PhoneNumber) {
         setPhoneNumber(PhoneNumber);
         return this;
+    }
+
+    public LocalDate getCreatedAt() {
+        return this.createdAt;
+    }
+
+    public void setCreatedAt(LocalDate createdAt) {
+        this.createdAt = createdAt;
     }
 
     @Override

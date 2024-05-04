@@ -20,6 +20,7 @@ import com.profitgym.profitgym.models.ClassDays;
 import com.profitgym.profitgym.models.Classes;
 import com.profitgym.profitgym.models.Client;
 import com.profitgym.profitgym.models.Employee;
+import com.profitgym.profitgym.models.Memberships;
 import com.profitgym.profitgym.models.Package;
 import com.profitgym.profitgym.repositories.AssignedClassRepository;
 import com.profitgym.profitgym.repositories.ClassDaysRepository;
@@ -27,8 +28,10 @@ import com.profitgym.profitgym.repositories.ClassesRepository;
 import com.profitgym.profitgym.repositories.ClientRepository;
 import com.profitgym.profitgym.repositories.EmployeeRepository;
 import com.profitgym.profitgym.repositories.JobTitlesRepository;
+import com.profitgym.profitgym.repositories.MembershipsRepository;
 import com.profitgym.profitgym.repositories.PackageRepository;
 
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 
 import java.util.Random;
@@ -73,6 +76,9 @@ public class AdminController {
     private ClassDaysRepository classDaysRepository;
 
     @Autowired
+    private MembershipsRepository membershipsRepository;
+
+    @Autowired
     private JavaMailSender emailSender;
 
     private static final String RANDOMCHAR_STRING = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
@@ -91,7 +97,22 @@ public class AdminController {
 
     @GetMapping("")
     public ModelAndView getAdminDash() {
+        int jobTitleValue = 3;
         ModelAndView mav = new ModelAndView("adminDash.html");
+
+        List<Client> recentClients = this.clientRepository.findTop5ByOrderByCreatedAtDesc();
+        mav.addObject("recentClients", recentClients);
+
+        long packagesCount = this.packageRespository.count();
+        long classesCount = this.classesRepository.count();
+        long employeesCount = this.employeeRepository.count();
+        long coachesCount = this.employeeRepository.countByJobTitle(jobTitleValue);
+
+        mav.addObject("packagesCount", packagesCount);
+        mav.addObject("classesCount", classesCount);
+        mav.addObject("employeesCount", employeesCount);
+        mav.addObject("coachesCount", coachesCount);
+
         return mav;
     }
 
@@ -126,6 +147,31 @@ public class AdminController {
         List<Package> packages = this.packageRespository.findAll();
         mav.addObject("packages", packages);
         return mav;
+    }
+
+    @PostMapping("/package-activation")
+    public ModelAndView handlePackageActivation(@RequestParam("id") int id,
+            HttpServletRequest request) {
+        ModelAndView modelAndView = new ModelAndView();
+
+        try {
+            Package existingPackage = this.packageRespository.findById(id);
+
+            if ("activate".equals(request.getParameter("action"))) {
+                existingPackage.setIsActivated("Activated");
+            } else {
+                existingPackage.setIsActivated("Not Activated");
+            }
+
+            this.packageRespository.save(existingPackage);
+
+            modelAndView.setViewName("redirect:/admindashboard/packages");
+        } catch (Exception e) {
+            modelAndView.setViewName("error_page");
+            System.out.println("Error handling package activation: " + e.getMessage());
+        }
+
+        return modelAndView;
     }
 
     @GetMapping("clientrequests")

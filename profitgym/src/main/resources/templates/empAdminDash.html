@@ -49,15 +49,15 @@
                                 </thead>
                                 <tbody>
                                     <tr th:each="employee : ${employees}">
-                                        <td th:text="${employee.id}"></td>
-                                        <td th:text="${employee.name}"></td>
+                                        <td th:text="${employee.ID}"></td>
+                                        <td th:text="${employee.Name}"></td>
                                         <td th:text="${employee.email}"></td>
-                                        <td th:text="${employee.phoneNumber}"></td>
+                                        <td th:text="${employee.PhoneNumber}"></td>
                                         <td th:text="${employee.jobTitle}"></td>
                                         <td>
-                                            <a th:href="@{/admindashboard/editemployee(id=${employee.id})}" class="btn btn-sm btn-primary">Edit</a>
+                                            <a th:href="@{/admindashboard/editemployee(id=${employee.ID})}" class="btn btn-sm btn-primary">Edit</a>
                                             <form th:action="@{/admindashboard/deleteemployee}" th:object="${employee}" method="post" style="display: inline;">
-                                                <input type="hidden" name="id" th:value="${employee.id}" />
+                                                <input type="hidden" name="id" th:value="${employee.ID}" />
                                                 <button type="submit" class="btn btn-sm btn-delete">Delete</button>
                                             </form>
                                         </td>

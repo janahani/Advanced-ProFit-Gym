@@ -10,6 +10,6 @@ public interface EmployeeRepository extends JpaRepository<Employee, Integer> {
 
     Employee findByEmail(String Email);
     List<Employee> findByJobTitle(int JobTitle);
-
+    long countByJobTitle(int jobTitle);
 
 }
