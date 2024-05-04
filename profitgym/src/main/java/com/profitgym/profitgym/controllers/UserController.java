@@ -4,12 +4,14 @@ import com.profitgym.profitgym.controllers.IndexController;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cglib.core.Local;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -75,8 +77,7 @@ public class UserController {
         } else {
             Memberships membership = membershipsRepository.findByClientID(loggedInUser.getID());
             Package pack = null;
-            if(membership != null)
-            {
+            if (membership != null) {
                 pack = packageRepository.findById(membership.getPackageID());
             }
             mav.addObject("package", pack);
@@ -108,7 +109,8 @@ public class UserController {
         try {
             membership.setClientID(loggedInUser.getID());
 
-            Optional<Package> packageOptional = Optional.ofNullable(this.packageRepository.findById(membership.getPackageID()));
+            Optional<Package> packageOptional = Optional
+                    .ofNullable(this.packageRepository.findById(membership.getPackageID()));
 
             if (packageOptional.isPresent()) {
                 Package Package = packageOptional.get();
@@ -189,13 +191,12 @@ public class UserController {
         int id = loggedInUser.getID();
         Memberships membership = this.membershipsRepository.findByClientID(id);
 
-           if(membership!=null)
-            {
-                Package packages = this.packageRepository.findById(membership.getPackageID());
-                mav.addObject("membership", membership);
-                mav.addObject("package", packages);
-            }
-            
+        if (membership != null) {
+            Package packages = this.packageRepository.findById(membership.getPackageID());
+            mav.addObject("membership", membership);
+            mav.addObject("package", packages);
+        }
+
         return mav;
     }
 
@@ -206,9 +207,47 @@ public class UserController {
     }
 
     @GetMapping("requestfreeze")
-    public ModelAndView requestFreeze() {
+    public ModelAndView requestFreeze(HttpSession session) {
+        Client loggedInUser = (Client) session.getAttribute("loggedInUser");
         ModelAndView mav = new ModelAndView("requestfreeze.html");
+        Memberships membership = membershipsRepository.findByClientID(loggedInUser.getID());
+        Package pack = null;
+        if (membership != null) {
+            pack = packageRepository.findById(membership.getPackageID());
+
+            LocalDate currentDate = LocalDate.now();
+            LocalDate minFreezeDate = currentDate.plusDays(3);
+            LocalDate maxFreezeDate = currentDate.plusDays(membership.getFreezeCount());
+
+            mav.addObject("minFreezeDate", minFreezeDate);
+            mav.addObject("maxFreezeDate", maxFreezeDate);
+        }
+        mav.addObject("freezeEndDate", "");
+        mav.addObject("package", pack);
+        mav.addObject("membership", membership);
+        mav.addObject("loggedInUser", loggedInUser);
+
         return mav;
+    }
+
+    @PostMapping("requestfreeze")
+    public ModelAndView freezeMembership(@RequestParam("freezeEndDate") String freezeEndDate,
+            HttpSession session) {
+        // Convert the date string to LocalDate
+        LocalDate freezeEnddate = LocalDate.parse(freezeEndDate);
+        Client loggedInUser = (Client) session.getAttribute("loggedInUser");
+        Memberships membership = membershipsRepository.findByClientID(loggedInUser.getID());
+        LocalDate currentDate = LocalDate.now();
+        int freezeDuration = (int) ChronoUnit.DAYS.between(currentDate, freezeEnddate);
+        LocalDate membershipEndDate = membership.getEndDate().plusDays(freezeDuration);
+        int newFreezeCount = membership.getFreezeCount() - freezeDuration;
+        membership.setFreezeCount(newFreezeCount);
+        membership.setEndDate(membershipEndDate);
+        membership.setFreezed("Freezed");
+        this.membershipsRepository.save(membership);
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("redirect:/user/requestfreeze");
+        return modelAndView;
     }
 
     @GetMapping("profsettings")

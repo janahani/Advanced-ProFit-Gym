@@ -88,6 +88,7 @@ public class IndexController {
             @RequestParam("Password") String password,
             HttpSession session) {
         Client dbClient = this.clientRepository.findByEmail(email);
+        
         if (dbClient != null) {
             Boolean isPasswordMatched = BCrypt.checkpw(password, dbClient.getPassword());
             if (isPasswordMatched) {
