@@ -29,7 +29,6 @@ import com.profitgym.profitgym.repositories.EmployeeAuthoritiesRepository;
 import com.profitgym.profitgym.repositories.EmployeeRepository;
 import com.profitgym.profitgym.repositories.PackageRepository;
 
-import ch.qos.logback.core.model.Model;
 import jakarta.servlet.http.HttpSession;
 
 @RestController

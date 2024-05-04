@@ -43,27 +43,14 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr>
-                                        <th scope="row">
-                                            01
-                                        </th>
-                                        <td>
-                                            Sahwa Amr
-                                        </td>
-                                        <td>
-                                            sahwaamr@gmail.com
-                                        </td>
-                                        <td>
-                                            20
-                                        </td>
-                                        <td>
-                                            female
-                                        </td>
-                                        <td>
-                                            01127897625
-                                        </td>
-
-                                    </tr>
+                                        <tr th:each="client : ${recentClients}">
+                                            <td th:text="${client.ID}"></td>
+                                            <td th:text="${client.FirstName + ' ' + client.LastName}"></td>
+                                            <td th:text="${client.Email}"></td>
+                                            <td th:text="${client.Age}"></td>
+                                            <td th:text="${client.Gender}"></td>
+                                            <td th:text="${client.PhoneNumber}"></td>
+                                        </tr>
 
                                 </tbody>
                             </table>
@@ -177,21 +164,6 @@
                                 <div class="col-auto">
                                     <div class="icon icon-shape text-white rounded-circle shadow bg-pink">
                                         <i class='bx bxs-group'></i>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="card card-stats">
-                        <div class="card-body">
-                            <div class="row">
-                                <div class="col">
-                                    <h5 class="card-title text-uppercase text-muted mb-0">Total Revenue</h5>
-                                    <span class="h2 font-weight-bold mb-0">$2300</span>
-                                </div>
-                                <div class="col-auto">
-                                    <div class="icon icon-shape text-white rounded-circle shadow bg-gradient-success">
-                                        <i class='bx bxs-dollar-circle'></i>
                                     </div>
                                 </div>
                             </div>

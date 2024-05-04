@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700">
     <link rel="stylesheet"
         href="https://rawcdn.githack.com/Loopple/loopple-public-assets/ad60f16c8a16d1dcad75e176c00d7f9e69320cd4/argon-dashboard/css/nucleo/css/nucleo.css">
-        <link rel="stylesheet" type="text/css" th:href="@{/CSS/theme.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/CSS/theme.css}">
 </head>
 
 <body>
@@ -21,8 +21,8 @@
             <div class="row removable">
                 <div class="col-lg">
                     <h1 class="centeredHeader">Available Packages <div class="">
-                        <a th:href="@{/admindashboard/addpackage}" class="btn-add">Add Package</a>
-                    </h1> 
+                            <a th:href="@{/admindashboard/addpackage}" class="btn-add">Add Package</a>
+                    </h1>
                     <div class="packageContainer">
                         <div th:each="package: ${packages}" class="packageBox">
                             <h3 th:text="${package.Title}"></h3>
@@ -31,20 +31,29 @@
                                     <p> <span th:text="${package.VisitsLimit + ' Visits Limit'}"></span></p>
                                     <p> <span th:text="${package.NumOfInvitations + ' Invitations'}"></span></p>
                                     <p> <span th:text="${package.NumOfInbodySessions + ' Inbody Sessions'}"></span></p>
-                                    <p> <span th:text="${package.NumOfPrivateTrainingSessions + ' Private Training Sessions'}"></span></p>
-                                    <p><bold>For: <span th:text="${package.price + ' L.E'}"></span></bold></p>
-                                    
+                                    <p> <span
+                                            th:text="${package.NumOfPrivateTrainingSessions + ' Private Training Sessions'}"></span>
+                                    </p>
+                                    <p>
+                                        <bold>For: <span th:text="${package.price + ' L.E'}"></span></bold>
+                                    </p>
+
                                     <!-- Check if package is activated -->
-                                    <button class="btn-package" th:if="${package.isActivated eq 'Activated'}">Deactivate</button>
-                                    <button class="btn-package" th:unless="${package.isActivated eq 'Activated'}">Activate</button>
+                                    <form method="post" th:action="@{/admindashboard/package-activation}">
+                                        <input type="hidden" name="id" th:value="${package.id}">
+                                        <button class="btn-package"
+                                            th:text="${package.isActivated eq 'Activated' ? 'Deactivate' : 'Activate'}"
+                                            name="action"
+                                            th:value="${package.isActivated eq 'Activated' ? 'deactivate' : 'activate'}"></button>
+                                    </form>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    </div>
                 </div>
             </div>
         </div>
+    </div>
     </div>
 
     <script

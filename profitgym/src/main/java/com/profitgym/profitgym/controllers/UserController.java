@@ -99,7 +99,7 @@ public class UserController {
         try {
             membership.setClientID(loggedInUser.getID());
 
-            Optional<Package> packageOptional = this.packageRepository.findById(membership.getPackageID());
+            Optional<Package> packageOptional = Optional.ofNullable(this.packageRepository.findById(membership.getPackageID()));
 
             if (packageOptional.isPresent()) {
                 Package Package = packageOptional.get();
@@ -188,7 +188,7 @@ public class UserController {
 
            if(membership!=null)
             {
-                Package packages = this.packageRepository.findByID(membership.getPackageID());
+                Package packages = this.packageRepository.findById(membership.getPackageID());
                 mav.addObject("membership", membership);
                 mav.addObject("package", packages);
             }
