@@ -12,7 +12,7 @@ import java.util.Objects;
 public class Client implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int ID;
+    private int id;
     private String FirstName;
     private String LastName;
     private int Age;
@@ -27,8 +27,8 @@ public class Client implements Serializable {
     public Client() {
     }
 
-    public Client(int ID, String FirstName, String LastName, int Age, String Gender, double Weight, double Height, String email, String Password, String PhoneNumber, LocalDate createdAt) {
-        this.ID = ID;
+    public Client(int id, String FirstName, String LastName, int Age, String Gender, double Weight, double Height, String email, String Password, String PhoneNumber, LocalDate createdAt) {
+        this.id = id;
         this.FirstName = FirstName;
         this.LastName = LastName;
         this.Age = Age;
@@ -42,11 +42,11 @@ public class Client implements Serializable {
     }
 
     public int getID() {
-        return this.ID;
+        return this.id;
     }
 
-    public void setID(int ID) {
-        this.ID = ID;
+    public void setID(int id) {
+        this.id = id;
     }
 
     public String getFirstName() {
@@ -187,12 +187,12 @@ public class Client implements Serializable {
             return false;
         }
         Client client = (Client) o;
-        return ID == client.ID && Objects.equals(FirstName, client.FirstName) && Objects.equals(LastName, client.LastName) && Age == client.Age && Objects.equals(Gender, client.Gender) && Weight == client.Weight && Height == client.Height && Objects.equals(email, client.email) && Objects.equals(Password, client.Password) && Objects.equals(PhoneNumber, client.PhoneNumber);
+        return id == client.id && Objects.equals(FirstName, client.FirstName) && Objects.equals(LastName, client.LastName) && Age == client.Age && Objects.equals(Gender, client.Gender) && Weight == client.Weight && Height == client.Height && Objects.equals(email, client.email) && Objects.equals(Password, client.Password) && Objects.equals(PhoneNumber, client.PhoneNumber);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(ID, FirstName, LastName, Age, Gender, Weight, Height, email, Password, PhoneNumber);
+        return Objects.hash(id, FirstName, LastName, Age, Gender, Weight, Height, email, Password, PhoneNumber);
     }
 
     @Override

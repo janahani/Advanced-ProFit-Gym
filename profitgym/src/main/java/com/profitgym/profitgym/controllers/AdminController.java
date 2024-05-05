@@ -20,6 +20,7 @@ import com.profitgym.profitgym.models.ClassDays;
 import com.profitgym.profitgym.models.Classes;
 import com.profitgym.profitgym.models.Client;
 import com.profitgym.profitgym.models.Employee;
+import com.profitgym.profitgym.models.Memberships;
 import com.profitgym.profitgym.models.Package;
 import com.profitgym.profitgym.repositories.AssignedClassRepository;
 import com.profitgym.profitgym.repositories.ClassDaysRepository;
@@ -176,6 +177,20 @@ public class AdminController {
     @GetMapping("clientrequests")
     public ModelAndView viewRequests() {
         ModelAndView mav = new ModelAndView("clientReqAdminDash.html");
+        List<Memberships> memberships=this.membershipsRepository.findByIsActivated("Not Activated");
+        List<Package> packages = new ArrayList<>();
+        List<Client> clients = new ArrayList<>();
+        for (Memberships membership : memberships){
+            int packageId= membership.getPackageID();
+            int clientId = membership.getClientID();
+            Package packageInfo = this.packageRespository.findById(packageId);
+            Client clientInfo = this.clientRepository.findById(clientId);
+            packages.add(packageInfo);
+            clients.add(clientInfo);
+        }
+        mav.addObject("memberships", memberships);
+        mav.addObject("packages", packages);
+        mav.addObject("clients", clients);
         return mav;
     }
 
@@ -294,9 +309,8 @@ public class AdminController {
     @GetMapping("editclient")
     public ModelAndView editClientForm(@RequestParam("id") int clientId) {
         ModelAndView mav = new ModelAndView("editClientAdminDash.html");
-        Optional<Client> clientOptional = clientRepository.findById(clientId);
-        if (clientOptional.isPresent()) {
-            Client clientObj = clientOptional.get();
+        Client clientObj = clientRepository.findById(clientId);
+        if (clientObj != null) {
             mav.addObject("clientObj", clientObj);
 
         } else {
@@ -309,9 +323,8 @@ public class AdminController {
     public ModelAndView updateClient(@ModelAttribute Client clientObj, @RequestParam("id") int clientId) {
         ModelAndView modelAndView = new ModelAndView();
         try {
-            Optional<Client> existingClientOptional = clientRepository.findById(clientId);
-            if (existingClientOptional.isPresent()) {
-                Client existingClient = existingClientOptional.get();
+            Client existingClient = clientRepository.findById(clientId);
+            if (existingClient != null) {
 
                 // Check for null before updating each property
                 if (clientObj.getFirstName() != null) {

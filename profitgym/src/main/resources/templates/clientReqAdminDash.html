@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700">
     <link rel="stylesheet"
         href="https://rawcdn.githack.com/Loopple/loopple-public-assets/ad60f16c8a16d1dcad75e176c00d7f9e69320cd4/argon-dashboard/css/nucleo/css/nucleo.css">
-        <link rel="stylesheet" type="text/css" th:href="@{/CSS/theme.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/CSS/theme.css}">
 </head>
 
 <body>
@@ -40,9 +40,62 @@
                                         <th scope="col">Client Name</th>
                                         <th scope="col">Package Title</th>
                                         <th scope="col">Months</th>
+                                        <th scope="col">Price </th>
                                         <th scope="col">StartDate</th>
                                         <th scope="col">EndDate</th>
-                                        <th scope="col">Price </th>
+                                        <th scope="col">Actions </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr th:each="membership: ${memberships}">
+                                        <th scope="row" th:text="${membership.clientID}"></th>
+                                        <div th:each="client : ${clients}">
+                                            <div th:if="${client.ID == membership.ClientID}">
+                                                <td th:text="${client.FirstName + ' ' + client.LastName}"></td>
+                                            </div>
+                                        </div>
+                                        <div th:each="package : ${packages}">
+                                            <div th:if="${package.id == membership.PackageID}">
+                                                <td th:text="${package.Title}"></td>
+                                                <td th:text="${package.NumOfMonths}"></td>
+                                                <td th:text="${package.Price}"></td>
+                                            </div>
+                                        </div>
+                                        <td th:text="${membership.StartDate}"></td>
+                                        <td th:text="${membership.EndDate}"></td>
+                                        <td>
+                                            <a href="#!" class="btn btn-sm btn-primary">Accept</a>
+                                            <a href="#!" class="btn btn-sm btn-delete">Decline</a>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-header border-0">
+                            <div class="row align-items-center">
+                                <div class="col">
+                                    <h1 class="mb-0">Class Requests</h1>
+                                </div>
+                                <div class="col text-right">
+                                    <input class="table-search-bar" placeholder="Search for a Class Request">
+                                </div>
+
+                            </div>
+                        </div>
+                        <div class="table-responsive">
+                            <table class="table align-items-center table-flush">
+                                <thead class="thead-light">
+                                    <tr>
+                                        <th scope="col">Client ID</th>
+                                        <th scope="col">Client Name</th>
+                                        <th scope="col">Class Name</th>
+                                        <th scope="col"> Day </th>
+                                        <th scope="col">From</th>
+                                        <th scope="col">To </th>
+                                        <th scope="col">Fees </th>
                                         <th scope="col">Actions </th>
                                     </tr>
                                 </thead>
@@ -55,66 +108,21 @@
                                         <td></td>
                                         <td></td>
                                         <td></td>
-                                            <td>
-                                                <a href="#!" class="btn btn-sm btn-primary">Accept</a>
-                                                <a href="#!" class="btn btn-sm btn-delete">Decline</a>
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
+                                        <td>
+                                            <a href="#!" class="btn btn-sm btn-primary">Accept</a>
+                                            <a href="#!" class="btn btn-sm btn-delete">Decline</a>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
                         </div>
-
-                        <div class="card">
-                            <div class="card-header border-0">
-                                <div class="row align-items-center">
-                                    <div class="col">
-                                        <h1 class="mb-0">Class Requests</h1>
-                                    </div>
-                                    <div class="col text-right">
-                                        <input class="table-search-bar" placeholder="Search for a Class Request">
-                                    </div>
-    
-                                </div>
-                            </div>
-                            <div class="table-responsive">
-                                <table class="table align-items-center table-flush">
-                                    <thead class="thead-light">
-                                        <tr>
-                                            <th scope="col">Client ID</th>
-                                            <th scope="col">Client Name</th>
-                                            <th scope="col">Class Name</th>
-                                            <th scope="col"> Day </th>
-                                            <th scope="col">From</th>
-                                            <th scope="col">To </th>
-                                            <th scope="col">Fees </th>
-                                            <th scope="col">Actions </th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <th scope="row">01</th>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                                <td>
-                                                    <a href="#!" class="btn btn-sm btn-primary">Accept</a>
-                                                    <a href="#!" class="btn btn-sm btn-delete">Decline</a>
-                                                </td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-
                     </div>
+
                 </div>
             </div>
         </div>
-        <script
+    </div>
+    <script
         src="https://rawcdn.githack.com/Loopple/loopple-public-assets/5cef8f62939eeb089fa26d4c53a49198de421e3d/argon-dashboard/js/vendor/jquery.min.js"></script>
     <script
         src="https://rawcdn.githack.com/Loopple/loopple-public-assets/5cef8f62939eeb089fa26d4c53a49198de421e3d/argon-dashboard/js/vendor/bootstrap.bundle.min.js"></script>
@@ -125,5 +133,6 @@
         src="https://rawcdn.githack.com/Loopple/loopple-public-assets/5cef8f62939eeb089fa26d4c53a49198de421e3d/argon-dashboard/js/vendor/chart.extension.js"></script>
     <script
         src="https://rawcdn.githack.com/Loopple/loopple-public-assets/7bb803d2af2ab6d71d429b0cb459c24a4cd0fbb4/argon-dashboard/js/argon.min.js"></script>
-        </body>
-        </html>
+</body>
+
+</html>
