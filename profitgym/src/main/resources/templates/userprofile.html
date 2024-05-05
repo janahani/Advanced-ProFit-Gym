@@ -25,8 +25,8 @@
     </div>
     <div class="membership-details">
         <p class="currpackage">Current Package:</p>
-        <div class="membership-title" th:text="${package.Title} != null ? ${package.Title} : 'You are not subscribed to any package'"></div>
-        <div th:if="${package.Title != null}" class="dates">
+        <div class="membership-title" th:text="${package} != null ? ${package.Title} : 'You are not subscribed to any package'"></div>
+        <div th:if="${package != null}" class="dates">
             <div class="date">
                 <p>Start Date:</p>
                 <div class="start-date" th:text="${membership.StartDate}"></div>

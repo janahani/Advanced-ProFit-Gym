@@ -61,55 +61,40 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr>
-                                        <th scope="row">
-                                            01
-                                        </th>
-                                        <td>
-                                            Sahwa Amr
-                                        </td>
-                                        <td>
-                                            sahwaamr@gmail.com
-                                        </td>
-                                        <td>
-                                            20
-                                        </td>
-                                        <td>
-                                            female
-                                        </td>
-                                        <td>
-                                            <a href="packagesAdminDash.html" class="btn btn-sm btn-freeze">Freeze</a>
-                                        </td>
-                                        <td>
-                                            <a href="#!" class="btn btn-sm btn-primary">Edit</a>
-                                            <a href="#!" class="btn btn-sm btn-delete">Delete</a>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <th scope="row">
-                                            01
-                                        </th>
-                                        <td>
-                                            Sahwa Amr
-                                        </td>
-                                        <td>
-                                            sahwaamr@gmail.com
-                                        </td>
-                                        <td>
-                                            20
-                                        </td>
-                                        <td>
-                                            female
-                                        </td>
 
-                                        <td>
-                                            <button href="#!" class="btn btn-sm btn-unfreeze">Unfreeze</button>
-                                        </td>
-                                        <td>
-                                            <a href="#!" class="btn btn-sm btn-primary">Edit</a>
-                                            <a href="#!" class="btn btn-sm btn-delete">Delete</a>
-                                        </td>
+                                    
+                                    <tr th:each="membership : ${memberships}">
+                                        <div th:unless="${#lists.isEmpty(clients)}">
+                                            <div th:unless="${#lists.isEmpty(packages)}">
+                                                <div th:each="client : ${clients}">
+                                                    <div th:if="${client.ID == membership.clientID}">
+                                                        <td scope="row" th:if="${client != null}" th:text="${membership.ID}"></td>
+                                                        <td th:text="${client.FirstName} + ' ' + ${client.LastName}"></td>
+                                                    </div>
+                                                </div>
+                                                <div th:each="package : ${packages}">
+                                                    <div th:if="${package.id == membership.PackageID}">
+                                                        <td th:text="${package.Title}"></td>
+                                                    </div>
+                                                </div>
+                                                <td th:text="${membership.VisitsCount}"></td>
+                                                <td th:text="${membership.InbodySessionsCount}"></td>
+                                                <td>
+                                                    <a href="packagesAdminDash.html" class="btn btn-sm btn-freeze">Freeze</a>
+                                                </td>
+                                                <td>
+                                                    <form th:action="@{/admindashboard/deletemembership}" method="post">
+                                                    <input type="hidden" name="membershipId" th:value="${membership.ID}">
+                                                    <button type="submit" class="btn btn-sm btn-delete">Delete</button>
+                                                    </form>
+                                                </td>
+                                            </div>
+                                        </div>
                                     </tr>
+                                    
+                                    
+
+
                                 </tbody>
                             </table>
                         </div>

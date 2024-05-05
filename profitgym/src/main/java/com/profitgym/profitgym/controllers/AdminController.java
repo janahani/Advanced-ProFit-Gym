@@ -4,6 +4,7 @@ import java.util.Optional;
 
 import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.jms.activemq.ActiveMQProperties.Packages;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -52,6 +53,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import org.springframework.web.bind.annotation.RequestBody;
+
 
 @RestController
 @RequestMapping("/admindashboard")
@@ -235,8 +238,45 @@ public class AdminController {
     @GetMapping("memberships")
     public ModelAndView viewMemberships() {
         ModelAndView mav = new ModelAndView("membershipAdminDash.html");
+        List<Memberships> memberships = membershipsRepository.findAll();
+        List<Client> clients = new ArrayList<>();
+        List<Package> packages = new ArrayList<>();
+
+        if(memberships!=null)
+        {
+            for (Memberships membership : memberships) {
+                
+                Client client = clientRepository.findById(membership.getClientID()).orElse(null);
+                clients.add(client);
+                Package package1 = packageRespository.findById(membership.getPackageID());
+                if(packages.contains(package1)==false)
+                {
+                     packages.add(package1);
+                }
+            }
+        }
+        mav.addObject("memberships", memberships);
+        mav.addObject("clients", clients);
+        mav.addObject("packages", packages);
         return mav;
     }
+
+    @PostMapping("/deletemembership")
+    public ModelAndView DeleteMemebership(@RequestParam("membershipId") int membershipId) {
+        ModelAndView modelAndView = new ModelAndView();
+        try {
+            membershipsRepository.deleteById(membershipId);
+            modelAndView.setViewName("redirect:/admindashboard/memberships");
+            
+        } catch (Exception e) {
+
+            System.out.println("Error deleting employee: " + e.getMessage());
+        
+        }
+
+        return modelAndView;
+    }
+    
 
     @GetMapping("checkin")
     public ModelAndView viewCheckIn() {
