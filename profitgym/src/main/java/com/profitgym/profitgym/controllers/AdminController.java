@@ -51,6 +51,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import org.springframework.web.bind.annotation.RequestBody;
+
 
 @RestController
 @RequestMapping("/admindashboard")
@@ -206,6 +208,23 @@ public class AdminController {
         mav.addObject("packages", packages);
         return mav;
     }
+
+    @PostMapping("/deletemembership")
+    public ModelAndView DeleteMemebership(@RequestParam("membershipId") int membershipId) {
+        ModelAndView modelAndView = new ModelAndView();
+        try {
+            membershipsRepository.deleteById(membershipId);
+            modelAndView.setViewName("redirect:/admindashboard/memberships");
+            
+        } catch (Exception e) {
+
+            System.out.println("Error deleting employee: " + e.getMessage());
+        
+        }
+
+        return modelAndView;
+    }
+    
 
     @GetMapping("checkin")
     public ModelAndView viewCheckIn() {
