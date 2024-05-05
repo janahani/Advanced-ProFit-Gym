@@ -22,6 +22,7 @@ import com.profitgym.profitgym.models.Client;
 import com.profitgym.profitgym.models.Employee;
 import com.profitgym.profitgym.models.Memberships;
 import com.profitgym.profitgym.models.Package;
+import com.profitgym.profitgym.models.ReservedClass;
 import com.profitgym.profitgym.repositories.AssignedClassRepository;
 import com.profitgym.profitgym.repositories.ClassDaysRepository;
 import com.profitgym.profitgym.repositories.ClassesRepository;
@@ -30,6 +31,7 @@ import com.profitgym.profitgym.repositories.EmployeeRepository;
 import com.profitgym.profitgym.repositories.JobTitlesRepository;
 import com.profitgym.profitgym.repositories.MembershipsRepository;
 import com.profitgym.profitgym.repositories.PackageRepository;
+import com.profitgym.profitgym.repositories.ReservedClassRepository;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
@@ -71,6 +73,9 @@ public class AdminController {
 
     @Autowired
     private AssignedClassRepository assignedClassRepository;
+
+    @Autowired
+    private ReservedClassRepository reservedClassRepository;
 
     @Autowired
     private ClassDaysRepository classDaysRepository;
@@ -177,6 +182,53 @@ public class AdminController {
     @GetMapping("clientrequests")
     public ModelAndView viewRequests() {
         ModelAndView mav = new ModelAndView("clientReqAdminDash.html");
+        List<Memberships> memberships=this.membershipsRepository.findByIsActivated("Not Activated");
+        List<Package> packages = new ArrayList<>();
+        List<Client> clients = new ArrayList<>();
+        for (Memberships membership : memberships){
+            int packageId= membership.getPackageID();
+            int clientId = membership.getClientID();
+            Package packageInfo = this.packageRespository.findById(packageId);
+            Client clientInfo = this.clientRepository.findById(clientId);
+            packages.add(packageInfo);
+            clients.add(clientInfo);
+        }
+        mav.addObject("memberships", memberships);
+        mav.addObject("packages", packages);
+        mav.addObject("clients", clients);
+
+
+        List<ReservedClass> reservedClassesList = this.reservedClassRepository.findByIsActivated("Not Activated");
+        List<Classes> classesList = new ArrayList<>();
+        List<Client> clientsList = new ArrayList<>();
+        List<Employee> coachesList = new ArrayList<>();
+        List<AssignedClass> assignedClassesList = new ArrayList<>();
+        for (ReservedClass reservedClass: reservedClassesList)
+        {
+            int assignedClassId= reservedClass.getAssignedClassID();
+            int clientId = reservedClass.getClientID();
+            int coachId = reservedClass.getCoachID();
+            
+            AssignedClass assignedClassInfo = this.assignedClassRepository.findByID(assignedClassId);
+            assignedClassesList.add(assignedClassInfo);
+            if (assignedClassInfo != null) {
+                int classId = assignedClassInfo.getClassID();
+                Classes classInfo = this.classesRepository.findByID(classId);
+                classesList.add(classInfo);
+            } else {
+                System.out.println("error");
+            }
+            Client clientInfo = this.clientRepository.findById(clientId);
+            clientsList.add(clientInfo);
+            Employee coachInfo = this.employeeRepository.findByID(coachId);
+            coachesList.add(coachInfo);
+        }
+        mav.addObject("reservedClassesList",reservedClassesList);
+        mav.addObject("classesList",classesList);
+        mav.addObject("clientsList",clientsList);
+        mav.addObject("coachesList",coachesList);
+        mav.addObject("assignedClassesList",assignedClassesList);
+
         return mav;
     }
 
@@ -295,9 +347,8 @@ public class AdminController {
     @GetMapping("editclient")
     public ModelAndView editClientForm(@RequestParam("id") int clientId) {
         ModelAndView mav = new ModelAndView("editClientAdminDash.html");
-        Optional<Client> clientOptional = clientRepository.findById(clientId);
-        if (clientOptional.isPresent()) {
-            Client clientObj = clientOptional.get();
+        Client clientObj = clientRepository.findById(clientId);
+        if (clientObj != null) {
             mav.addObject("clientObj", clientObj);
 
         } else {
@@ -310,9 +361,8 @@ public class AdminController {
     public ModelAndView updateClient(@ModelAttribute Client clientObj, @RequestParam("id") int clientId) {
         ModelAndView modelAndView = new ModelAndView();
         try {
-            Optional<Client> existingClientOptional = clientRepository.findById(clientId);
-            if (existingClientOptional.isPresent()) {
-                Client existingClient = existingClientOptional.get();
+            Client existingClient = clientRepository.findById(clientId);
+            if (existingClient != null) {
 
                 // Check for null before updating each property
                 if (clientObj.getFirstName() != null) {
