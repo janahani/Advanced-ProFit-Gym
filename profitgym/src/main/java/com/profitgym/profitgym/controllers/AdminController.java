@@ -183,6 +183,19 @@ public class AdminController {
     @GetMapping("memberships")
     public ModelAndView viewMemberships() {
         ModelAndView mav = new ModelAndView("membershipAdminDash.html");
+        List<Memberships> memberships = membershipsRepository.findAll();
+        List<Client> clients = new ArrayList<>();
+
+        if(memberships!=null)
+        {
+            for (Memberships membership : memberships) {
+                
+                Client client = clientRepository.findById(membership.getClientID()).orElse(null);
+                clients.add(client);
+            }
+        }
+        mav.addObject("memberships", memberships);
+        mav.addObject("clients", clients);
         return mav;
     }
 
