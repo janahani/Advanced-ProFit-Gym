@@ -20,7 +20,6 @@ import com.profitgym.profitgym.models.ClassDays;
 import com.profitgym.profitgym.models.Classes;
 import com.profitgym.profitgym.models.Client;
 import com.profitgym.profitgym.models.Employee;
-import com.profitgym.profitgym.models.Memberships;
 import com.profitgym.profitgym.models.Package;
 import com.profitgym.profitgym.repositories.AssignedClassRepository;
 import com.profitgym.profitgym.repositories.ClassDaysRepository;
