@@ -63,28 +63,36 @@
                                 <tbody>
 
                                     
-                                        <tr th:each="membership : ${memberships}" >
-                                            <div th:unless="${#lists.isEmpty(clients)}">
+                                    <tr th:each="membership : ${memberships}">
+                                        <div th:unless="${#lists.isEmpty(clients)}">
+                                            <div th:unless="${#lists.isEmpty(packages)}">
                                                 <div th:each="client : ${clients}">
                                                     <div th:if="${client.ID == membership.clientID}">
-                                                       <th scope="row" th:if="${client != null}" th:text="${membership.ID}"></th>
-                                                       <td th:text="${client.FirstName} + ' ' + ${client.LastName}"></td>
-                                                       <td th:text="${client.Email}"></td>
-                                                       <td th:text="${membership.VisitsCount}"></td>
-                                                       <td th:text="${membership.InbodySessionsCount}"></td>
-                                                       <td>
-                                                        <a href="packagesAdminDash.html" class="btn btn-sm btn-freeze">Freeze</a>
-                                                       </td>
-                                                        <td>
-                                                            <a href="#!" class="btn btn-sm btn-primary">Edit</a>
-                                                             <a href="#!" class="btn btn-sm btn-delete">Delete</a>
-                                                       </td>
+                                                        <td scope="row" th:if="${client != null}" th:text="${membership.ID}"></td>
+                                                        <td th:text="${client.FirstName} + ' ' + ${client.LastName}"></td>
                                                     </div>
                                                 </div>
+                                                <div th:each="package : ${packages}">
+                                                    <div th:if="${package.id == membership.PackageID}">
+                                                        <td th:text="${package.Title}"></td>
+                                                    </div>
+                                                </div>
+                                                <td th:text="${membership.VisitsCount}"></td>
+                                                <td th:text="${membership.InbodySessionsCount}"></td>
+                                                <td>
+                                                    <a href="packagesAdminDash.html" class="btn btn-sm btn-freeze">Freeze</a>
+                                                </td>
+                                                <td>
+                                                    <a href="#!" class="btn btn-sm btn-primary">Edit</a>
+                                                    <a href="/admindashboard/deletemembership" class="btn btn-sm btn-delete">Delete</a>
+                                                </td>
                                             </div>
-                                        </tr>
+                                        </div>
+                                    </tr>
                                     
-                                   
+                                    
+
+
                                 </tbody>
                             </table>
                         </div>
