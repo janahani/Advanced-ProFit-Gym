@@ -246,7 +246,7 @@ public class AdminController {
         {
             for (Memberships membership : memberships) {
                 
-                Client client = clientRepository.findById(membership.getClientID()).orElse(null);
+                Client client = clientRepository.findById(membership.getClientID());
                 clients.add(client);
                 Package package1 = packageRespository.findById(membership.getPackageID());
                 if(packages.contains(package1)==false)
