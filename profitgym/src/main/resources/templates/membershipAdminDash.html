@@ -83,8 +83,10 @@
                                                     <a href="packagesAdminDash.html" class="btn btn-sm btn-freeze">Freeze</a>
                                                 </td>
                                                 <td>
-                                                    <a href="#!" class="btn btn-sm btn-primary">Edit</a>
-                                                    <a href="/admindashboard/deletemembership" class="btn btn-sm btn-delete">Delete</a>
+                                                    <form th:action="@{/admindashboard/deletemembership}" method="post">
+                                                    <input type="hidden" name="membershipId" th:value="${membership.ID}">
+                                                    <button type="submit" class="btn btn-sm btn-delete">Delete</button>
+                                                    </form>
                                                 </td>
                                             </div>
                                         </div>
