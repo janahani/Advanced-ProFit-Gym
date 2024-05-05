@@ -1,4 +1,5 @@
 package com.profitgym.profitgym.models;
+import java.io.Serializable;
 import java.time.LocalDate;
 
 import jakarta.persistence.Entity;
@@ -7,11 +8,11 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 
 @Entity
-public class ScheduledUnfreeze {
+public class ScheduledUnfreeze implements Serializable{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int ID;
-    private int MembershipID;
+    private int membershipID;
     private LocalDate FreezeStartDate;
     private LocalDate FreezeEndDate;
     private int FreezeCount;
@@ -30,11 +31,11 @@ public class ScheduledUnfreeze {
     }
 
     public int getMembershipID() {
-        return this.MembershipID;
+        return this.membershipID;
     }
 
     public void setMembershipID(int MembershipID) {
-        this.MembershipID = MembershipID;
+        this.membershipID = MembershipID;
     }
 
     public LocalDate getFreezeStartDate() {

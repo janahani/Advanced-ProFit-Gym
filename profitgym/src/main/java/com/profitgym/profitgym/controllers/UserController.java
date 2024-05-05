@@ -12,6 +12,7 @@ import java.util.Optional;
 import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cglib.core.Local;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -29,12 +30,14 @@ import com.profitgym.profitgym.models.Employee;
 import com.profitgym.profitgym.models.Memberships;
 import com.profitgym.profitgym.models.Package;
 import com.profitgym.profitgym.models.ReservedClass;
+import com.profitgym.profitgym.models.ScheduledUnfreeze;
 import com.profitgym.profitgym.repositories.AssignedClassRepository;
 import com.profitgym.profitgym.repositories.ClassesRepository;
 import com.profitgym.profitgym.repositories.ClientRepository;
 import com.profitgym.profitgym.repositories.PackageRepository;
 import com.profitgym.profitgym.repositories.ReservedClassRepository;
 import com.profitgym.profitgym.repositories.MembershipsRepository;
+import com.profitgym.profitgym.repositories.ScheduledUnfreezeRepository;
 
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
@@ -64,8 +67,33 @@ public class UserController {
     @Autowired
     private ReservedClassRepository reservedClassRepository;
 
+    @Autowired
+    private ScheduledUnfreezeRepository scheduledUnfreezeRepository;
+
     public UserController(ClientRepository clientRepository) {
         this.clientRepository = clientRepository;
+    }
+
+    public int calculateFreezeDuration(LocalDate currentDate, LocalDate freezeEndDate) {
+        int freezeDuration = (int) ChronoUnit.DAYS.between(currentDate, freezeEndDate);
+        return freezeDuration;
+    }
+
+    public void updateMembershipEndDate(Memberships membership, int freezeDuration) {
+        LocalDate membershipEndDate = membership.getEndDate().plusDays(freezeDuration);
+        int newFreezeCount = membership.getFreezeCount() - freezeDuration;
+        membership.setFreezeCount(newFreezeCount);
+        membership.setEndDate(membershipEndDate);
+        membership.setFreezed("Freezed");
+        this.membershipsRepository.save(membership);
+    }
+
+    public void createScheduledUnfreeze(int membershipID, LocalDate currentDate, LocalDate freezeEnddate) {
+        ScheduledUnfreeze scheduledUnfreeze = new ScheduledUnfreeze();
+        scheduledUnfreeze.setFreezeStartDate(currentDate);
+        scheduledUnfreeze.setFreezeEndDate(freezeEnddate);
+        scheduledUnfreeze.setMembershipID(membershipID);
+        this.scheduledUnfreezeRepository.save(scheduledUnfreeze);
     }
 
     @GetMapping("/profile")
@@ -233,18 +261,39 @@ public class UserController {
     @PostMapping("requestfreeze")
     public ModelAndView freezeMembership(@RequestParam("freezeEndDate") String freezeEndDate,
             HttpSession session) {
-        // Convert the date string to LocalDate
-        LocalDate freezeEnddate = LocalDate.parse(freezeEndDate);
+        Client loggedInUser = (Client) session.getAttribute("loggedInUser");
+        int freezeDuration = calculateFreezeDuration(LocalDate.now(), LocalDate.parse(freezeEndDate));
+        Memberships membership = membershipsRepository.findByClientID(loggedInUser.getID());
+
+        updateMembershipEndDate(membership, freezeDuration);
+
+        createScheduledUnfreeze(membership.getID(), LocalDate.now(), LocalDate.parse(freezeEndDate));
+
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("redirect:/user/requestfreeze");
+        return modelAndView;
+    }
+
+    @PostMapping("requestunfreeze")
+    public ModelAndView unfreezeMembership(HttpSession session) {
         Client loggedInUser = (Client) session.getAttribute("loggedInUser");
         Memberships membership = membershipsRepository.findByClientID(loggedInUser.getID());
-        LocalDate currentDate = LocalDate.now();
-        int freezeDuration = (int) ChronoUnit.DAYS.between(currentDate, freezeEnddate);
-        LocalDate membershipEndDate = membership.getEndDate().plusDays(freezeDuration);
-        int newFreezeCount = membership.getFreezeCount() - freezeDuration;
-        membership.setFreezeCount(newFreezeCount);
-        membership.setEndDate(membershipEndDate);
-        membership.setFreezed("Freezed");
+
+        ScheduledUnfreeze scheduledUnfreeze = scheduledUnfreezeRepository.findByMembershipID(membership.getID());
+        // get the difference between old freeze duration and the new freeze duration
+        int newFreezeDuration = calculateFreezeDuration(scheduledUnfreeze.getFreezeStartDate(), LocalDate.now());
+        int oldFreezeDuration = calculateFreezeDuration(scheduledUnfreeze.getFreezeStartDate(), scheduledUnfreeze.getFreezeEndDate());
+        int freezeDuration = oldFreezeDuration - newFreezeDuration;
+
+        // update membership end date by subtracting the new freeze duration 
+        membership.setEndDate(membership.getEndDate().minusDays(freezeDuration));
+        membership.setFreezeCount(membership.getFreezeCount() + freezeDuration);
+        membership.setFreezed("Not Freezed");
         this.membershipsRepository.save(membership);
+
+        // remove scheduled unfreeze
+        this.scheduledUnfreezeRepository.delete(scheduledUnfreeze);
+
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("redirect:/user/requestfreeze");
         return modelAndView;

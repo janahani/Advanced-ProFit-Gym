@@ -260,7 +260,6 @@ img {
 }
 
 .modal {
-  display: none; 
   position: fixed;
   z-index: 1;
   left: 0;
@@ -293,13 +292,11 @@ img {
 }
 
 #confirm-button{
-  position:relative;
-  left:42%;
+  position:absolute;
 }
 
 #cancel-button{
-  position:relative;
-  left:40%;
+  position:absolute;
 }
 
 #confirm-button, #cancel-button {
@@ -308,7 +305,7 @@ img {
   padding: 10px 20px;
   border: none;
   cursor: pointer;
-  margin: 5px;
+  margin: 10px;
 }
 
 #confirm-button:hover, #cancel-button:hover {

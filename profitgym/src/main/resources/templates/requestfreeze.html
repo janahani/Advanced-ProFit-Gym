@@ -17,6 +17,8 @@
       crossorigin="anonymous"
     ></script>
     <script src="https://kit.fontawesome.come/a076d05399.js"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.js"
+        integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
     <!--css/icons/boostrap/jquery/fonts/images end-->
     <link
       th:href="@{https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css}"
@@ -68,8 +70,8 @@
             </div>
 
             <div th:if="${membership.isActivated} == 'Activated'">
-              <form th:action="@{/user/requestfreeze}" method="post">
-                <div th:if="${membership.Freezed} == 'Not Freezed'">
+                <div th:if="${membership.Freezed} == 'Not Freezed'">              
+                  <form th:action="@{/user/requestfreeze}" method="post">
                   <div class="datePicking" id="datePickerContainer">
                     <label for="datepicker">Choose a Date:</label>
                     <input
@@ -80,29 +82,59 @@
                       th:max="${maxFreezeDate}"
                     />
                   </div>
-                  <button type="submit" id="freeze-button">Freeze</button>
+                  <button type="button" onclick="showModal()" id="freeze-button">Freeze</button>
                 </div>
                 <div th:if="${membership.Freezed} == 'Freezed'">
-                    <form th:action="@{/user/}" method="post">
-                    <button type="submit" id="freeze-button">Unfreeze</button>
+                    <form th:action="@{/user/requestunfreeze}" method="post">
+                    <button type="button" onclick="showUnfreezeModal()" id="freeze-button">Unfreeze</button>
+                </div>
+                <div id="myModal" class="modal">
+                  <div class="modal-content">
+                    <span onclick="closeModal()" class="close-popup">&times;</span>
+                    <p id="confirmation-text"></p>
+                    <button id="confirm-button" type="submit">Yes</button>
+                    <button onclick="closeModal()" type="button" id="cancel-button">Cancel</button>
+                    <p id="modal-message"></p>
+                  </div>
                 </div>
               </form>
             </div>
           </div>
         </div>
-
-        <div id="myModal" class="modal">
-          <div class="modal-content">
-            <span class="close-popup">&times;</span>
-            <p id="confirmation-text"></p>
-            <button id="confirm-button">Yes</button>
-            <button id="cancel-button">Cancel</button>
-            <p id="modal-message"></p>
-          </div>
-        </div>
       </div>
     </div>
+    <script>
+      var freezebtn = document.getElementById("freeze-button");
+      var datePicker = document.getElementById("datepicker");
+      function showUnfreezeModal(){
+        var modalLabel = document.getElementById("confirmation-text");
+        modalLabel.textContent =
+      "Are you sure you want to unfreeze your membership?";
+      $("#myModal").fadeIn();
+      }
 
+function showModal() {
+  var selectedDate = document.getElementById("datepicker").value;
+  var modalLabel = document.getElementById("confirmation-text");
+
+  if (selectedDate) {
+    modalLabel.textContent =
+      "Are you sure you want to freeze your membership to " +
+      selectedDate +
+      "?";
+      $("#myModal").fadeIn();
+
+  } else {
+    return;
+  }
+
+}
+function closeModal()
+{
+    $("#myModal").fadeOut();
+
+}
+    </script>
     <!-- footer -->
     <div th:replace="~{partials/footer}"></div>
   </body>
