@@ -91,6 +91,7 @@
                                     <tr>
                                         <th scope="col">Client ID</th>
                                         <th scope="col">Client Name</th>
+                                        <th scope="col">Coach Name</th>
                                         <th scope="col">Class Name</th>
                                         <th scope="col"> Day </th>
                                         <th scope="col">From</th>
@@ -100,18 +101,33 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr>
-                                        <th scope="row">01</th>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td>
-                                            <a href="#!" class="btn btn-sm btn-primary">Accept</a>
-                                            <a href="#!" class="btn btn-sm btn-delete">Decline</a>
-                                        </td>
+                                    <tr th:each="reservedClass: ${reservedClassesList}">
+                                        <th scope="row" th:text="${reservedClass.clientID}"></th>
+                                        <div th:each="client : ${clientsList}">
+                                            <div th:if="${client.ID == reservedClass.ClientID}">
+                                                <td th:text="${client.FirstName + ' ' + client.LastName}"></td>
+                                            </div>
+                                        </div>
+                                        <div th:each="coach : ${coachesList}">
+                                            <div th:if="${coach.ID == reservedClass.CoachID}">
+                                                <td th:text="${coach.Name}"></td>
+                                            </div>
+                                        </div>
+                                        <div th:each="assignedClass : ${assignedClassesList}">
+                                            <div th:if="${assignedClass.ID == reservedClass.AssignedClassID}">
+                                                <div th:each="class : ${classesList}">
+                                                    <div th:if="${class.ID == assignedClass.ClassID}">
+                                                        <td th:text="${class.Name}"></td>
+                                                    </div>
+                                                </div>
+                                                <td th:text="${assignedClass.Date}"></td>
+                                                <td th:text="${assignedClass.StartTime}"></td>
+                                                <td th:text="${assignedClass.EndTime}"></td>
+                                                <td th:text="${assignedClass.Price}"></td>
+                                                <td>
+                                                    <a href="#!" class="btn btn-sm btn-primary">Accept</a>
+                                                    <a href="#!" class="btn btn-sm btn-delete">Decline</a>
+                                                </td>
                                     </tr>
                                 </tbody>
                             </table>
