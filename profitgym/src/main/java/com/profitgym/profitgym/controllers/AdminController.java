@@ -102,6 +102,37 @@ public class AdminController {
 
         return builder.toString();
     }
+    private void saveUpdatedFieldsForClient(Client clientObj, Client existingClient)
+    {
+        if (clientObj.getFirstName() != null) {
+            existingClient.setFirstName(clientObj.getFirstName());
+        }
+        if (clientObj.getLastName() != null) {
+            existingClient.setLastName(clientObj.getLastName());
+        }
+        if (clientObj.getAge() != 0) {
+            existingClient.setAge(clientObj.getAge());
+        }
+        if (clientObj.getGender() != null) {
+            existingClient.setGender(clientObj.getGender());
+        }
+        if (clientObj.getWeight() != 0) {
+            existingClient.setWeight(clientObj.getWeight());
+        }
+        if (clientObj.getHeight() != 0) {
+            existingClient.setHeight(clientObj.getHeight());
+        }
+        if (clientObj.getEmail() != null) {
+            existingClient.setEmail(clientObj.getEmail());
+        }
+        if (clientObj.getPassword() != null) {
+            existingClient.setPassword(clientObj.getPassword());
+        }
+        if (clientObj.getPhoneNumber() != null) {
+            existingClient.setPhoneNumber(clientObj.getPhoneNumber());
+        }
+
+    }
 
     @GetMapping("")
     public ModelAndView getAdminDash() {
@@ -404,38 +435,8 @@ public class AdminController {
             Client existingClient = clientRepository.findById(clientId);
             if (existingClient != null) {
 
-                // Check for null before updating each property
-                if (clientObj.getFirstName() != null) {
-                    existingClient.setFirstName(clientObj.getFirstName());
-                }
-                if (clientObj.getLastName() != null) {
-                    existingClient.setLastName(clientObj.getLastName());
-                }
-                if (clientObj.getAge() != 0) {
-                    existingClient.setAge(clientObj.getAge());
-                }
-                if (clientObj.getGender() != null) {
-                    existingClient.setGender(clientObj.getGender());
-                }
-                if (clientObj.getWeight() != 0) {
-                    existingClient.setWeight(clientObj.getWeight());
-                }
-                if (clientObj.getHeight() != 0) {
-                    existingClient.setHeight(clientObj.getHeight());
-                }
-                if (clientObj.getEmail() != null) {
-                    existingClient.setEmail(clientObj.getEmail());
-                }
-                if (clientObj.getPassword() != null) {
-                    existingClient.setPassword(clientObj.getPassword());
-                }
-                if (clientObj.getPhoneNumber() != null) {
-                    existingClient.setPhoneNumber(clientObj.getPhoneNumber());
-                }
-
-                // Save the updated client
+                saveUpdatedFieldsForClient(clientObj, existingClient);
                 clientRepository.save(existingClient);
-
                 System.out.println("Client updated successfully");
                 modelAndView.setViewName("redirect:/admindashboard/clients");
             } else {
