@@ -6,6 +6,7 @@ import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.jms.activemq.ActiveMQProperties.Packages;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.ResponseEntity;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -290,6 +291,11 @@ public class AdminController {
         mav.addObject("clients", clients);
         mav.addObject("packages", packages);
         return mav;
+    }
+
+    @PostMapping
+    public ResponseEntity<String> addMembership(@RequestBody Memberships memberships) {
+        return ResponseEntity.ok("Membership added successfully.");
     }
 
     @PostMapping("/deletemembership")
