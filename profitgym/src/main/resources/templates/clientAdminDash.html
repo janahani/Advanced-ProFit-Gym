@@ -50,16 +50,19 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr th:each="client : ${clients}">
+                                    <tr th:each="client, idx : ${clients}">
                                         <th scope="row" th:text="${client.ID}"></th>
                                         <td th:text="${client.FirstName + ' ' + client.LastName}"></td>
                                         <td th:text="${client.Email}"></td>
                                         <td th:text="${client.Age}"></td>
                                         <td th:text="${client.Gender}"></td>
                                         <td th:text="${client.PhoneNumber}"></td>
-                                        <td>
-                                            <a th:href="@{/admindashboard/packages}" class="btn btn-sm btn-activate">Activate</a>
+                                        <td th:if="${hasActiveMembership[idx.index]}">
+                                            <button class="btn btn-sm btn-activate" type="button" disabled>Activated</button>
                                         </td>
+                                        <td th:unless="${hasActiveMembership[idx.index]}">
+                                            <a th:href="@{/admindashboard/requestmembership(id=${client.ID})}" class="btn btn-sm btn-activate">Activate</a>
+                                        </td>                                        
                                         <td>
                                             <a th:href="@{/admindashboard/editclient(id=${client.ID})}" class="btn btn-sm btn-primary">Edit</a>
                                             <form th:action="@{/admindashboard/deleteclient}" th:object="${client}" method="post" style="display: inline;">

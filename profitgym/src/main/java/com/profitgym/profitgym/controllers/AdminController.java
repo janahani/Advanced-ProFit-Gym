@@ -55,7 +55,6 @@ import java.util.Locale;
 import java.util.Map;
 import org.springframework.web.bind.annotation.RequestBody;
 
-
 @RestController
 @RequestMapping("/admindashboard")
 public class AdminController {
@@ -102,8 +101,8 @@ public class AdminController {
 
         return builder.toString();
     }
-    private void saveUpdatedFieldsForClient(Client clientObj, Client existingClient)
-    {
+
+    private void saveUpdatedFieldsForClient(Client clientObj, Client existingClient) {
         if (clientObj.getFirstName() != null) {
             existingClient.setFirstName(clientObj.getFirstName());
         }
@@ -161,8 +160,18 @@ public class AdminController {
 
         ModelAndView mav = new ModelAndView("clientAdminDash.html");
         List<Client> clients = this.clientRepository.findAll();
+        List<Boolean> hasActiveMembership = new ArrayList<>();
+        for (Client client : clients) {
+            Memberships membership = this.membershipsRepository.findByClientID(client.getID());
+            System.out.println(client.getID());
+            boolean isActiveMember = false;
+            if (membership != null && membership.getIsActivated().equals("Activated")) {
+                isActiveMember = true;
+            }
+            hasActiveMembership.add(isActiveMember);
+        }
         mav.addObject("clients", clients);
-
+        mav.addObject("hasActiveMembership", hasActiveMembership);
         return mav;
     }
 
@@ -216,11 +225,11 @@ public class AdminController {
     @GetMapping("clientrequests")
     public ModelAndView viewRequests() {
         ModelAndView mav = new ModelAndView("clientReqAdminDash.html");
-        List<Memberships> memberships=this.membershipsRepository.findByIsActivated("Not Activated");
+        List<Memberships> memberships = this.membershipsRepository.findByIsActivated("Not Activated");
         List<Package> packages = new ArrayList<>();
         List<Client> clients = new ArrayList<>();
-        for (Memberships membership : memberships){
-            int packageId= membership.getPackageID();
+        for (Memberships membership : memberships) {
+            int packageId = membership.getPackageID();
             int clientId = membership.getClientID();
             Package packageInfo = this.packageRespository.findById(packageId);
             Client clientInfo = this.clientRepository.findById(clientId);
@@ -231,18 +240,16 @@ public class AdminController {
         mav.addObject("packages", packages);
         mav.addObject("clients", clients);
 
-
         List<ReservedClass> reservedClassesList = this.reservedClassRepository.findByIsActivated("Not Activated");
         List<Classes> classesList = new ArrayList<>();
         List<Client> clientsList = new ArrayList<>();
         List<Employee> coachesList = new ArrayList<>();
         List<AssignedClass> assignedClassesList = new ArrayList<>();
-        for (ReservedClass reservedClass: reservedClassesList)
-        {
-            int assignedClassId= reservedClass.getAssignedClassID();
+        for (ReservedClass reservedClass : reservedClassesList) {
+            int assignedClassId = reservedClass.getAssignedClassID();
             int clientId = reservedClass.getClientID();
             int coachId = reservedClass.getCoachID();
-            
+
             AssignedClass assignedClassInfo = this.assignedClassRepository.findByID(assignedClassId);
             assignedClassesList.add(assignedClassInfo);
             if (assignedClassInfo != null) {
@@ -257,11 +264,11 @@ public class AdminController {
             Employee coachInfo = this.employeeRepository.findByID(coachId);
             coachesList.add(coachInfo);
         }
-        mav.addObject("reservedClassesList",reservedClassesList);
-        mav.addObject("classesList",classesList);
-        mav.addObject("clientsList",clientsList);
-        mav.addObject("coachesList",coachesList);
-        mav.addObject("assignedClassesList",assignedClassesList);
+        mav.addObject("reservedClassesList", reservedClassesList);
+        mav.addObject("classesList", classesList);
+        mav.addObject("clientsList", clientsList);
+        mav.addObject("coachesList", coachesList);
+        mav.addObject("assignedClassesList", assignedClassesList);
 
         return mav;
     }
@@ -273,16 +280,14 @@ public class AdminController {
         List<Client> clients = new ArrayList<>();
         List<Package> packages = new ArrayList<>();
 
-        if(memberships!=null)
-        {
+        if (memberships != null) {
             for (Memberships membership : memberships) {
-                
+
                 Client client = clientRepository.findById(membership.getClientID());
                 clients.add(client);
                 Package package1 = packageRespository.findById(membership.getPackageID());
-                if(packages.contains(package1)==false)
-                {
-                     packages.add(package1);
+                if (packages.contains(package1) == false) {
+                    packages.add(package1);
                 }
             }
         }
@@ -305,7 +310,7 @@ public class AdminController {
         membershipsRepository.save(membershipObj);
 
         ModelAndView modelAndView = new ModelAndView();
-        modelAndView.setViewName("redirect:/admindashboard/addmembership"); 
+        modelAndView.setViewName("redirect:/admindashboard/addmembership");
         // Redirect to the add membership page
         return modelAndView;
     }
@@ -316,16 +321,15 @@ public class AdminController {
         try {
             membershipsRepository.deleteById(membershipId);
             modelAndView.setViewName("redirect:/admindashboard/memberships");
-            
+
         } catch (Exception e) {
 
             System.out.println("Error deleting employee: " + e.getMessage());
-        
+
         }
 
         return modelAndView;
     }
-    
 
     @GetMapping("checkin")
     public ModelAndView viewCheckIn() {
@@ -588,7 +592,6 @@ public class AdminController {
         mav.addObject("assignClassObj", new AssignedClass());
 
         LocalDate currentDate = LocalDate.now();
-
         List<String> availableClassDays = new ArrayList<>();
 
         // Iterate through the classes to find the upcoming class days
@@ -649,6 +652,29 @@ public class AdminController {
             modelAndView.setViewName("error_page");
         }
         return modelAndView;
+    }
+
+    @GetMapping("requestmembership")
+    public ModelAndView requestMembership(@RequestParam("id") int clientId) {
+        ModelAndView mav = new ModelAndView("bookMembershipAdminDash.html");
+        List<Package> packages = this.packageRespository.findAll();
+        Client client = this.clientRepository.findById(clientId);
+        mav.addObject("packages", packages);
+        mav.addObject("client", client);
+        return mav;
+    }
+
+    @PostMapping("requestmembership")
+    public ModelAndView activateMembership(@RequestParam("id") int clientId, @RequestParam("packageID") int packageId) {
+        ModelAndView mav = new ModelAndView();
+        Package pack = this.packageRespository.findById(packageId);
+        Memberships membership = new Memberships();
+        membership.setClientID(clientId);
+        membership.setIsActivated("Activated");
+        membership.setPackage(pack);
+        this.membershipsRepository.save(membership);
+        mav.setViewName("redirect:/admindashboard/clients");
+        return mav;
     }
 
 }

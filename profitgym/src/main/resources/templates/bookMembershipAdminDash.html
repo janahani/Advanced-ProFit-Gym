@@ -1,0 +1,67 @@
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Profile Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css">
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700">
+    <link rel="stylesheet"
+        href="https://rawcdn.githack.com/Loopple/loopple-public-assets/ad60f16c8a16d1dcad75e176c00d7f9e69320cd4/argon-dashboard/css/nucleo/css/nucleo.css">
+    <link rel="stylesheet" type="text/css" th:href="@{/CSS/theme.css}">
+</head>
+
+<body>
+    <div th:replace="~{partials/adminDashSideBar}"></div>
+    <div class="main-content" id="panel">
+        <div th:replace="~{partials/adminNavBar}"></div>
+
+        <div class="container-fluid pt-3">
+            <div class="row removable">
+                <div class="col-lg">
+                    <h1 class="centeredHeader">Book Membership for <span th:text="${client.FirstName+ ' ' + client.LastName}"></span>
+                    </h1>
+                    <div class="packageContainer">
+                        <div th:each="package: ${packages}" class="packageBox">
+                            <h3 th:text="${package.Title}"></h3>
+                            <div class="packageContent">
+                                <div class="packageText">
+                                    <p> <span th:text="${package.VisitsLimit + ' Visits Limit'}"></span></p>
+                                    <p> <span th:text="${package.NumOfInvitations + ' Invitations'}"></span></p>
+                                    <p> <span th:text="${package.NumOfInbodySessions + ' Inbody Sessions'}"></span></p>
+                                    <p> <span
+                                            th:text="${package.NumOfPrivateTrainingSessions + ' Private Training Sessions'}"></span>
+                                    </p>
+                                    <p>
+                                        <bold>For: <span th:text="${package.price + ' L.E'}"></span></bold>
+                                    </p>
+                                    <form method="post" th:action="@{/admindashboard/requestmembership(id=${client.ID})}">
+                                        <input type="hidden" name="packageID" th:value="${package.id}">
+                                        <button class="btn-package" type="submit">Activate</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+
+    <script
+        src="https://rawcdn.githack.com/Loopple/loopple-public-assets/5cef8f62939eeb089fa26d4c53a49198de421e3d/argon-dashboard/js/vendor/jquery.min.js"></script>
+    <script
+        src="https://rawcdn.githack.com/Loopple/loopple-public-assets/5cef8f62939eeb089fa26d4c53a49198de421e3d/argon-dashboard/js/vendor/bootstrap.bundle.min.js"></script>
+    <script
+        src="https://rawcdn.githack.com/Loopple/loopple-public-assets/5cef8f62939eeb089fa26d4c53a49198de421e3d/argon-dashboard/js/vendor/js.cookie.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.4/dist/Chart.min.js"></script>
+    <script
+        src="https://rawcdn.githack.com/Loopple/loopple-public-assets/5cef8f62939eeb089fa26d4c53a49198de421e3d/argon-dashboard/js/vendor/chart.extension.js"></script>
+    <script
+        src="https://rawcdn.githack.com/Loopple/loopple-public-assets/7bb803d2af2ab6d71d429b0cb459c24a4cd0fbb4/argon-dashboard/js/argon.min.js"></script>
+
+</body>
+
+</html>

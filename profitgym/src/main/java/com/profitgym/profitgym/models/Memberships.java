@@ -7,6 +7,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import java.util.Objects;
+import com.profitgym.profitgym.models.Package;
 
 @Entity
 public class Memberships {
@@ -30,7 +31,9 @@ public class Memberships {
     public Memberships() {
     }
 
-    public Memberships(int ID, int clientID, int PackageID, LocalDate StartDate, LocalDate EndDate, int VisitsCount, int InvitationsCount, int InbodySessionsCount, int PrivateTrainingSessionsCount, int FreezeCount, String Freezed, String isActivated, LocalDate createdAt) {
+    public Memberships(int ID, int clientID, int PackageID, LocalDate StartDate, LocalDate EndDate, int VisitsCount,
+            int InvitationsCount, int InbodySessionsCount, int PrivateTrainingSessionsCount, int FreezeCount,
+            String Freezed, String isActivated, LocalDate createdAt) {
         this.ID = ID;
         this.clientID = clientID;
         this.PackageID = PackageID;
@@ -210,6 +213,20 @@ public class Memberships {
         this.createdAt = createdAt;
     }
 
+    public void setPackage(Package pack) {
+        LocalDate startDate = LocalDate.now();
+        LocalDate endDate = startDate.plusMonths(pack.getNumOfMonths());
+        this.setPackageID(pack.getId());
+        this.setStartDate(startDate);
+        this.setEndDate(endDate);
+        this.setVisitsCount(pack.getVisitsLimit());
+        this.setInvitationsCount(pack.getNumOfInvitations());
+        this.setInbodySessionsCount(pack.getNumOfInbodySessions());
+        this.setPrivateTrainingSessionsCount(pack.getNumOfPrivateTrainingSessions());
+        this.setFreezeCount(pack.getFreezeLimit());
+        this.setFreezed("Not Freezed");
+    }
+
     @Override
     public boolean equals(Object o) {
         if (o == this)
@@ -218,31 +235,37 @@ public class Memberships {
             return false;
         }
         Memberships memberships = (Memberships) o;
-        return ID == memberships.ID && clientID == memberships.clientID && PackageID == memberships.PackageID && Objects.equals(StartDate, memberships.StartDate) && Objects.equals(EndDate, memberships.EndDate) && VisitsCount == memberships.VisitsCount && InvitationsCount == memberships.InvitationsCount && InbodySessionsCount == memberships.InbodySessionsCount && PrivateTrainingSessionsCount == memberships.PrivateTrainingSessionsCount && FreezeCount == memberships.FreezeCount && Objects.equals(Freezed, memberships.Freezed) && Objects.equals(isActivated, memberships.isActivated);
+        return ID == memberships.ID && clientID == memberships.clientID && PackageID == memberships.PackageID
+                && Objects.equals(StartDate, memberships.StartDate) && Objects.equals(EndDate, memberships.EndDate)
+                && VisitsCount == memberships.VisitsCount && InvitationsCount == memberships.InvitationsCount
+                && InbodySessionsCount == memberships.InbodySessionsCount
+                && PrivateTrainingSessionsCount == memberships.PrivateTrainingSessionsCount
+                && FreezeCount == memberships.FreezeCount && Objects.equals(Freezed, memberships.Freezed)
+                && Objects.equals(isActivated, memberships.isActivated);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(ID, clientID, PackageID, StartDate, EndDate, VisitsCount, InvitationsCount, InbodySessionsCount, PrivateTrainingSessionsCount, FreezeCount, Freezed, isActivated);
+        return Objects.hash(ID, clientID, PackageID, StartDate, EndDate, VisitsCount, InvitationsCount,
+                InbodySessionsCount, PrivateTrainingSessionsCount, FreezeCount, Freezed, isActivated);
     }
 
     @Override
     public String toString() {
         return "{" +
-            " ID='" + getID() + "'" +
-            ", clientID='" + getClientID() + "'" +
-            ", PackageID='" + getPackageID() + "'" +
-            ", StartDate='" + getStartDate() + "'" +
-            ", EndDate='" + getEndDate() + "'" +
-            ", VisitsCount='" + getVisitsCount() + "'" +
-            ", InvitationsCount='" + getInvitationsCount() + "'" +
-            ", InbodySessionsCount='" + getInbodySessionsCount() + "'" +
-            ", PrivateTrainingSessionsCount='" + getPrivateTrainingSessionsCount() + "'" +
-            ", FreezeCount='" + getFreezeCount() + "'" +
-            ", Freezed='" + getFreezed() + "'" +
-            ", isActivated='" + getIsActivated() + "'" +
-            "}";
+                " ID='" + getID() + "'" +
+                ", clientID='" + getClientID() + "'" +
+                ", PackageID='" + getPackageID() + "'" +
+                ", StartDate='" + getStartDate() + "'" +
+                ", EndDate='" + getEndDate() + "'" +
+                ", VisitsCount='" + getVisitsCount() + "'" +
+                ", InvitationsCount='" + getInvitationsCount() + "'" +
+                ", InbodySessionsCount='" + getInbodySessionsCount() + "'" +
+                ", PrivateTrainingSessionsCount='" + getPrivateTrainingSessionsCount() + "'" +
+                ", FreezeCount='" + getFreezeCount() + "'" +
+                ", Freezed='" + getFreezed() + "'" +
+                ", isActivated='" + getIsActivated() + "'" +
+                "}";
     }
-    
-    
+
 }
