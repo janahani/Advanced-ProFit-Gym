@@ -6,8 +6,6 @@ import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.jms.activemq.ActiveMQProperties.Packages;
 import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -35,8 +33,6 @@ import com.profitgym.profitgym.repositories.JobTitlesRepository;
 import com.profitgym.profitgym.repositories.MembershipsRepository;
 import com.profitgym.profitgym.repositories.PackageRepository;
 import com.profitgym.profitgym.repositories.ReservedClassRepository;
-import com.profitgym.profitgym.services.MembershipsService;
-import com.profitgym.profitgym.services.membershipsService;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
@@ -296,13 +292,25 @@ public class AdminController {
         return mav;
     }
 
-    @PostMapping
-    public ResponseEntity<Memberships> addMembership(@RequestBody Memberships membership) {
-        Memberships addedMembership = membershipsService.addMembership(membership);
-        return new ResponseEntity<>(addedMembership, HttpStatus.CREATED);
+    @GetMapping("addmembership")
+    public ModelAndView getMembershipForm() {
+        ModelAndView mav = new ModelAndView("addMembershipAdminDash.html");
+        mav.addObject("membershipObj", new Memberships());
+        return mav;
     }
 
-    @PostMapping("/deletemembership")
+    @PostMapping("addmembership")
+    public ModelAndView saveMembership(@ModelAttribute Memberships membershipObj) {
+
+        membershipsRepository.save(membershipObj);
+
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("redirect:/admindashboard/addmembership"); 
+        // Redirect to the add membership page
+        return modelAndView;
+    }
+
+    @PostMapping("/deldeletemembership")
     public ModelAndView DeleteMemebership(@RequestParam("membershipId") int membershipId) {
         ModelAndView modelAndView = new ModelAndView();
         try {
