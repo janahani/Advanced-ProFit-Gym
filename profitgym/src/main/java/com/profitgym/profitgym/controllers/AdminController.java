@@ -292,7 +292,25 @@ public class AdminController {
         return mav;
     }
 
-    @PostMapping("/deletemembership")
+    @GetMapping("addmembership")
+    public ModelAndView getMembershipForm() {
+        ModelAndView mav = new ModelAndView("addMembershipAdminDash.html");
+        mav.addObject("membershipObj", new Memberships());
+        return mav;
+    }
+
+    @PostMapping("addmembership")
+    public ModelAndView saveMembership(@ModelAttribute Memberships membershipObj) {
+
+        membershipsRepository.save(membershipObj);
+
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("redirect:/admindashboard/addmembership"); 
+        // Redirect to the add membership page
+        return modelAndView;
+    }
+
+    @PostMapping("/deldeletemembership")
     public ModelAndView DeleteMemebership(@RequestParam("membershipId") int membershipId) {
         ModelAndView modelAndView = new ModelAndView();
         try {
