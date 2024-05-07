@@ -434,7 +434,6 @@ public class AdminController {
         try {
             Client existingClient = clientRepository.findById(clientId);
             if (existingClient != null) {
-
                 saveUpdatedFieldsForClient(clientObj, existingClient);
                 clientRepository.save(existingClient);
                 System.out.println("Client updated successfully");
