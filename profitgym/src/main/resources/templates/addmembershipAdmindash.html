@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>add membership - admin</title>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css">
+        <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700">
+        <link rel="stylesheet"
+            href="https://rawcdn.githack.com/Loopple/loopple-public-assets/ad60f16c8a16d1dcad75e176c00d7f9e69320cd4/argon-dashboard/css/nucleo/css/nucleo.css">
+            <link rel="stylesheet" type="text/css" th:href="@{/CSS/theme.css}">
+    </head>
+    <body>
+        <div th:replace="~{partials/adminDashSideBar}"></div>
+        <div class="main-content" id="panel">
+            <div th:replace="~{partials/adminNavBar}"></div>
+    
+            <div class="container-fluid pt-3">
+                <div class="row removable">
+                    <div class="col-lg">
+                        <div class="user-form">
+                            <h1>Add a Class</h1>
+                            <form action="#" th:action="@{/admindashboard/addmembership}" th:object="${membershipObj}" method="post">
+                                Client ID: <input type="text" th:field="*{clientID}"/><br/>
+                                Package ID: <input type="text" th:field="*{packageID}"/><br/>
+                                Start Date: <input type="date" th:field="*{startDate}"/><br/>
+                                End Date: <input type="date" th:field="*{endDate}"/><br/>
+                                Visits Count: <input type="text" th:field="*{visitsCount}"/><br/>
+                                Invitations Count: <input type="text" th:field="*{invitationsCount}"/><br/>
+                                Inbody Sessions Count: <input type="text" th:field="*{inbodySessionsCount}"/><br/>
+                                Private Training Sessions Count: <input type="text" th:field="*{privateTrainingSessionsCount}"/><br/>
+                                Freeze Count: <input type="text" th:field="*{freezeCount}"/><br/>
+                                Freezed: <input type="text" th:field="*{freezed}"/><br/>
+                                Is Activated: <input type="text" th:field="*{isActivated}"/><br/>
+                                <button type="submit">Add Membership</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        <script th:src="@{/js/addClass.js}"></script>
+        <script
+            src="https://rawcdn.githack.com/Loopple/loopple-public-assets/5cef8f62939eeb089fa26d4c53a49198de421e3d/argon-dashboard/js/vendor/jquery.min.js"></script>
+        <script
+            src="https://rawcdn.githack.com/Loopple/loopple-public-assets/5cef8f62939eeb089fa26d4c53a49198de421e3d/argon-dashboard/js/vendor/bootstrap.bundle.min.js"></script>
+        <script
+            src="https://rawcdn.githack.com/Loopple/loopple-public-assets/5cef8f62939eeb089fa26d4c53a49198de421e3d/argon-dashboard/js/vendor/js.cookie.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.4/dist/Chart.min.js"></script>
+        <script
+            src="https://rawcdn.githack.com/Loopple/loopple-public-assets/5cef8f62939eeb089fa26d4c53a49198de421e3d/argon-dashboard/js/vendor/chart.extension.js"></script>
+        <script
+            src="https://rawcdn.githack.com/Loopple/loopple-public-assets/7bb803d2af2ab6d71d429b0cb459c24a4cd0fbb4/argon-dashboard/js/argon.min.js"></script>
+    
+    </body>
+</html>
