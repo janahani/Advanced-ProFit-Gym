@@ -6,6 +6,7 @@ import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.jms.activemq.ActiveMQProperties.Packages;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -34,6 +35,8 @@ import com.profitgym.profitgym.repositories.JobTitlesRepository;
 import com.profitgym.profitgym.repositories.MembershipsRepository;
 import com.profitgym.profitgym.repositories.PackageRepository;
 import com.profitgym.profitgym.repositories.ReservedClassRepository;
+import com.profitgym.profitgym.services.MembershipsService;
+import com.profitgym.profitgym.services.membershipsService;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
@@ -294,8 +297,9 @@ public class AdminController {
     }
 
     @PostMapping
-    public ResponseEntity<String> addMembership(@RequestBody Memberships memberships) {
-        return ResponseEntity.ok("Membership added successfully.");
+    public ResponseEntity<Memberships> addMembership(@RequestBody Memberships membership) {
+        Memberships addedMembership = membershipsService.addMembership(membership);
+        return new ResponseEntity<>(addedMembership, HttpStatus.CREATED);
     }
 
     @PostMapping("/deletemembership")
