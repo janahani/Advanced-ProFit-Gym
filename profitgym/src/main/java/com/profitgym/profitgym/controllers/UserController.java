@@ -6,6 +6,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -16,6 +17,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -34,6 +36,7 @@ import com.profitgym.profitgym.models.ScheduledUnfreeze;
 import com.profitgym.profitgym.repositories.AssignedClassRepository;
 import com.profitgym.profitgym.repositories.ClassesRepository;
 import com.profitgym.profitgym.repositories.ClientRepository;
+import com.profitgym.profitgym.repositories.EmployeeRepository;
 import com.profitgym.profitgym.repositories.PackageRepository;
 import com.profitgym.profitgym.repositories.ReservedClassRepository;
 import com.profitgym.profitgym.repositories.MembershipsRepository;
@@ -69,6 +72,9 @@ public class UserController {
 
     @Autowired
     private ScheduledUnfreezeRepository scheduledUnfreezeRepository;
+
+    @Autowired
+    private EmployeeRepository employeeRepository;
 
     public UserController(ClientRepository clientRepository) {
         this.clientRepository = clientRepository;
@@ -228,11 +234,6 @@ public class UserController {
         return mav;
     }
 
-    @GetMapping("viewclasses")
-    public ModelAndView viewClasses() {
-        ModelAndView mav = new ModelAndView("viewclasses.html");
-        return mav;
-    }
 
     @GetMapping("requestfreeze")
     public ModelAndView requestFreeze(HttpSession session) {
@@ -282,10 +283,11 @@ public class UserController {
         ScheduledUnfreeze scheduledUnfreeze = scheduledUnfreezeRepository.findByMembershipID(membership.getID());
         // get the difference between old freeze duration and the new freeze duration
         int newFreezeDuration = calculateFreezeDuration(scheduledUnfreeze.getFreezeStartDate(), LocalDate.now());
-        int oldFreezeDuration = calculateFreezeDuration(scheduledUnfreeze.getFreezeStartDate(), scheduledUnfreeze.getFreezeEndDate());
+        int oldFreezeDuration = calculateFreezeDuration(scheduledUnfreeze.getFreezeStartDate(),
+                scheduledUnfreeze.getFreezeEndDate());
         int freezeDuration = oldFreezeDuration - newFreezeDuration;
 
-        // update membership end date by subtracting the new freeze duration 
+        // update membership end date by subtracting the new freeze duration
         membership.setEndDate(membership.getEndDate().minusDays(freezeDuration));
         membership.setFreezeCount(membership.getFreezeCount() + freezeDuration);
         membership.setFreezed("Not Freezed");
@@ -352,5 +354,45 @@ public class UserController {
         modelAndView.setViewName("redirect:/index");
         return modelAndView;
     }
+
+    @GetMapping("viewclasses")
+    public ModelAndView viewReservedClasses(HttpSession session) {
+        ModelAndView mav = new ModelAndView("viewclasses.html");
+    
+        Client loggedInUser = (Client) session.getAttribute("loggedInUser");
+    
+        if (loggedInUser != null) {
+            int userId = loggedInUser.getID();
+    
+            List<ReservedClass> reservedClasses = this.reservedClassRepository.findByClientID(userId);
+    
+            if (reservedClasses.isEmpty()) {
+                mav.addObject("errorMessage", "No reserved classes found for the client.");
+            } else {
+                List<Classes> reservedClassesDetails = new ArrayList<>();
+                for (ReservedClass reservedClass : reservedClasses) {
+                    int classId = reservedClass.getAssignedClassID();
+                    Optional<Classes> classDetails = this.classesRepository.findById(classId);
+                    classDetails.ifPresent(reservedClassesDetails::add);
+    
+                    // Fetch coach name using CoachID from ReservedClass
+                    int coachId = reservedClass.getCoachID();
+                    Optional<Employee> coachDetails = this.employeeRepository.findById(coachId);
+                    coachDetails.ifPresent(coach -> {
+                        // Assuming getName() returns the name of the coach in Employee class
+                        reservedClass.setCoachName(coach.getName());
+                    });
+                }
+                mav.addObject("reservedClassesDetails", reservedClassesDetails);
+            }
+        } else {
+            mav.addObject("errorMessage", "User not logged in.");
+        }
+    
+        return mav;
+    }
+    
+
+
 
 }

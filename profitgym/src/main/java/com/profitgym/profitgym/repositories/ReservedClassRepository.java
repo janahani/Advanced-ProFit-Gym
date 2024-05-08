@@ -10,8 +10,6 @@ public interface ReservedClassRepository extends JpaRepository<ReservedClass,Int
 
      List<ReservedClass> findByIsActivated(String isActivated);
 
-
-      ReservedClass findById(int ID); 
-
+     List<ReservedClass> findByClientID(int clientID);
 
 }

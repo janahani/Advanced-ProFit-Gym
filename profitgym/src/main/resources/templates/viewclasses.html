@@ -29,10 +29,15 @@
             <p class="hello-classes"><i class="fas fa-calendar"></i> Your Upcoming Classes</p>
         </div>
 
+        <div th:if="${errorMessage}">
+            <p th:text="${errorMessage}"></p>
+        </div>
+        <div th:each="reservedClass : ${reservedClassesDetails}">
+
         <div class="reminders">
             <div class="reminder">
                 <p class="class">Class:</p>
-                <div class="class-title">YOGA</div>
+                <div class="class-title" th:text="${reservedClass.name}"></div>
                 <div class="dates">
                     <div class="date">
                         <p>Date:</p>
@@ -50,8 +55,8 @@
                 </div>
 
                 <div class="rem-info">
-                    <p>Level:</p>
-                    <p class="actual-rem"> Moderate</p>
+                    <p>Description:</p>
+                    <p class="actual-rem" th:text="${reservedClass.Description}"> Moderate</p>
 
                     <p>Instructor:</p>
                     <p class="actual-rem"> Sara Maged</p>
@@ -62,70 +67,7 @@
             </div>
 
 
-            <div class="reminder">
-                <p class="class">Class:</p>
-                <div class="class-title">BODY-ATTACK</div>
-                <div class="dates">
-                    <div class="date">
-                        <p>Date:</p>
-                        <div class="class-date"> 28-10-2023</div>
-                    </div>
-                    <div class="time">
-                        <p>Time:</p>
-                        <div class="class-time">6:30 - 8:00 p.m</div>
-                    </div>
-
-                    <div class="day">
-                        <p>Day:</p>
-                        <div class="class-day">Monday</div>
-                    </div>
-                </div>
-
-                <div class="rem-info">
-                    <p>Level:</p>
-                    <p class="actual-rem"> Hard</p>
-
-                    <p>Instructor:</p>
-                    <p class="actual-rem"> Kareem Ahmed</p>
-
-                    <p>Class Fees:</p>
-                    <p class="actual-rem"> 200 L.E.</p>
-                </div>
-            </div>
-
-            <div class="reminder">
-                <p class="class">Class:</p>
-                <div class="class-title">AEROBICS</div>
-                <div class="dates">
-                    <div class="date">
-                        <p>Date:</p>
-                        <div class="class-date">31-10-2023</div>
-                    </div>
-                    <div class="time">
-                        <p>Time:</p>
-                        <div class="class-time">5:30 - 7:00 p.m</div>
-                    </div>
-
-                    <div class="day">
-                        <p>Day:</p>
-                        <div class="class-day">Tuesday</div>
-                    </div>
-                </div>
-
-                <div class="rem-info">
-                    <p>Level:</p>
-                    <p class="actual-rem"> Easy</p>
-
-                    <p>Instructor:</p>
-                    <p class="actual-rem"> Anna Hall</p>
-
-                    <p>Class Fees:</p>
-                    <p class="actual-rem"> 0 L.E.</p>
-                </div>
-            </div>
-        </div>
-    </div>
-
+    
     <!-- footer -->
     <div th:replace="~{partials/footer}"></div>
 
