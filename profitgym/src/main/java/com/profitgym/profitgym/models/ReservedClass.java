@@ -11,9 +11,19 @@ public class ReservedClass {
     private int ID;
     private int AssignedClassID;
     private int CoachID;
-    private int ClientID;
+    private int clientID; 
     private String Attended;
     private String isActivated;
+
+    public int getClientID() {
+        return clientID;
+    }
+
+    public void setClientID(int clientID) {
+        this.clientID = clientID;
+    }
+
+
 
     public ReservedClass()
     {
@@ -44,13 +54,6 @@ public class ReservedClass {
         this.CoachID = CoachID;
     }
 
-    public int getClientID() {
-        return this.ClientID;
-    }
-
-    public void setClientID(int ClientID) {
-        this.ClientID = ClientID;
-    }
 
     public String getAttended() {
         return this.Attended;
