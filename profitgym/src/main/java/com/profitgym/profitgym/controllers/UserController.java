@@ -156,7 +156,7 @@ public class UserController {
 
             membership.setFreezed("Not Freezed");
 
-            membership.setIsActivated("Not Activated");
+            membership.setIsActivated("Pending");
 
             this.membershipsRepository.save(membership);
 
@@ -197,7 +197,7 @@ public class UserController {
             AssignedClass assignedClass = this.assignedClassRepository.findByID(reservedClass.getAssignedClassID());
             double price = assignedClass.getPrice();
             if (price > 0) {
-                reservedClass.setIsActivated("Not Activated");
+                reservedClass.setIsActivated("Pending");
             } else {
                 reservedClass.setIsActivated("Activated");
 

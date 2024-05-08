@@ -225,7 +225,7 @@ public class AdminController {
     @GetMapping("clientrequests")
     public ModelAndView viewRequests() {
         ModelAndView mav = new ModelAndView("clientReqAdminDash.html");
-        List<Memberships> memberships = this.membershipsRepository.findByIsActivated("Not Activated");
+        List<Memberships> memberships = this.membershipsRepository.findByIsActivated("Pending");
         List<Package> packages = new ArrayList<>();
         List<Client> clients = new ArrayList<>();
         for (Memberships membership : memberships) {
@@ -240,7 +240,7 @@ public class AdminController {
         mav.addObject("packages", packages);
         mav.addObject("clients", clients);
 
-        List<ReservedClass> reservedClassesList = this.reservedClassRepository.findByIsActivated("Not Activated");
+        List<ReservedClass> reservedClassesList = this.reservedClassRepository.findByIsActivated("Pending");
         List<Classes> classesList = new ArrayList<>();
         List<Client> clientsList = new ArrayList<>();
         List<Employee> coachesList = new ArrayList<>();
