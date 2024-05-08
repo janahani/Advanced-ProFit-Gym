@@ -370,20 +370,23 @@ public class UserController {
                 mav.addObject("errorMessage", "No reserved classes found for the client.");
             } else {
                 List<Classes> reservedClassesDetails = new ArrayList<>();
+                List<String> coachNames = new ArrayList<>();
                 for (ReservedClass reservedClass : reservedClasses) {
                     int classId = reservedClass.getAssignedClassID();
                     Optional<Classes> classDetails = this.classesRepository.findById(classId);
                     classDetails.ifPresent(reservedClassesDetails::add);
     
                     // Fetch coach name using CoachID from ReservedClass
-                    int coachId = reservedClass.getCoachID();
-                    Optional<Employee> coachDetails = this.employeeRepository.findById(coachId);
-                    coachDetails.ifPresent(coach -> {
-                        // Assuming getName() returns the name of the coach in Employee class
-                        reservedClass.setCoachName(coach.getName());
-                    });
+                    Employee coachDetails = this.employeeRepository.findByID(reservedClass.getCoachID());
+                    if(coachDetails != null)
+                    {
+                        coachNames.add(coachDetails.getName());
+                    }else{
+                        coachNames.add("");
+                    }
                 }
                 mav.addObject("reservedClassesDetails", reservedClassesDetails);
+                mav.addObject("coaches", coachNames);
             }
         } else {
             mav.addObject("errorMessage", "User not logged in.");

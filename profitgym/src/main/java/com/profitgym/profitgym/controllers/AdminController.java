@@ -6,6 +6,8 @@ import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.jms.activemq.ActiveMQProperties.Packages;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -16,6 +18,9 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.profitgym.profitgym.models.AssignedClass;
 import com.profitgym.profitgym.models.ClassDays;
 import com.profitgym.profitgym.models.Classes;
@@ -24,6 +29,7 @@ import com.profitgym.profitgym.models.Employee;
 import com.profitgym.profitgym.models.Memberships;
 import com.profitgym.profitgym.models.Package;
 import com.profitgym.profitgym.models.ReservedClass;
+import com.profitgym.profitgym.models.ServiceResponse;
 import com.profitgym.profitgym.repositories.AssignedClassRepository;
 import com.profitgym.profitgym.repositories.ClassDaysRepository;
 import com.profitgym.profitgym.repositories.ClassesRepository;
@@ -273,10 +279,8 @@ public class AdminController {
         return mav;
     }
 
-    
     @PostMapping("/acceptMembership")
-    public ModelAndView acceptMembership(@RequestParam("membershipId") int membershipId)
-     {
+    public ModelAndView acceptMembership(@RequestParam("membershipId") int membershipId) {
         Memberships membership = membershipsRepository.findById(membershipId);
         if (membership != null) {
             membership.setIsActivated("Accepted");
@@ -286,8 +290,7 @@ public class AdminController {
     }
 
     @PostMapping("/declineMembership")
-    public ModelAndView declineMembership(@RequestParam("membershipId") int membershipId) 
-    {
+    public ModelAndView declineMembership(@RequestParam("membershipId") int membershipId) {
         Memberships membership = membershipsRepository.findById(membershipId);
         if (membership != null) {
             membership.setIsActivated("Declined");
@@ -297,8 +300,7 @@ public class AdminController {
     }
 
     @PostMapping("/acceptReservedClass")
-    public ModelAndView acceptReservedClass(@RequestParam("reservedClassId") int reservedClassId)
-     {
+    public ModelAndView acceptReservedClass(@RequestParam("reservedClassId") int reservedClassId) {
         ReservedClass reservedClass = reservedClassRepository.findById(reservedClassId);
         if (reservedClass != null) {
             reservedClass.setIsActivated("Accepted");
@@ -308,8 +310,7 @@ public class AdminController {
     }
 
     @PostMapping("/declineReservedClass")
-    public ModelAndView declineReservedClass(@RequestParam("reservedClassId") int reservedClassId) 
-    {
+    public ModelAndView declineReservedClass(@RequestParam("reservedClassId") int reservedClassId) {
         ReservedClass reservedClass = reservedClassRepository.findById(reservedClassId);
         if (reservedClass != null) {
             reservedClass.setIsActivated("Declined");
@@ -317,10 +318,6 @@ public class AdminController {
         }
         return new ModelAndView("redirect:/admindashboard/clientrequests");
     }
-
-
-
-
 
     @GetMapping("memberships")
     public ModelAndView viewMemberships() {
@@ -523,35 +520,48 @@ public class AdminController {
     @GetMapping("editemployee")
     public ModelAndView editEmpForm(@RequestParam("id") int employeeId) {
         ModelAndView mav = new ModelAndView("editEmpAdminDash.html");
-        Optional<Employee> optionalEmployee = employeeRepository.findById(employeeId);
-        if (optionalEmployee.isPresent()) {
-            Employee employee = optionalEmployee.get();
-            mav.addObject("employeeObj", employee); // Add employeeObj to the model
+        Employee optionalEmployee = this.employeeRepository.findByID(employeeId);
+        if (optionalEmployee != null) {
+            mav.addObject("employeeObj", optionalEmployee); // Add employeeObj to the model
             mav.addObject("jobTitles", jobTitlesRepository.findAll());
         } else {
-            mav.addObject("errorMessage", "Employee not found");
+            mav.setViewName("redirect:/admindashboard/employees");
         }
         return mav;
     }
 
     @PostMapping("editemployee")
-    public ModelAndView updateEmployee(@ModelAttribute Employee employeeObj,
-            @RequestParam(value = "jobTitleHidden", required = false) Integer jobTitle) {
+    public ResponseEntity<Object> updateEmployee(@RequestBody String employeeJson) throws JsonMappingException, JsonProcessingException {
+        System.out.println("Received JSON data: " + employeeJson);
+        ObjectMapper objectMapper = new ObjectMapper();
+        Employee employeeObj = objectMapper.readValue(employeeJson, Employee.class);
         // Log the ID of the employeeObj before saving
-        ModelAndView modelAndView = new ModelAndView();
         System.out.println("Employee ID before saving: " + employeeObj.getID());
-
-        if (jobTitle != null) {
-            employeeObj.setJobTitle(jobTitle);
+        String status;
+        Employee employee = this.employeeRepository.findByID(employeeObj.getID());
+        System.out.println(employeeObj);
+        if (employeeObj.getJobTitle() != 0) {
+            employee.setJobTitle(employeeObj.getJobTitle());
+        }
+        if (employeeObj.getName() != null) {
+            employee.setName(employeeObj.getName());
+        }
+        if (employeeObj.getEmail() != null) {
+            employee.setEmail(employeeObj.getEmail());
+        }
+        if (employeeObj.getPhoneNumber() != 0) {
+            employee.setPhoneNumber(employeeObj.getPhoneNumber());
         }
         try {
-            this.employeeRepository.save(employeeObj);
+            this.employeeRepository.save(employee);
+            status = "Employee updated successfully";
             System.out.println("Employee updated successfully");
-            modelAndView.setViewName("redirect:/admindashboard/editemployee");
         } catch (Exception e) {
+            status = "Error updating employee: " + e.getMessage();
             System.out.println("Error updating employee: " + e.getMessage());
         }
-        return modelAndView;
+        ServiceResponse<String> response = new ServiceResponse<String>("success", status);
+        return new ResponseEntity<Object>(response, HttpStatus.OK);
     }
 
     @GetMapping("addclass")
