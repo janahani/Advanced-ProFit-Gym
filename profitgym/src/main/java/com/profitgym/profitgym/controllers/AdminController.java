@@ -304,7 +304,18 @@ public class AdminController {
             reservedClass.setIsActivated("Accepted");
             reservedClassRepository.save(reservedClass);
         }
-        return new ModelAndView("redirect:/clientrequests");
+        return new ModelAndView("redirect:/admindashboard/clientrequests");
+    }
+
+    @PostMapping("/declineReservedClass")
+    public ModelAndView declineReservedClass(@RequestParam("reservedClassId") int reservedClassId) 
+    {
+        ReservedClass reservedClass = reservedClassRepository.findById(reservedClassId);
+        if (reservedClass != null) {
+            reservedClass.setIsActivated("Declined");
+            reservedClassRepository.save(reservedClass);
+        }
+        return new ModelAndView("redirect:/admindashboard/clientrequests");
     }
 
 
