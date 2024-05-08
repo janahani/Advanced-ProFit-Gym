@@ -10,4 +10,8 @@ public interface MembershipsRepository extends JpaRepository<Memberships,Integer
     
     Memberships findByClientID(int ClientID); 
     List<Memberships> findByIsActivated(String isActivated);
+
+    Memberships findById(int ID); 
+
+
 }
