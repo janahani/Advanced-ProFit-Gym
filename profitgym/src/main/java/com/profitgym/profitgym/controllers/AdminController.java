@@ -282,7 +282,7 @@ public class AdminController {
             membership.setIsActivated("Accepted");
             membershipsRepository.save(membership);
         }
-        return new ModelAndView("redirect:/clientrequests");
+        return new ModelAndView("redirect:/admindashboard/clientrequests");
     }
 
     @PostMapping("/declineMembership")
@@ -293,8 +293,22 @@ public class AdminController {
             membership.setIsActivated("Declined");
             membershipsRepository.save(membership);
         }
+        return new ModelAndView("redirect:/admindashboard/clientrequests");
+    }
+
+    @PostMapping("/acceptReservedClass")
+    public ModelAndView acceptReservedClass(@RequestParam("reservedClassId") int reservedClassId)
+     {
+        ReservedClass reservedClass = reservedClassRepository.findById(reservedClassId);
+        if (reservedClass != null) {
+            reservedClass.setIsActivated("Accepted");
+            reservedClassRepository.save(reservedClass);
+        }
         return new ModelAndView("redirect:/clientrequests");
     }
+
+
+
 
 
     @GetMapping("memberships")

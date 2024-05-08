@@ -11,7 +11,7 @@ public interface MembershipsRepository extends JpaRepository<Memberships,Integer
     Memberships findByClientID(int ClientID); 
     List<Memberships> findByIsActivated(String isActivated);
 
-    Memberships findById(int ID); // Corrected method name to findById
+    Memberships findById(int ID); 
 
 
 }
