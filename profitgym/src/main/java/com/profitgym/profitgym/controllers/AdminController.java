@@ -285,6 +285,17 @@ public class AdminController {
         return new ModelAndView("redirect:/clientrequests");
     }
 
+    @PostMapping("/declineMembership")
+    public ModelAndView declineMembership(@RequestParam("membershipId") int membershipId) 
+    {
+        Memberships membership = membershipsRepository.findById(membershipId);
+        if (membership != null) {
+            membership.setIsActivated("Declined");
+            membershipsRepository.save(membership);
+        }
+        return new ModelAndView("redirect:/clientrequests");
+    }
+
 
     @GetMapping("memberships")
     public ModelAndView viewMemberships() {
