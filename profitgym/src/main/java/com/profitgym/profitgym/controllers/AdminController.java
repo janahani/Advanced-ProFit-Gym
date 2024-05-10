@@ -138,7 +138,8 @@ public class AdminController {
             existingClient.setEmail(clientObj.getEmail());
         }
         if (clientObj.getPassword() != null) {
-            existingClient.setPassword(clientObj.getPassword());
+            String encoddedPassword = BCrypt.hashpw(clientObj.getPassword(), BCrypt.gensalt(12));
+            existingClient.setPassword(encoddedPassword);
         }
         if (clientObj.getPhoneNumber() != null) {
             existingClient.setPhoneNumber(clientObj.getPhoneNumber());

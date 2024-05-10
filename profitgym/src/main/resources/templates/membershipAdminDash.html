@@ -174,28 +174,7 @@
             </div>
         </div>
     </div>
-    <script>
-        function handleDateChange(modalID) {
-            var selectedDate = $("#datepicker-" + modalID).val();
-            var modalLabel = document
-                .getElementById("modal-" + modalID)
-                .querySelector(".confirmation-text");
-            if (selectedDate) {
-                modalLabel.textContent =
-                    "Are you sure you want to freeze your membership to " +
-                    selectedDate +
-                    "?";
-            }
-        }
-
-        function showModal(modalID) {
-            console.log("Modal ID: " + modalID);
-            $("#modal-" + modalID).fadeIn();
-        }
-        function closeModal(modalID) {
-            $("#modal-" + modalID).fadeOut();
-        }
-    </script>
+    <script th:src="@{/js/reqfreeze.js}"></script>
     <script
         src="https://rawcdn.githack.com/Loopple/loopple-public-assets/5cef8f62939eeb089fa26d4c53a49198de421e3d/argon-dashboard/js/vendor/jquery.min.js"></script>
     <script

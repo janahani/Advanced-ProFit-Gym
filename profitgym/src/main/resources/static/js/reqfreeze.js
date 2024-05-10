@@ -1,122 +1,53 @@
-const freezeButton = document.getElementById("freeze-button");
-const freezeWeeksInput = document.getElementById("freeze-weeks");
-let remainingFreezeAttempts; // To be fetched from the database later on
-
-const modal = document.getElementById("myModal");
-const confirmationText = document.getElementById("confirmation-text");
-const confirmButton = document.getElementById("confirm-button");
-const cancelButton = document.getElementById("cancel-button");
-const closeBtn = document.querySelector(".close-popup");
-const errorMessage = document.getElementById("error-message");
-const modalMessage = document.getElementById("modal-message");
-
-function showModal(message) {
-    confirmationText.textContent = message;
-    modal.style.display = "block";
-    confirmButton.style.display = "block";
-    cancelButton.style.display = "block";
-    closeBtn.style.display = "block";
-    modalMessage.style.display = "none";
+// freeze/unfreeze modal admin/employee side
+function handleDateChange(modalID) {
+  var selectedDate = $("#datepicker-" + modalID).val();
+  var modalLabel = document
+    .getElementById("modal-" + modalID)
+    .querySelector(".confirmation-text");
+  if (selectedDate) {
+    modalLabel.textContent =
+      "Are you sure you want to freeze your membership to " +
+      selectedDate +
+      "?";
+  }
 }
 
-function resetModal() {
-    modal.style.display = "none";
-    confirmationText.textContent = '';
-    confirmButton.style.display = "none";
-    cancelButton.style.display = "none";
-    closeBtn.style.display = "none";
-    modalMessage.style.display = "none";
+function showModal(modalID) {
+  console.log("Modal ID: " + modalID);
+  $("#modal-" + modalID).fadeIn();
+}
+function closeModal(modalID) {
+  $("#modal-" + modalID).fadeOut();
 }
 
-let isFrozen = false; // Track if the freeze button is already pressed
-
-freezeButton.addEventListener("click", function() {
-    const freezeWeeks = freezeWeeksInput.value;
-
-    if (isFrozen) {
-        // Show modal message instead of the whole modal
-        showModal("Your request is submitted, and you will receive a confirmation email.");
-        confirmButton.style.display = "none";
-        cancelButton.style.display = "none";
-    } else if (freezeWeeks !== '' && parseInt(freezeWeeks) >= 1 && parseInt(freezeWeeks) <= remainingFreezeAttempts) {
-        showModal(`Are you sure you want to freeze ${freezeWeeks} weeks?`);
-        isFrozen = true; // Set the freeze button state to pressed
-    } else {
-        errorMessage.style.display = "block";
-        modal.style.display = "none";
-    }
-});
-
-closeBtn.addEventListener("click", function() {
-    resetModal();
-});
-
-confirmButton.addEventListener("click", function() {
-    if (confirmationText.textContent) {
-        resetModal();
-
-        // sends a request to the server to handle the freeze
-        const xhr = new XMLHttpRequest();
-        xhr.open("POST", "reqfreeze.php", true);
-        xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-        xhr.onreadystatechange = function() {
-            if (xhr.readyState === 4 && xhr.status === 200) {
-                console.log(xhr.responseText);
-            }
-        };
-
-        xhr.send("action=freezeMembership&freezeWeeks=" + freezeWeeks);
-
-        modal.style.display = "block";
-        modalMessage.style.display = "block";
-        modalMessage.textContent = "Your request is submitted, and you will receive a confirmation email.";
-
-        setTimeout(function() {
-            modal.style.display = "none";
-            modalMessage.style.display = "none";
-        }, 2000); // model will hide automatically after 2 seconds
-    }
-});
-
-cancelButton.addEventListener("click", function() {
-    if (confirmationText.textContent) {
-        resetModal();
-
-        modal.style.display = "block";
-        modalMessage.style.display = "block";
-        modalMessage.textContent = "No request submitted.";
-
-        setTimeout(function() {
-            modal.style.display = "none";
-            modalMessage.style.display = "none";
-        }, 2000);
-    }
-});
-
-function sendFreezeRequest(freezeWeeks) {
-    const xhr = new XMLHttpRequest();
-    xhr.open("POST", "reqfreeze.php", true);
-    xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-    xhr.onreadystatechange = function() {
-        if (xhr.readyState === 4 && xhr.status === 200) {
-            console.log(xhr.responseText);
-        }
-    };
-
-    xhr.send("action=freezeMembership&freezeWeeks=" + freezeWeeks);
+// freeze/unfreeze modal user side
+var freezebtn = document.getElementById("freeze-button");
+var datePicker = document.getElementById("datepicker");
+function showUnfreezeModal() {
+  var modalLabel = document.getElementById("confirmation-text");
+  modalLabel.textContent = "Are you sure you want to unfreeze your membership?";
+  $("#userProfileModal").fadeIn();
 }
 
-// Fetch initial freeze info when the page loads
-document.addEventListener("DOMContentLoaded", function () {
-    fetchRemainingFreezeAttempts();
-});
+function openModal() {
+  var selectedDate = document.getElementById("datepicker").value;
+  var modalLabel = document.getElementById("confirmation-text");
 
-function fetchRemainingFreezeAttempts() {
-    fetch("reqfreeze.php")
-        .then(response => response.json())
-        .then(data => {
-            remainingFreezeAttempts = data.remainingFreezeAttempts;
-            document.getElementById("actual-rem").textContent = `${remainingFreezeAttempts} Weeks Out of ${remainingFreezeAttempts} Left`;
-        })
-        .catch(error => console.error("Error fetching freeze info:", error));
+  if (selectedDate) {
+    modalLabel.textContent =
+      "Are you sure you want to freeze your membership to " +
+      selectedDate +
+      "?";
+    $("#userProfileModal").fadeIn();
+  } else {
+    return;
+  }
+}
+function fadeOutModal() {
+  $("#userProfileModal").fadeOut();
+}
+function showUnfreezeModal() {
+  document.getElementById("confirmation-text").textContent =
+    "Are you sure you want to unfreeze your membership?";
+  $("#userProfileModal").fadeIn();
 }
