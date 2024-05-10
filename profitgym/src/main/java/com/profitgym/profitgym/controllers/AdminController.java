@@ -29,6 +29,7 @@ import com.profitgym.profitgym.models.Employee;
 import com.profitgym.profitgym.models.Memberships;
 import com.profitgym.profitgym.models.Package;
 import com.profitgym.profitgym.models.ReservedClass;
+import com.profitgym.profitgym.models.ScheduledUnfreeze;
 import com.profitgym.profitgym.models.ServiceResponse;
 import com.profitgym.profitgym.repositories.AssignedClassRepository;
 import com.profitgym.profitgym.repositories.ClassDaysRepository;
@@ -39,8 +40,10 @@ import com.profitgym.profitgym.repositories.JobTitlesRepository;
 import com.profitgym.profitgym.repositories.MembershipsRepository;
 import com.profitgym.profitgym.repositories.PackageRepository;
 import com.profitgym.profitgym.repositories.ReservedClassRepository;
+import com.profitgym.profitgym.repositories.ScheduledUnfreezeRepository;
 
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 
 import java.util.Random;
@@ -53,6 +56,7 @@ import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -90,6 +94,9 @@ public class AdminController {
 
     @Autowired
     private MembershipsRepository membershipsRepository;
+
+    @Autowired
+    private ScheduledUnfreezeRepository scheduledUnfreezeRepository;
 
     @Autowired
     private JavaMailSender emailSender;
@@ -137,6 +144,29 @@ public class AdminController {
             existingClient.setPhoneNumber(clientObj.getPhoneNumber());
         }
 
+    }
+
+    public int calculateFreezeDuration(LocalDate currentDate, LocalDate freezeEndDate) {
+        int freezeDuration = (int) ChronoUnit.DAYS.between(currentDate, freezeEndDate);
+        return freezeDuration;
+    }
+
+    public void updateMembershipEndDate(Memberships membership, int freezeDuration) {
+        LocalDate membershipEndDate = membership.getEndDate().plusDays(freezeDuration);
+        int newFreezeCount = membership.getFreezeCount() - freezeDuration;
+        membership.setFreezeCount(newFreezeCount);
+        membership.setEndDate(membershipEndDate);
+        membership.setFreezed("Freezed");
+        this.membershipsRepository.save(membership);
+    }
+
+    public void createScheduledUnfreeze(Memberships membership, LocalDate currentDate, LocalDate freezeEnddate) {
+        ScheduledUnfreeze scheduledUnfreeze = new ScheduledUnfreeze();
+        scheduledUnfreeze.setFreezeStartDate(currentDate);
+        scheduledUnfreeze.setFreezeEndDate(freezeEnddate);
+        scheduledUnfreeze.setMembershipID(membership.getID());
+        scheduledUnfreeze.setFreezeCount(membership.getFreezeCount());
+        this.scheduledUnfreezeRepository.save(scheduledUnfreeze);
     }
 
     @GetMapping("")
@@ -301,7 +331,7 @@ public class AdminController {
 
     @PostMapping("/acceptReservedClass")
     public ModelAndView acceptReservedClass(@RequestParam("reservedClassId") int reservedClassId) {
-        ReservedClass reservedClass = reservedClassRepository.findById(reservedClassId);
+        ReservedClass reservedClass = this.reservedClassRepository.findByID(reservedClassId);
         if (reservedClass != null) {
             reservedClass.setIsActivated("Accepted");
             reservedClassRepository.save(reservedClass);
@@ -311,7 +341,7 @@ public class AdminController {
 
     @PostMapping("/declineReservedClass")
     public ModelAndView declineReservedClass(@RequestParam("reservedClassId") int reservedClassId) {
-        ReservedClass reservedClass = reservedClassRepository.findById(reservedClassId);
+        ReservedClass reservedClass = this.reservedClassRepository.findByID(reservedClassId);
         if (reservedClass != null) {
             reservedClass.setIsActivated("Declined");
             reservedClassRepository.save(reservedClass);
@@ -325,22 +355,63 @@ public class AdminController {
         List<Memberships> memberships = membershipsRepository.findAll();
         List<Client> clients = new ArrayList<>();
         List<Package> packages = new ArrayList<>();
-
         if (memberships != null) {
-            for (Memberships membership : memberships) {
 
+            LocalDate currentDate = LocalDate.now();
+            LocalDate minFreezeDate = currentDate.plusDays(3);
+            List<LocalDate> maxFreezeDates = new ArrayList<>();
+            for (Memberships membership : memberships) {
                 Client client = clientRepository.findById(membership.getClientID());
                 clients.add(client);
                 Package package1 = packageRespository.findById(membership.getPackageID());
                 if (packages.contains(package1) == false) {
                     packages.add(package1);
                 }
+                
+                maxFreezeDates.add(currentDate.plusDays(membership.getFreezeCount()));
             }
+            mav.addObject("minFreezeDate", minFreezeDate);
+            mav.addObject("maxFreezeDates", maxFreezeDates);
         }
         mav.addObject("memberships", memberships);
         mav.addObject("clients", clients);
         mav.addObject("packages", packages);
         return mav;
+    }
+
+    @PostMapping("requestfreeze")
+    public ModelAndView freezeMembership(@RequestParam("id") int id
+    ,@RequestParam("freezeEndDate") String freezeEndDate,
+            HttpSession session) {
+        int freezeDuration = calculateFreezeDuration(LocalDate.now(), LocalDate.parse(freezeEndDate));
+        Memberships membership = membershipsRepository.findById(id);
+
+        updateMembershipEndDate(membership, freezeDuration);
+
+        createScheduledUnfreeze(membership, LocalDate.now(), LocalDate.parse(freezeEndDate));
+
+        return new ModelAndView("redirect:/admindashboard/memberships");
+    }
+
+    @PostMapping("requestunfreeze")
+    public ModelAndView unfreezeMembership(@RequestParam("id") int id, HttpSession session) {
+        Memberships membership = membershipsRepository.findById(id);
+        ScheduledUnfreeze scheduledUnfreeze = scheduledUnfreezeRepository.findByMembershipID(membership.getID());
+        // get the difference between old freeze duration and the new freeze duration
+        int newFreezeDuration = calculateFreezeDuration(scheduledUnfreeze.getFreezeStartDate(), LocalDate.now());
+        int oldFreezeDuration = calculateFreezeDuration(scheduledUnfreeze.getFreezeStartDate(),
+                scheduledUnfreeze.getFreezeEndDate());
+        int freezeDuration = oldFreezeDuration - newFreezeDuration;
+
+        membership.setEndDate(membership.getEndDate().minusDays(freezeDuration));
+        membership.setFreezeCount(membership.getFreezeCount() + freezeDuration);
+        membership.setFreezed("Not Freezed");
+        this.membershipsRepository.save(membership);
+
+        this.scheduledUnfreezeRepository.delete(scheduledUnfreeze);
+
+        return new ModelAndView("redirect:/admindashboard/memberships");
+
     }
 
     @GetMapping("addmembership")
@@ -361,7 +432,7 @@ public class AdminController {
         return modelAndView;
     }
 
-    @PostMapping("/deldeletemembership")
+    @PostMapping("/deletemembership")
     public ModelAndView DeleteMemebership(@RequestParam("membershipId") int membershipId) {
         ModelAndView modelAndView = new ModelAndView();
         try {
@@ -531,7 +602,8 @@ public class AdminController {
     }
 
     @PostMapping("editemployee")
-    public ResponseEntity<Object> updateEmployee(@RequestBody String employeeJson) throws JsonMappingException, JsonProcessingException {
+    public ResponseEntity<Object> updateEmployee(@RequestBody String employeeJson)
+            throws JsonMappingException, JsonProcessingException {
         System.out.println("Received JSON data: " + employeeJson);
         ObjectMapper objectMapper = new ObjectMapper();
         Employee employeeObj = objectMapper.readValue(employeeJson, Employee.class);
