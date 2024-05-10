@@ -32,7 +32,7 @@
         <div th:if="${errorMessage}">
             <p th:text="${errorMessage}"></p>
         </div>
-        <div th:each="reservedClass : ${reservedClassesDetails}">
+        <div th:each="reservedClass, idx : ${reservedClassesDetails}">
 
         <div class="reminders">
             <div class="reminder">
@@ -59,7 +59,7 @@
                     <p class="actual-rem" th:text="${reservedClass.Description}"> Moderate</p>
 
                     <p>Instructor:</p>
-                    <p class="actual-rem"> Sara Maged</p>
+                    <p class="actual-rem" th:text="${coaches[idx.index]}"> </p>
 
                     <p>Class Fees:</p>
                     <p class="actual-rem"> 200 L.E.</p>

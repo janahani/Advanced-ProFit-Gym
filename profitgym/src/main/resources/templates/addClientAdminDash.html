@@ -22,9 +22,9 @@
                 <div class="col-lg">
                     <div class="user-form">
                         <h1>Add a Client</h1>
-                        <form th:action="@{/admindashboard/addclient}" th:object="${clientObj}" method="POST" class="add-client">
+                        <form th:action="@{/admindashboard/addclient}" th:object="${clientObj}" method="POST" class="add-client" onsubmit="return validateForm()">
                             <div>
-                                <input class="add-user-input" type="text" th:field="*{FirstName}" placeholder="First Name" />
+                                <input id="firstName" input class="add-user-input" type="text" th:field="*{FirstName}" placeholder="First Name" />
                             </div>
                             <span id="fname-error" class="error-message"></span>
                             <br>                            
@@ -34,21 +34,21 @@
                             <span id="lname-error" class="error-message"></span>
                             <br>                            
                             <div>
-                                <input class="add-user-input" type="text" th:field="*{Age}" placeholder="Age"/>
+                                <input id="age" input class="add-user-input" type="text" th:field="*{Age}" placeholder="Age"/>
                             </div>
                             <span id="age-error" class="error-message"></span>
                             <br>                            
                             <div>
-                                <input class="add-user-input" type="text" th:field="*{PhoneNumber}" placeholder="Phone Number"/>
+                                <input id="PhoneNumber" input class="add-user-input" type="text" th:field="*{PhoneNumber}" placeholder="Phone Number"/>
                             </div>
                             <span id="phoneno-error" class="error-message"></span>
                             <br>                            
                             <div>
-                                <input class="add-user-input" type="text" th:field="*{Weight}" placeholder="Weight" />
+                                <input id="Weight" input class="add-user-input" type="text" th:field="*{Weight}" placeholder="Weight" />
                             </div>
                             <br>                            
                             <div>
-                                <input class="add-user-input" type="text" th:field="*{Height}" placeholder="Height" />
+                                <input id="Height" input class="add-user-input" type="text" th:field="*{Height}" placeholder="Height" />
                             </div>
                             <br>                                 
                             <select class="add-user-input" th:field="*{Gender}">
@@ -58,7 +58,7 @@
                             </select>
                             <br>
                             <div>
-                                <input class="add-user-input" type="text" th:field="*{Email}" placeholder="Email" />
+                                <input id="Email" input class="add-user-input" type="text" th:field="*{Email}" placeholder="Email" />
                             </div>
                             <span id="email-error" class="error-message"></span>
                             <br> 
