@@ -1,4 +1,5 @@
 package com.profitgym.profitgym.models;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -11,7 +12,7 @@ public class ReservedClass {
     private int ID;
     private int AssignedClassID;
     private int CoachID;
-    private int clientID; 
+    private int clientID;
     private String Attended;
     private String isActivated;
 
@@ -23,10 +24,7 @@ public class ReservedClass {
         this.clientID = clientID;
     }
 
-
-
-    public ReservedClass()
-    {
+    public ReservedClass() {
 
     }
 
@@ -53,7 +51,6 @@ public class ReservedClass {
     public void setCoachID(int CoachID) {
         this.CoachID = CoachID;
     }
-
 
     public String getAttended() {
         return this.Attended;

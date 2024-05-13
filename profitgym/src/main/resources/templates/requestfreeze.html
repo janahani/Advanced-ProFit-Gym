@@ -82,18 +82,17 @@
                       th:max="${maxFreezeDate}"
                     />
                   </div>
-                  <button type="button" onclick="showModal()" id="freeze-button">Freeze</button>
+                  <button type="button" onclick="openModal()" id="freeze-button">Freeze</button>
                 </div>
                 <div th:if="${membership.Freezed} == 'Freezed'">
                     <form th:action="@{/user/requestunfreeze}" method="post">
                     <button type="button" onclick="showUnfreezeModal()" id="freeze-button">Unfreeze</button>
                 </div>
-                <div id="myModal" class="modal">
+                <div id="userProfileModal" class="modal">
                   <div class="modal-content">
-                    <span onclick="closeModal()" class="close-popup">&times;</span>
+                    <span onclick="fadeOutModal()" class="close-popup">&times;</span>
                     <p id="confirmation-text"></p>
                     <button id="confirm-button" type="submit">Yes</button>
-                    <button onclick="closeModal()" type="button" id="cancel-button">Cancel</button>
                     <p id="modal-message"></p>
                   </div>
                 </div>
@@ -103,38 +102,8 @@
         </div>
       </div>
     </div>
-    <script>
-      var freezebtn = document.getElementById("freeze-button");
-      var datePicker = document.getElementById("datepicker");
-      function showUnfreezeModal(){
-        var modalLabel = document.getElementById("confirmation-text");
-        modalLabel.textContent =
-      "Are you sure you want to unfreeze your membership?";
-      $("#myModal").fadeIn();
-      }
+    <script th:src="@{/js/reqfreeze.js}"></script>
 
-function showModal() {
-  var selectedDate = document.getElementById("datepicker").value;
-  var modalLabel = document.getElementById("confirmation-text");
-
-  if (selectedDate) {
-    modalLabel.textContent =
-      "Are you sure you want to freeze your membership to " +
-      selectedDate +
-      "?";
-      $("#myModal").fadeIn();
-
-  } else {
-    return;
-  }
-
-}
-function closeModal()
-{
-    $("#myModal").fadeOut();
-
-}
-    </script>
     <!-- footer -->
     <div th:replace="~{partials/footer}"></div>
   </body>
