@@ -376,13 +376,6 @@ public class UserController {
                     int classId = reservedClass.getAssignedClassID();
                     Optional<AssignedClass> assignedClassDetails = this.assignedClassRepository.findById(classId);
                     assignedClassDetails.ifPresent(assignedClassesDetails::add);
-
-                    for (AssignedClass assignedClass : assignedClassesDetails) {
-
-                        int Id = assignedClass.getClassID();
-                        Optional<Classes> ClassDetails = this.classesRepository.findById(Id);
-                        ClassDetails.ifPresent(reservedClassesDetails::add);
-                    }
     
                     // Fetch coach name using CoachID from ReservedClass
                     Employee coachDetails = this.employeeRepository.findByID(reservedClass.getCoachID());
@@ -393,6 +386,15 @@ public class UserController {
                         coachNames.add("");
                     }
                 }
+
+                
+                for (AssignedClass assignedClass : assignedClassesDetails) {
+
+                    int Id = assignedClass.getClassID();
+                    Optional<Classes> ClassDetails = this.classesRepository.findById(Id);
+                    ClassDetails.ifPresent(reservedClassesDetails::add);
+                }
+                
                 mav.addObject("reservedClassesDetails", reservedClassesDetails);
                 mav.addObject("coaches", coachNames);
             }
