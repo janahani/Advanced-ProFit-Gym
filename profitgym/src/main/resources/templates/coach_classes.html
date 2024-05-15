@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Coach Assigned Classes</title>
+</head>
+<body>
+    <h1>Assigned Classes</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>Class Name</th>
+                <th>Date</th>
+                <th>Start Time</th>
+                <th>End Time</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="assignedClass : ${assignedClasses}">
+                <td th:text="${assignedClass.className}"></td>
+                <td th:text="${assignedClass.date}"></td>
+                <td th:text="${assignedClass.startTime}"></td>
+                <td th:text="${assignedClass.endTime}"></td>
+            </tr>
+        </tbody>
+    </table>
+</body>
+</html>
