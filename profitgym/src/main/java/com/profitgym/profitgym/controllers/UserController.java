@@ -174,6 +174,11 @@ public class UserController {
         return modelAndView;
     }
 
+
+
+
+
+
     @GetMapping("bookclass")
     public ModelAndView getClassBooking(HttpSession session) {
         ModelAndView mav = new ModelAndView("classbooking.html");
@@ -369,12 +374,13 @@ public class UserController {
             if (reservedClasses.isEmpty()) {
                 mav.addObject("errorMessage", "No reserved classes found for the client.");
             } else {
+                List<AssignedClass> assignedClassesDetails = new ArrayList<>();
                 List<Classes> reservedClassesDetails = new ArrayList<>();
                 List<String> coachNames = new ArrayList<>();
                 for (ReservedClass reservedClass : reservedClasses) {
                     int classId = reservedClass.getAssignedClassID();
-                    Optional<Classes> classDetails = this.classesRepository.findById(classId);
-                    classDetails.ifPresent(reservedClassesDetails::add);
+                    Optional<AssignedClass> assignedClassDetails = this.assignedClassRepository.findById(classId);
+                    assignedClassDetails.ifPresent(assignedClassesDetails::add);
     
                     // Fetch coach name using CoachID from ReservedClass
                     Employee coachDetails = this.employeeRepository.findByID(reservedClass.getCoachID());
@@ -385,6 +391,15 @@ public class UserController {
                         coachNames.add("");
                     }
                 }
+
+                
+                for (AssignedClass assignedClass : assignedClassesDetails) {
+
+                    int Id = assignedClass.getClassID();
+                    Optional<Classes> ClassDetails = this.classesRepository.findById(Id);
+                    ClassDetails.ifPresent(reservedClassesDetails::add);
+                }
+                
                 mav.addObject("reservedClassesDetails", reservedClassesDetails);
                 mav.addObject("coaches", coachNames);
             }

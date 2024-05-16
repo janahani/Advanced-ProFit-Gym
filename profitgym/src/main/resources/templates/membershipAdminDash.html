@@ -31,12 +31,13 @@
                                     <h1 class="mb-0">Memberships</h1>
                                 </div>
                                 <div class="col text-right">
-                                    <input class="table-search-bar" placeholder="Search for a Membership" />
+                                    <input id="searchBar" onkeyup="myFunction()" class="table-search-bar"
+                                        placeholder="Search for a Membership" />
                                 </div>
                             </div>
                         </div>
                         <div class="table-responsive">
-                            <table class="table align-items-center table-flush">
+                            <table id="adminDashTable" class="table align-items-center table-flush">
                                 <thead class="thead-light">
                                     <tr>
                                         <th scope="col">ID</th>
@@ -174,6 +175,7 @@
             </div>
         </div>
     </div>
+    <script th:src="@{/js/tableSearch.js}"></script>
     <script th:src="@{/js/reqfreeze.js}"></script>
     <script
         src="https://rawcdn.githack.com/Loopple/loopple-public-assets/5cef8f62939eeb089fa26d4c53a49198de421e3d/argon-dashboard/js/vendor/jquery.min.js"></script>

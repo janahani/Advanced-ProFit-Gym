@@ -114,6 +114,35 @@ public class AdminController {
 
         return builder.toString();
     }
+    private void saveUpdatedFieldsForEmp(Employee employeeObj, Employee employee)
+    {
+        if (employeeObj.getJobTitle() != 0) {
+            employee.setJobTitle(employeeObj.getJobTitle());
+        }
+        if (employeeObj.getSalary() != 0) {
+            employee.setSalary(employeeObj.getSalary());
+        }
+        if (employeeObj.getPhoneNumber() != 0) {
+            employee.setPhoneNumber(employeeObj.getPhoneNumber());
+        }
+        if (employeeObj.getJobTitle() != 0) {
+            employee.setJobTitle(employeeObj.getJobTitle());
+        }
+        if (employeeObj.getName() != null) {
+            employee.setName(employeeObj.getName());
+        }
+        if (employeeObj.getEmail() != null) {
+            employee.setEmail(employeeObj.getEmail());
+        }
+        if (employeeObj.getPhoneNumber() != 0) {
+            employee.setPhoneNumber(employeeObj.getPhoneNumber());
+        }
+        if (employeeObj.getPassword() != null) {
+            System.out.println(employeeObj.getPassword());
+            String encoddedPassword = BCrypt.hashpw(employeeObj.getPassword(), BCrypt.gensalt(12));
+            employee.setPassword(encoddedPassword);
+        }
+    }
 
     private void saveUpdatedFieldsForClient(Client clientObj, Client existingClient) {
         if (clientObj.getFirstName() != null) {
@@ -193,14 +222,11 @@ public class AdminController {
 
     @GetMapping("clients")
     public ModelAndView viewClients() {
-        System.out.println("viewClients() method called");
-
         ModelAndView mav = new ModelAndView("clientAdminDash.html");
         List<Client> clients = this.clientRepository.findAll();
         List<Boolean> hasActiveMembership = new ArrayList<>();
         for (Client client : clients) {
             Memberships membership = this.membershipsRepository.findByClientID(client.getID());
-            System.out.println(client.getID());
             boolean isActiveMember = false;
             if (membership != null && membership.getIsActivated().equals("Activated")) {
                 isActiveMember = true;
@@ -368,7 +394,7 @@ public class AdminController {
                 if (packages.contains(package1) == false) {
                     packages.add(package1);
                 }
-                
+
                 maxFreezeDates.add(currentDate.plusDays(membership.getFreezeCount()));
             }
             mav.addObject("minFreezeDate", minFreezeDate);
@@ -381,8 +407,8 @@ public class AdminController {
     }
 
     @PostMapping("requestfreeze")
-    public ModelAndView freezeMembership(@RequestParam("id") int id
-    ,@RequestParam("freezeEndDate") String freezeEndDate,
+    public ModelAndView freezeMembership(@RequestParam("id") int id,
+            @RequestParam("freezeEndDate") String freezeEndDate,
             HttpSession session) {
         int freezeDuration = calculateFreezeDuration(LocalDate.now(), LocalDate.parse(freezeEndDate));
         Memberships membership = membershipsRepository.findById(id);
@@ -613,18 +639,8 @@ public class AdminController {
         String status;
         Employee employee = this.employeeRepository.findByID(employeeObj.getID());
         System.out.println(employeeObj);
-        if (employeeObj.getJobTitle() != 0) {
-            employee.setJobTitle(employeeObj.getJobTitle());
-        }
-        if (employeeObj.getName() != null) {
-            employee.setName(employeeObj.getName());
-        }
-        if (employeeObj.getEmail() != null) {
-            employee.setEmail(employeeObj.getEmail());
-        }
-        if (employeeObj.getPhoneNumber() != 0) {
-            employee.setPhoneNumber(employeeObj.getPhoneNumber());
-        }
+        saveUpdatedFieldsForEmp(employeeObj, employee);
+        
         try {
             this.employeeRepository.save(employee);
             status = "Employee updated successfully";
