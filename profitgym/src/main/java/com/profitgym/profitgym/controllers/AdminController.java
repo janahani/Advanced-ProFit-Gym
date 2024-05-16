@@ -324,18 +324,30 @@ public class AdminController {
             int coachId = reservedClass.getCoachID();
 
             AssignedClass assignedClassInfo = this.assignedClassRepository.findByID(assignedClassId);
-            assignedClassesList.add(assignedClassInfo);
-            if (assignedClassInfo != null) {
+            if (assignedClassesList.contains(assignedClassInfo) == false) 
+            {
+                assignedClassesList.add(assignedClassInfo);
+        
                 int classId = assignedClassInfo.getClassID();
                 Classes classInfo = this.classesRepository.findByID(classId);
-                classesList.add(classInfo);
-            } else {
+                if (classesList.contains(classInfo) == false) {
+                    classesList.add(classInfo);
+                }
+            } 
+            else 
+            {
                 System.out.println("error");
             }
             Client clientInfo = this.clientRepository.findById(clientId);
-            clientsList.add(clientInfo);
+            if (clientsList.contains(clientInfo) == false) {
+                clientsList.add(clientInfo);
+            }
+
             Employee coachInfo = this.employeeRepository.findByID(coachId);
-            coachesList.add(coachInfo);
+            if (coachesList.contains(coachInfo) == false) {
+                coachesList.add(coachInfo);
+            }
+
         }
         mav.addObject("reservedClassesList", reservedClassesList);
         mav.addObject("classesList", classesList);
