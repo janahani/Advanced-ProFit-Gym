@@ -42,7 +42,6 @@
                                         <th scope="col">ID</th>
                                         <th scope="col">Name</th>
                                         <th scope="col">Price</th>
-                                        <th scope="col">Actions</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -54,9 +53,6 @@
                                                    <th th:if="${classObj != null}" th:text="${classObj.ID}"></th>
                                                    <td th:text="${classObj.Name}"></td>
                                                    <td th:text="${assignedClass.Price}"></td>
-                                                   <td>
-                                                      <button href="" class="btn btn-sm btn-deactivate">Deactivate</button>
-                                                   </td>
                                                 </div>
                                             </div>
                                         </div>

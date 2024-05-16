@@ -236,7 +236,8 @@ public class UserController {
         Memberships membership = this.membershipsRepository.findByClientID(id);
 
         LocalDate now = LocalDate.now();
-        if (membership != null && membership.getIsActivated()=="Activated" && membership.getEndDate().isAfter(now)) {
+        System.out.println(membership.getIsActivated());
+        if (membership != null && membership.getIsActivated() == "Activated" && membership.getEndDate().isAfter(now)) {
             Package packages = this.packageRepository.findById(membership.getPackageID());
             mav.addObject("membership", membership);
             mav.addObject("package", packages);

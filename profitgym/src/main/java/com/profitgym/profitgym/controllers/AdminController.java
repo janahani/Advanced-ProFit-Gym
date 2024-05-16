@@ -11,9 +11,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
@@ -114,8 +116,8 @@ public class AdminController {
 
         return builder.toString();
     }
-    private void saveUpdatedFieldsForEmp(Employee employeeObj, Employee employee)
-    {
+
+    private void saveUpdatedFieldsForEmp(Employee employeeObj, Employee employee) {
         if (employeeObj.getJobTitle() != 0) {
             employee.setJobTitle(employeeObj.getJobTitle());
         }
@@ -284,12 +286,6 @@ public class AdminController {
 
         return modelAndView;
     }
-    private Package getPackageById(List<Package> packages, int packageId) {
-        Optional<Package> matchingPackage = packages.stream()
-                .filter(pkg -> pkg.getId() == packageId)
-                .findFirst();
-        return matchingPackage.orElse(null);
-    }
 
     @GetMapping("clientrequests")
     public ModelAndView viewRequests() {
@@ -398,14 +394,16 @@ public class AdminController {
             LocalDate minFreezeDate = currentDate.plusDays(3);
             List<LocalDate> maxFreezeDates = new ArrayList<>();
             for (Memberships membership : memberships) {
-                Client client = clientRepository.findById(membership.getClientID());
-                clients.add(client);
-                Package package1 = packageRespository.findById(membership.getPackageID());
-                if (packages.contains(package1) == false) {
-                    packages.add(package1);
-                }
+                if (membership.getIsActivated() == "Activated") {
+                    Client client = clientRepository.findById(membership.getClientID());
+                    clients.add(client);
+                    Package package1 = packageRespository.findById(membership.getPackageID());
+                    if (packages.contains(package1) == false) {
+                        packages.add(package1);
+                    }
 
-                maxFreezeDates.add(currentDate.plusDays(membership.getFreezeCount()));
+                    maxFreezeDates.add(currentDate.plusDays(membership.getFreezeCount()));
+                }
             }
             mav.addObject("minFreezeDate", minFreezeDate);
             mav.addObject("maxFreezeDates", maxFreezeDates);
@@ -650,7 +648,7 @@ public class AdminController {
         Employee employee = this.employeeRepository.findByID(employeeObj.getID());
         System.out.println(employeeObj);
         saveUpdatedFieldsForEmp(employeeObj, employee);
-        
+
         try {
             this.employeeRepository.save(employee);
             status = "Employee updated successfully";
@@ -746,39 +744,38 @@ public class AdminController {
         mav.addObject("classes", classes);
         List<Employee> coaches = this.employeeRepository.findByJobTitle(3);
         mav.addObject("coaches", coaches);
-
         mav.addObject("assignClassObj", new AssignedClass());
+        return mav;
+    }
 
+    @GetMapping("/assignclass/classdays/{classId}")
+    @ResponseBody
+    public List<String> getClassDays(@PathVariable("classId") int classId) {
         LocalDate currentDate = LocalDate.now();
         List<String> availableClassDays = new ArrayList<>();
 
-        // Iterate through the classes to find the upcoming class days
-        for (Classes classObj : classes) {
-            int classId = classObj.getID();
-            List<ClassDays> classDays = this.classDaysRepository.findByClassID(classId);
+        // Classes classObj = this.classesRepository.findById(classId);
+        List<ClassDays> classDays = this.classDaysRepository.findByClassID(classId);
 
-            Map<String, DayOfWeek> dayNameToDayOfWeek = new HashMap<>();
-            dayNameToDayOfWeek.put("Monday", DayOfWeek.MONDAY);
-            dayNameToDayOfWeek.put("Tuesday", DayOfWeek.TUESDAY);
-            dayNameToDayOfWeek.put("Wednesday", DayOfWeek.WEDNESDAY);
-            dayNameToDayOfWeek.put("Thursday", DayOfWeek.THURSDAY);
-            dayNameToDayOfWeek.put("Friday", DayOfWeek.FRIDAY);
-            dayNameToDayOfWeek.put("Saturday", DayOfWeek.SATURDAY);
-            dayNameToDayOfWeek.put("Sunday", DayOfWeek.SUNDAY);
+        Map<String, DayOfWeek> dayNameToDayOfWeek = new HashMap<>();
+        dayNameToDayOfWeek.put("Monday", DayOfWeek.MONDAY);
+        dayNameToDayOfWeek.put("Tuesday", DayOfWeek.TUESDAY);
+        dayNameToDayOfWeek.put("Wednesday", DayOfWeek.WEDNESDAY);
+        dayNameToDayOfWeek.put("Thursday", DayOfWeek.THURSDAY);
+        dayNameToDayOfWeek.put("Friday", DayOfWeek.FRIDAY);
+        dayNameToDayOfWeek.put("Saturday", DayOfWeek.SATURDAY);
+        dayNameToDayOfWeek.put("Sunday", DayOfWeek.SUNDAY);
 
-            // Iterate through the class days to find the upcoming dates
-            for (ClassDays day : classDays) {
-                String dayOfWeekStr = day.getDays();
-                DayOfWeek dayOfWeek = dayNameToDayOfWeek.get(dayOfWeekStr);
-                LocalDate upcomingDate = currentDate.with(TemporalAdjusters.nextOrSame(dayOfWeek));
-                String formattedDate = upcomingDate.format(DateTimeFormatter.ofPattern("EEEE dd-MM-yyyy"));
-                availableClassDays.add(formattedDate);
-            }
+        // Iterate through the class days to find the upcoming dates
+        for (ClassDays day : classDays) {
+            String dayOfWeekStr = day.getDays();
+            DayOfWeek dayOfWeek = dayNameToDayOfWeek.get(dayOfWeekStr);
+            LocalDate upcomingDate = currentDate.with(TemporalAdjusters.nextOrSame(dayOfWeek));
+            String formattedDate = upcomingDate.format(DateTimeFormatter.ofPattern("EEEE dd-MM-yyyy"));
+            availableClassDays.add(formattedDate);
         }
 
-        mav.addObject("availableClassDays", availableClassDays);
-
-        return mav;
+        return availableClassDays;
     }
 
     @PostMapping("assignclass")
