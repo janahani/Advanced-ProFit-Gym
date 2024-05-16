@@ -390,7 +390,7 @@ public class UserController {
                 List<Classes> reservedClassesDetails = new ArrayList<>();
                 List<String> coachNames = new ArrayList<>();
                 for (ReservedClass reservedClass : reservedClasses) {
-                    if(reservedClass.getIsActivated()=="Activated"){
+                    if(reservedClass.getIsActivated().equals("Activated")){
                   int classId = reservedClass.getAssignedClassID();
                     Optional<AssignedClass> assignedClassDetails = this.assignedClassRepository.findById(classId);
                     assignedClassDetails.ifPresent(assignedClassesDetails::add);
