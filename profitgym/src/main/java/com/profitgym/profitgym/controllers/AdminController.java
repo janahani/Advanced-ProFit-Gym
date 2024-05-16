@@ -852,7 +852,7 @@ public class AdminController {
     public ModelAndView logout(HttpSession session) {
         ModelAndView modelAndView = new ModelAndView();
         session.invalidate();
-        modelAndView.setViewName("redirect:/index");
+        modelAndView.setViewName("redirect:/loginemployee");
         return modelAndView;
     }
 
