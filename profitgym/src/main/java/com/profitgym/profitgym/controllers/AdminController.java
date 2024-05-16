@@ -362,7 +362,7 @@ public class AdminController {
     public ModelAndView acceptMembership(@RequestParam("membershipId") int membershipId) {
         Memberships membership = membershipsRepository.findById(membershipId);
         if (membership != null) {
-            membership.setIsActivated("Accepted");
+            membership.setIsActivated("Activated");
             membershipsRepository.save(membership);
         }
         return new ModelAndView("redirect:/admindashboard/clientrequests");
@@ -372,7 +372,7 @@ public class AdminController {
     public ModelAndView declineMembership(@RequestParam("membershipId") int membershipId) {
         Memberships membership = membershipsRepository.findById(membershipId);
         if (membership != null) {
-            membership.setIsActivated("Declined");
+            membership.setIsActivated("Not Activated");
             membershipsRepository.save(membership);
         }
         return new ModelAndView("redirect:/admindashboard/clientrequests");
@@ -382,7 +382,7 @@ public class AdminController {
     public ModelAndView acceptReservedClass(@RequestParam("reservedClassId") int reservedClassId) {
         ReservedClass reservedClass = this.reservedClassRepository.findByID(reservedClassId);
         if (reservedClass != null) {
-            reservedClass.setIsActivated("Accepted");
+            reservedClass.setIsActivated("Activated");
             reservedClassRepository.save(reservedClass);
         }
         return new ModelAndView("redirect:/admindashboard/clientrequests");
@@ -392,7 +392,7 @@ public class AdminController {
     public ModelAndView declineReservedClass(@RequestParam("reservedClassId") int reservedClassId) {
         ReservedClass reservedClass = this.reservedClassRepository.findByID(reservedClassId);
         if (reservedClass != null) {
-            reservedClass.setIsActivated("Declined");
+            reservedClass.setIsActivated("Not Activated");
             reservedClassRepository.save(reservedClass);
         }
         return new ModelAndView("redirect:/admindashboard/clientrequests");

@@ -60,8 +60,14 @@
                                         <td th:text="${membership.StartDate}"></td>
                                         <td th:text="${membership.EndDate}"></td>
                                         <td>
-                                            <a href="#!" class="btn btn-sm btn-primary">Accept</a>
-                                            <a href="#!" class="btn btn-sm btn-delete">Decline</a>
+                                            <form th:action="@{/admindashboard/acceptMembership}" method="post" style="display: inline;">
+                                                <input type="hidden" name="membershipId" th:value="${membership.ID}" />
+                                                <button type="submit" class="btn btn-sm btn-primary">Accept</button>
+                                            </form>
+                                            <form th:action="@{/admindashboard/declineMembership}" method="post" style="display: inline;">
+                                                <input type="hidden" name="membershipId" th:value="${membership.ID}" />
+                                                <button type="submit" class="btn btn-sm btn-primary">Decline</button>
+                                            </form>
                                         </td>
                                     </tr>
                                 </tbody>
@@ -121,8 +127,14 @@
                                             <td th:text="${assignedClass.Price}"></td>
                                         </div>
                                         <td>
-                                            <a href="#!" class="btn btn-sm btn-primary">Accept</a>
-                                            <a href="#!" class="btn btn-sm btn-delete">Decline</a>
+                                            <form th:action="@{/admindashboard/acceptReservedClass}" method="post" style="display: inline;">
+                                            <input type="hidden" name="reservedClassId" th:value="${reservedClass.ID}" />
+                                            <button type="submit" class="btn btn-sm btn-primary">Accept</button>
+                                            </form>
+                                            <form th:action="@{/admindashboard/declineReservedClass}" method="post" style="display: inline;">
+                                                <input type="hidden" name="reservedClassId" th:value="${reservedClass.ID}" />
+                                                <button type="submit" class="btn btn-sm btn-primary">Decline</button>
+                                            </form>
                                         </td>
                                     </tr>
                                 </tbody>
