@@ -290,21 +290,25 @@ public class AdminController {
     @GetMapping("clientrequests")
     public ModelAndView viewRequests() {
         ModelAndView mav = new ModelAndView("clientReqAdminDash.html");
-        List<Memberships> memberships = this.membershipsRepository.findByIsActivated("Pending");
-        List<Package> packages = new ArrayList<>();
+        List<Memberships> memberships = membershipsRepository.findByIsActivated("Pending");
         List<Client> clients = new ArrayList<>();
-        for (Memberships membership : memberships) {
-            int packageId = membership.getPackageID();
-            int clientId = membership.getClientID();
-            System.out.println(packageId);
-            System.out.println(clientId);
-            Package packageInfo = this.packageRespository.findById(packageId);
-            Client clientInfo = this.clientRepository.findById(clientId);
-            System.out.println(packageInfo.getTitle());
-            System.out.println(packageInfo.getNumOfMonths());
-            packages.add(packageInfo);
-            clients.add(clientInfo);
-        }
+        List<Package> packages = new ArrayList<>();
+        if (memberships != null) {
+            for (Memberships membership : memberships) {
+
+                    Client client = clientRepository.findById(membership.getClientID());
+                    if (clients.contains(client) == false) {
+                        clients.add(client);
+                    }
+                    Package package1 = packageRespository.findById(membership.getPackageID());
+                    if (packages.contains(package1) == false) {
+                        packages.add(package1);
+                    }
+
+                
+
+        }}
+        
         mav.addObject("memberships", memberships);
         mav.addObject("packages", packages);
         mav.addObject("clients", clients);
