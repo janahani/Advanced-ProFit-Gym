@@ -32,7 +32,7 @@ public class CoachController {
     public String viewAssignedClasses(HttpSession session, Model model) {
         // Check if coach is logged in
         Employee coach = (Employee) session.getAttribute("loggedInUser");
-        if (coach == null || coach.getJobTitle() != 2) { // Assuming JobTitle 2 is for coaches
+        if (coach == null || coach.getJobTitle() != 3) { // Assuming JobTitle 2 is for coaches
             return "redirect:/login"; 
         }
 
