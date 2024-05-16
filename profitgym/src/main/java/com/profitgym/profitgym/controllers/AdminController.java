@@ -284,6 +284,12 @@ public class AdminController {
 
         return modelAndView;
     }
+    private Package getPackageById(List<Package> packages, int packageId) {
+        Optional<Package> matchingPackage = packages.stream()
+                .filter(pkg -> pkg.getId() == packageId)
+                .findFirst();
+        return matchingPackage.orElse(null);
+    }
 
     @GetMapping("clientrequests")
     public ModelAndView viewRequests() {
@@ -294,8 +300,12 @@ public class AdminController {
         for (Memberships membership : memberships) {
             int packageId = membership.getPackageID();
             int clientId = membership.getClientID();
+            System.out.println(packageId);
+            System.out.println(clientId);
             Package packageInfo = this.packageRespository.findById(packageId);
             Client clientInfo = this.clientRepository.findById(clientId);
+            System.out.println(packageInfo.getTitle());
+            System.out.println(packageInfo.getNumOfMonths());
             packages.add(packageInfo);
             clients.add(clientInfo);
         }

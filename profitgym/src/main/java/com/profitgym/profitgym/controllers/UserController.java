@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.view.RedirectView;
 import org.springframework.validation.annotation.Validated;
 
 import com.profitgym.profitgym.models.AssignedClass;
@@ -111,14 +112,14 @@ public class UserController {
         } else {
             Memberships membership = membershipsRepository.findByClientID(loggedInUser.getID());
             Package pack = null;
-            if (membership != null) {
+            LocalDate now = LocalDate.now();
+            if (membership != null && membership.getIsActivated()=="Activated" && membership.getEndDate().isAfter(now)) {
                 pack = packageRepository.findById(membership.getPackageID());
+                mav.addObject("package", pack);
+                mav.addObject("membership", membership);
             }
-            mav.addObject("package", pack);
-            mav.addObject("membership", membership);
-            mav.addObject("loggedInUser", loggedInUser);
-
         }
+        mav.addObject("loggedInUser", loggedInUser);
         return mav;
     }
 
@@ -133,14 +134,22 @@ public class UserController {
     }
 
     @PostMapping("bookpackage")
-    public ModelAndView RequestPackage(@ModelAttribute("MembershipObj") Memberships membership,
+    public RedirectView RequestPackage(@ModelAttribute("MembershipObj") Memberships membership,
             HttpSession session) {
 
-        ModelAndView modelAndView = new ModelAndView();
         Client loggedInUser = (Client) session.getAttribute("loggedInUser");
         int numOfMonths = 0;
         int freezeCount = 0;
         try {
+            if(membership.getIsActivated()=="Activated")
+            {
+                return new RedirectView("/user/bookpackage?AlreadySubscribedInAMembership");
+            }
+            else if(membership.getIsActivated()=="Pending")
+            {
+                return new RedirectView("/user/bookpackage?RequestAlreadySentAndPending");
+            }
+            else{
             membership.setClientID(loggedInUser.getID());
 
             Optional<Package> packageOptional = Optional
@@ -166,17 +175,13 @@ public class UserController {
 
             this.membershipsRepository.save(membership);
 
-            modelAndView.setViewName("redirect:/user/bookpackage");
+            return new RedirectView("/user/bookpackage?RequestSent");
+        }
         } catch (Exception ex) {
             System.out.println("Error: " + ex.getMessage());
-            modelAndView.setViewName("error_page");
+            return new RedirectView("error_page");
         }
-        return modelAndView;
     }
-
-
-
-
 
 
     @GetMapping("bookclass")
@@ -230,7 +235,8 @@ public class UserController {
         int id = loggedInUser.getID();
         Memberships membership = this.membershipsRepository.findByClientID(id);
 
-        if (membership != null) {
+        LocalDate now = LocalDate.now();
+        if (membership != null && membership.getIsActivated()=="Activated" && membership.getEndDate().isAfter(now)) {
             Package packages = this.packageRepository.findById(membership.getPackageID());
             mav.addObject("membership", membership);
             mav.addObject("package", packages);
@@ -371,6 +377,7 @@ public class UserController {
     
             List<ReservedClass> reservedClasses = this.reservedClassRepository.findByClientID(userId);
     
+            LocalDate now = LocalDate.now();
             if (reservedClasses.isEmpty()) {
                 mav.addObject("errorMessage", "No reserved classes found for the client.");
             } else {
@@ -378,7 +385,8 @@ public class UserController {
                 List<Classes> reservedClassesDetails = new ArrayList<>();
                 List<String> coachNames = new ArrayList<>();
                 for (ReservedClass reservedClass : reservedClasses) {
-                    int classId = reservedClass.getAssignedClassID();
+                    if(reservedClass.getIsActivated()=="Activated"){
+                  int classId = reservedClass.getAssignedClassID();
                     Optional<AssignedClass> assignedClassDetails = this.assignedClassRepository.findById(classId);
                     assignedClassDetails.ifPresent(assignedClassesDetails::add);
     
@@ -390,6 +398,9 @@ public class UserController {
                     }else{
                         coachNames.add("");
                     }
+                    mav.addObject("reservedClassesDetails", reservedClassesDetails);
+                    mav.addObject("coaches", coachNames);
+                }
                 }
 
                 
@@ -400,8 +411,6 @@ public class UserController {
                     ClassDetails.ifPresent(reservedClassesDetails::add);
                 }
                 
-                mav.addObject("reservedClassesDetails", reservedClassesDetails);
-                mav.addObject("coaches", coachNames);
             }
         } else {
             mav.addObject("errorMessage", "User not logged in.");
