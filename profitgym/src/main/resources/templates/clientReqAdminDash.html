@@ -52,11 +52,11 @@
                                         <td th:text="${membership.clientID}"></td>
                                         <td th:each="client : ${clients}" th:if="${client.ID == membership.ClientID}"
                                             th:text="${client.FirstName + ' ' + client.LastName}"></td>
-                                        <div th:each="package : ${packages}" th:if="${package.id == membership.PackageID}">
+                                        <td th:each="package : ${packages}" th:if="${package.id == membership.PackageID}">
                                             <td th:text="${package.Title}"></td>
                                             <td th:text="${package.NumOfMonths}"></td>
                                             <td th:text="${package.Price}"></td>
-                                        </div>
+                                        </td> 
                                         <td th:text="${membership.StartDate}"></td>
                                         <td th:text="${membership.EndDate}"></td>
                                         <td>

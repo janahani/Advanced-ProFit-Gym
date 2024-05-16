@@ -113,7 +113,7 @@ public class UserController {
             Memberships membership = membershipsRepository.findByClientID(loggedInUser.getID());
             Package pack = null;
             LocalDate now = LocalDate.now();
-            if (membership != null && membership.getIsActivated()=="Activated" && membership.getEndDate().isAfter(now)) {
+            if (membership != null && membership.getIsActivated().equals("Activated") && membership.getEndDate().isAfter(now)) {
                 pack = packageRepository.findById(membership.getPackageID());
                 mav.addObject("package", pack);
                 mav.addObject("membership", membership);
@@ -141,13 +141,16 @@ public class UserController {
         int numOfMonths = 0;
         int freezeCount = 0;
         try {
-            if(membership.getIsActivated()=="Activated")
+            Memberships memb = this.membershipsRepository.findByClientID(loggedInUser.getID());
+            if(memb != null){
+            if(memb.getIsActivated().equals("Activated"))
             {
                 return new RedirectView("/user/bookpackage?AlreadySubscribedInAMembership");
             }
-            else if(membership.getIsActivated()=="Pending")
+            else if(memb.getIsActivated()=="Pending")
             {
                 return new RedirectView("/user/bookpackage?RequestAlreadySentAndPending");
+            }
             }
             else{
             membership.setClientID(loggedInUser.getID());
@@ -181,6 +184,7 @@ public class UserController {
             System.out.println("Error: " + ex.getMessage());
             return new RedirectView("error_page");
         }
+        return null;
     }
 
 
