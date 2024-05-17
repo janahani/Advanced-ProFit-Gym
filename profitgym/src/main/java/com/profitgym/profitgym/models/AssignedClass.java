@@ -13,7 +13,7 @@ public class AssignedClass {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int ID;
     private int ClassID;
-    private int CoachID;
+    private int coachID;
     private LocalDate Date;
     private LocalTime StartTime;
     private LocalTime EndTime;
@@ -44,11 +44,11 @@ public class AssignedClass {
     }
 
     public int getCoachID() {
-        return this.CoachID;
+        return this.coachID;
     }
 
-    public void setCoachID(int CoachID) {
-        this.CoachID = CoachID;
+    public void setCoachID(int coachID) {
+        this.coachID = coachID;
     }
 
     public LocalDate getDate() {

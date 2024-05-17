@@ -831,6 +831,30 @@ public class AdminController {
         return modelAndView;
     }
 
+    @GetMapping("/viewAssignedClasses")
+    public ModelAndView viewAssignedClasses(HttpSession session) {
+        ModelAndView mav = new ModelAndView("coach_classes.html");
+        Employee coach = (Employee) session.getAttribute("loggedInEmp");
+        if (coach == null || coach.getJobTitle() != 3) {
+            mav.setViewName("/loginemployee");
+        }
+
+        int coachID = coach.getID();
+        List<AssignedClass> assignedClasses = assignedClassRepository.findByCoachID(coachID);
+        List<Classes> classes = new ArrayList<>();
+        if (assignedClasses != null) {
+            for (AssignedClass assignedClass : assignedClasses) {
+                Classes classObj = this.classesRepository.findByID(assignedClass.getClassID());
+                if (classes.contains(classObj) == false) {
+                    classes.add(classObj);
+                }
+            }
+            mav.addObject("assignedClasses", assignedClasses);
+            mav.addObject("classes", classes);
+        }
+        return mav;
+    }
+
     @GetMapping("requestmembership")
     public ModelAndView requestMembership(@RequestParam("id") int clientId) {
         ModelAndView mav = new ModelAndView("bookMembershipAdminDash.html");
