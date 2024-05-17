@@ -229,15 +229,14 @@ public class UserController {
            { 
             
             double price = assignedClass.getPrice();
-            if (price > 0 && assignedClass.getAvailablePlaces()>0 ) {
+            if (price > 0 && assignedClass.getAvailablePlaces()>0 )
+            {
                 reservedClass.setIsActivated("Pending");
-                int availablePlaces=assignedClass.getAvailablePlaces();
-                availablePlaces=availablePlaces-1;
-                assignedClass.setAvailablePlaces(availablePlaces);
-                this.assignedClassRepository.save(assignedClass);
                 this.reservedClassRepository.save(reservedClass);
                 return new RedirectView("/user/bookclass?RequestSent");
-            } else if(assignedClass.getAvailablePlaces()>0) {
+            } 
+            else if(assignedClass.getAvailablePlaces()>0) 
+            {
                 reservedClass.setIsActivated("Activated");
                
                 int availablePlaces=assignedClass.getAvailablePlaces();
