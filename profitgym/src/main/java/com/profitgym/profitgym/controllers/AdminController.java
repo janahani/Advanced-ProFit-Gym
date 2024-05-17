@@ -381,8 +381,14 @@ public class AdminController {
     @PostMapping("/acceptReservedClass")
     public ModelAndView acceptReservedClass(@RequestParam("reservedClassId") int reservedClassId) {
         ReservedClass reservedClass = this.reservedClassRepository.findByID(reservedClassId);
-        if (reservedClass != null) {
+        AssignedClass assignedClass= this.assignedClassRepository.findByID(reservedClass.getAssignedClassID());
+
+        if (reservedClass != null && assignedClass.getAvailablePlaces()>0) {
             reservedClass.setIsActivated("Activated");
+            int availablePlaces=assignedClass.getAvailablePlaces();
+            availablePlaces=availablePlaces-1;
+            assignedClass.setAvailablePlaces(availablePlaces);
+            this.assignedClassRepository.save(assignedClass);
             reservedClassRepository.save(reservedClass);
         }
         return new ModelAndView("redirect:/admindashboard/clientrequests");

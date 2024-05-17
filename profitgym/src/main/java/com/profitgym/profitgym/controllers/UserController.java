@@ -209,27 +209,73 @@ public class UserController {
     }
 
     @PostMapping("bookclass")
-    public ModelAndView RequestClass(@ModelAttribute("ReservedClassObj") ReservedClass reservedClass) {
+    public RedirectView RequestClass(@ModelAttribute("ReservedClassObj") ReservedClass reservedClass, HttpSession session) {
 
-        ModelAndView modelAndView = new ModelAndView();
+
         try {
+           Client loggedInUser = (Client) session.getAttribute("loggedInUser");
+           List<ReservedClass> reservedClasses = this.reservedClassRepository.findByClientID(loggedInUser.getID());
+           List<AssignedClass> assignedClasses= new ArrayList<>();
+           AssignedClass assignedClass1;
+           for (ReservedClass reservedClasses1 : reservedClasses) 
+           {
+               assignedClass1= this.assignedClassRepository.findByID(reservedClasses1.getAssignedClassID());
+               assignedClasses.add(assignedClass1);
+           }
+           
+           AssignedClass assignedClass= this.assignedClassRepository.findByID(reservedClass.getAssignedClassID());
 
-            AssignedClass assignedClass = this.assignedClassRepository.findByID(reservedClass.getAssignedClassID());
+           if(assignedClasses.contains(assignedClass)==false)
+           { 
+            
             double price = assignedClass.getPrice();
-            if (price > 0) {
+            if (price > 0 && assignedClass.getAvailablePlaces()>0 )
+            {
                 reservedClass.setIsActivated("Pending");
-            } else {
+                this.reservedClassRepository.save(reservedClass);
+                return new RedirectView("/user/bookclass?RequestSent");
+            } 
+            else if(assignedClass.getAvailablePlaces()>0) 
+            {
                 reservedClass.setIsActivated("Activated");
-
+               
+                int availablePlaces=assignedClass.getAvailablePlaces();
+                availablePlaces=availablePlaces-1;
+                assignedClass.setAvailablePlaces(availablePlaces);
+                this.assignedClassRepository.save(assignedClass);
+                this.reservedClassRepository.save(reservedClass);
+                return new RedirectView("/user/bookclass?ClassActivated");
             }
-            this.reservedClassRepository.save(reservedClass);
+            else
+            {
+                return new RedirectView("/user/bookclass?NoAvailablePlaces");
+            }
+            
+        }
+        else
+        {
+            for (ReservedClass reservedClasses1 : reservedClasses) 
+            {
+                if(reservedClasses1.getAssignedClassID()==reservedClass.getAssignedClassID())
+                {
 
-            modelAndView.setViewName("redirect:/user/bookclass");
+                    if(reservedClasses1.getIsActivated().equals("Activated"))
+                    {
+                         return new RedirectView("/user/bookclass?AlreadyBookedThisClass");
+                    }
+                    else if(reservedClasses1.getIsActivated().equals("Pending"))
+                    {
+                          return new RedirectView("/user/bookclass?RequestAlreadySentAndPending");
+                    }
+                }
+            }
+            
+        }
         } catch (Exception ex) {
             System.out.println("Error: " + ex.getMessage());
-            modelAndView.setViewName("error_page");
+            return new RedirectView("error_page");
         }
-        return modelAndView;
+        return null;
     }
 
     @GetMapping("viewpackage")
