@@ -11,9 +11,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
@@ -114,8 +116,8 @@ public class AdminController {
 
         return builder.toString();
     }
-    private void saveUpdatedFieldsForEmp(Employee employeeObj, Employee employee)
-    {
+
+    private void saveUpdatedFieldsForEmp(Employee employeeObj, Employee employee) {
         if (employeeObj.getJobTitle() != 0) {
             employee.setJobTitle(employeeObj.getJobTitle());
         }
@@ -288,17 +290,25 @@ public class AdminController {
     @GetMapping("clientrequests")
     public ModelAndView viewRequests() {
         ModelAndView mav = new ModelAndView("clientReqAdminDash.html");
-        List<Memberships> memberships = this.membershipsRepository.findByIsActivated("Pending");
-        List<Package> packages = new ArrayList<>();
+        List<Memberships> memberships = membershipsRepository.findByIsActivated("Pending");
         List<Client> clients = new ArrayList<>();
-        for (Memberships membership : memberships) {
-            int packageId = membership.getPackageID();
-            int clientId = membership.getClientID();
-            Package packageInfo = this.packageRespository.findById(packageId);
-            Client clientInfo = this.clientRepository.findById(clientId);
-            packages.add(packageInfo);
-            clients.add(clientInfo);
-        }
+        List<Package> packages = new ArrayList<>();
+        if (memberships != null) {
+            for (Memberships membership : memberships) {
+
+                    Client client = clientRepository.findById(membership.getClientID());
+                    if (clients.contains(client) == false) {
+                        clients.add(client);
+                    }
+                    Package package1 = packageRespository.findById(membership.getPackageID());
+                    if (packages.contains(package1) == false) {
+                        packages.add(package1);
+                    }
+
+                
+
+        }}
+        
         mav.addObject("memberships", memberships);
         mav.addObject("packages", packages);
         mav.addObject("clients", clients);
@@ -314,18 +324,30 @@ public class AdminController {
             int coachId = reservedClass.getCoachID();
 
             AssignedClass assignedClassInfo = this.assignedClassRepository.findByID(assignedClassId);
-            assignedClassesList.add(assignedClassInfo);
-            if (assignedClassInfo != null) {
+            if (assignedClassesList.contains(assignedClassInfo) == false) 
+            {
+                assignedClassesList.add(assignedClassInfo);
+        
                 int classId = assignedClassInfo.getClassID();
                 Classes classInfo = this.classesRepository.findByID(classId);
-                classesList.add(classInfo);
-            } else {
+                if (classesList.contains(classInfo) == false) {
+                    classesList.add(classInfo);
+                }
+            } 
+            else 
+            {
                 System.out.println("error");
             }
             Client clientInfo = this.clientRepository.findById(clientId);
-            clientsList.add(clientInfo);
+            if (clientsList.contains(clientInfo) == false) {
+                clientsList.add(clientInfo);
+            }
+
             Employee coachInfo = this.employeeRepository.findByID(coachId);
-            coachesList.add(coachInfo);
+            if (coachesList.contains(coachInfo) == false) {
+                coachesList.add(coachInfo);
+            }
+
         }
         mav.addObject("reservedClassesList", reservedClassesList);
         mav.addObject("classesList", classesList);
@@ -340,7 +362,7 @@ public class AdminController {
     public ModelAndView acceptMembership(@RequestParam("membershipId") int membershipId) {
         Memberships membership = membershipsRepository.findById(membershipId);
         if (membership != null) {
-            membership.setIsActivated("Accepted");
+            membership.setIsActivated("Activated");
             membershipsRepository.save(membership);
         }
         return new ModelAndView("redirect:/admindashboard/clientrequests");
@@ -350,7 +372,7 @@ public class AdminController {
     public ModelAndView declineMembership(@RequestParam("membershipId") int membershipId) {
         Memberships membership = membershipsRepository.findById(membershipId);
         if (membership != null) {
-            membership.setIsActivated("Declined");
+            membership.setIsActivated("Not Activated");
             membershipsRepository.save(membership);
         }
         return new ModelAndView("redirect:/admindashboard/clientrequests");
@@ -359,8 +381,14 @@ public class AdminController {
     @PostMapping("/acceptReservedClass")
     public ModelAndView acceptReservedClass(@RequestParam("reservedClassId") int reservedClassId) {
         ReservedClass reservedClass = this.reservedClassRepository.findByID(reservedClassId);
-        if (reservedClass != null) {
-            reservedClass.setIsActivated("Accepted");
+        AssignedClass assignedClass= this.assignedClassRepository.findByID(reservedClass.getAssignedClassID());
+
+        if (reservedClass != null && assignedClass.getAvailablePlaces()>0) {
+            reservedClass.setIsActivated("Activated");
+            int availablePlaces=assignedClass.getAvailablePlaces();
+            availablePlaces=availablePlaces-1;
+            assignedClass.setAvailablePlaces(availablePlaces);
+            this.assignedClassRepository.save(assignedClass);
             reservedClassRepository.save(reservedClass);
         }
         return new ModelAndView("redirect:/admindashboard/clientrequests");
@@ -370,7 +398,7 @@ public class AdminController {
     public ModelAndView declineReservedClass(@RequestParam("reservedClassId") int reservedClassId) {
         ReservedClass reservedClass = this.reservedClassRepository.findByID(reservedClassId);
         if (reservedClass != null) {
-            reservedClass.setIsActivated("Declined");
+            reservedClass.setIsActivated("Not Activated");
             reservedClassRepository.save(reservedClass);
         }
         return new ModelAndView("redirect:/admindashboard/clientrequests");
@@ -388,14 +416,16 @@ public class AdminController {
             LocalDate minFreezeDate = currentDate.plusDays(3);
             List<LocalDate> maxFreezeDates = new ArrayList<>();
             for (Memberships membership : memberships) {
-                Client client = clientRepository.findById(membership.getClientID());
-                clients.add(client);
-                Package package1 = packageRespository.findById(membership.getPackageID());
-                if (packages.contains(package1) == false) {
-                    packages.add(package1);
-                }
+                if (membership.getIsActivated() == "Activated") {
+                    Client client = clientRepository.findById(membership.getClientID());
+                    clients.add(client);
+                    Package package1 = packageRespository.findById(membership.getPackageID());
+                    if (packages.contains(package1) == false) {
+                        packages.add(package1);
+                    }
 
-                maxFreezeDates.add(currentDate.plusDays(membership.getFreezeCount()));
+                    maxFreezeDates.add(currentDate.plusDays(membership.getFreezeCount()));
+                }
             }
             mav.addObject("minFreezeDate", minFreezeDate);
             mav.addObject("maxFreezeDates", maxFreezeDates);
@@ -640,7 +670,7 @@ public class AdminController {
         Employee employee = this.employeeRepository.findByID(employeeObj.getID());
         System.out.println(employeeObj);
         saveUpdatedFieldsForEmp(employeeObj, employee);
-        
+
         try {
             this.employeeRepository.save(employee);
             status = "Employee updated successfully";
@@ -736,39 +766,38 @@ public class AdminController {
         mav.addObject("classes", classes);
         List<Employee> coaches = this.employeeRepository.findByJobTitle(3);
         mav.addObject("coaches", coaches);
-
         mav.addObject("assignClassObj", new AssignedClass());
+        return mav;
+    }
 
+    @GetMapping("/assignclass/classdays/{classId}")
+    @ResponseBody
+    public List<String> getClassDays(@PathVariable("classId") int classId) {
         LocalDate currentDate = LocalDate.now();
         List<String> availableClassDays = new ArrayList<>();
 
-        // Iterate through the classes to find the upcoming class days
-        for (Classes classObj : classes) {
-            int classId = classObj.getID();
-            List<ClassDays> classDays = this.classDaysRepository.findByClassID(classId);
+        // Classes classObj = this.classesRepository.findById(classId);
+        List<ClassDays> classDays = this.classDaysRepository.findByClassID(classId);
 
-            Map<String, DayOfWeek> dayNameToDayOfWeek = new HashMap<>();
-            dayNameToDayOfWeek.put("Monday", DayOfWeek.MONDAY);
-            dayNameToDayOfWeek.put("Tuesday", DayOfWeek.TUESDAY);
-            dayNameToDayOfWeek.put("Wednesday", DayOfWeek.WEDNESDAY);
-            dayNameToDayOfWeek.put("Thursday", DayOfWeek.THURSDAY);
-            dayNameToDayOfWeek.put("Friday", DayOfWeek.FRIDAY);
-            dayNameToDayOfWeek.put("Saturday", DayOfWeek.SATURDAY);
-            dayNameToDayOfWeek.put("Sunday", DayOfWeek.SUNDAY);
+        Map<String, DayOfWeek> dayNameToDayOfWeek = new HashMap<>();
+        dayNameToDayOfWeek.put("Monday", DayOfWeek.MONDAY);
+        dayNameToDayOfWeek.put("Tuesday", DayOfWeek.TUESDAY);
+        dayNameToDayOfWeek.put("Wednesday", DayOfWeek.WEDNESDAY);
+        dayNameToDayOfWeek.put("Thursday", DayOfWeek.THURSDAY);
+        dayNameToDayOfWeek.put("Friday", DayOfWeek.FRIDAY);
+        dayNameToDayOfWeek.put("Saturday", DayOfWeek.SATURDAY);
+        dayNameToDayOfWeek.put("Sunday", DayOfWeek.SUNDAY);
 
-            // Iterate through the class days to find the upcoming dates
-            for (ClassDays day : classDays) {
-                String dayOfWeekStr = day.getDays();
-                DayOfWeek dayOfWeek = dayNameToDayOfWeek.get(dayOfWeekStr);
-                LocalDate upcomingDate = currentDate.with(TemporalAdjusters.nextOrSame(dayOfWeek));
-                String formattedDate = upcomingDate.format(DateTimeFormatter.ofPattern("EEEE dd-MM-yyyy"));
-                availableClassDays.add(formattedDate);
-            }
+        // Iterate through the class days to find the upcoming dates
+        for (ClassDays day : classDays) {
+            String dayOfWeekStr = day.getDays();
+            DayOfWeek dayOfWeek = dayNameToDayOfWeek.get(dayOfWeekStr);
+            LocalDate upcomingDate = currentDate.with(TemporalAdjusters.nextOrSame(dayOfWeek));
+            String formattedDate = upcomingDate.format(DateTimeFormatter.ofPattern("EEEE dd-MM-yyyy"));
+            availableClassDays.add(formattedDate);
         }
 
-        mav.addObject("availableClassDays", availableClassDays);
-
-        return mav;
+        return availableClassDays;
     }
 
     @PostMapping("assignclass")
@@ -824,5 +853,14 @@ public class AdminController {
         mav.setViewName("redirect:/admindashboard/clients");
         return mav;
     }
+
+    @GetMapping("/logout")
+    public ModelAndView logout(HttpSession session) {
+        ModelAndView modelAndView = new ModelAndView();
+        session.invalidate();
+        modelAndView.setViewName("redirect:/loginemployee");
+        return modelAndView;
+    }
+
 
 }

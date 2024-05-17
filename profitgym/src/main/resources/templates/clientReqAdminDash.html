@@ -27,7 +27,8 @@
                                     <h1 class="mb-0">Membership Requests</h1>
                                 </div>
                                 <div class="col text-right">
-                                    <input id="searchBar" onkeyup="myFunction()" class="table-search-bar" placeholder="Search for a Membership Request">
+                                    <input id="searchBar" onkeyup="myFunction()" class="table-search-bar"
+                                        placeholder="Search for a Membership Request">
                                 </div>
 
                             </div>
@@ -47,25 +48,26 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr th:each="membership: ${memberships}">
-                                        <th scope="row" th:text="${membership.clientID}"></th>
-                                        <div th:each="client : ${clients}">
-                                            <div th:if="${client.ID == membership.ClientID}">
-                                                <td th:text="${client.FirstName + ' ' + client.LastName}"></td>
-                                            </div>
-                                        </div>
-                                        <div th:each="package : ${packages}">
-                                            <div th:if="${package.id == membership.PackageID}">
-                                                <td th:text="${package.Title}"></td>
-                                                <td th:text="${package.NumOfMonths}"></td>
-                                                <td th:text="${package.Price}"></td>
-                                            </div>
-                                        </div>
+                                    <tr th:each="membership : ${memberships}">
+                                        <td th:text="${membership.clientID}"></td>
+                                        <td th:each="client : ${clients}" th:if="${client.ID == membership.ClientID}"
+                                            th:text="${client.FirstName + ' ' + client.LastName}"></td>
+                                        <td th:each="package : ${packages}" th:if="${package.id == membership.PackageID}">
+                                            <td th:text="${package.Title}"></td>
+                                            <td th:text="${package.NumOfMonths}"></td>
+                                            <td th:text="${package.Price}"></td>
+                                        </td> 
                                         <td th:text="${membership.StartDate}"></td>
                                         <td th:text="${membership.EndDate}"></td>
                                         <td>
-                                            <a href="#!" class="btn btn-sm btn-primary">Accept</a>
-                                            <a href="#!" class="btn btn-sm btn-delete">Decline</a>
+                                            <form th:action="@{/admindashboard/acceptMembership}" method="post" style="display: inline;">
+                                                <input type="hidden" name="membershipId" th:value="${membership.ID}" />
+                                                <button type="submit" class="btn btn-sm btn-primary">Accept</button>
+                                            </form>
+                                            <form th:action="@{/admindashboard/declineMembership}" method="post" style="display: inline;">
+                                                <input type="hidden" name="membershipId" th:value="${membership.ID}" />
+                                                <button type="submit" class="btn btn-sm btn-primary">Decline</button>
+                                            </form>
                                         </td>
                                     </tr>
                                 </tbody>
@@ -80,7 +82,8 @@
                                     <h1 class="mb-0">Class Requests</h1>
                                 </div>
                                 <div class="col text-right">
-                                    <input id="searchBar2" onkeyup="myFunction()2" class="table-search-bar" placeholder="Search for a Class Request">
+                                    <input id="searchBar2" onkeyup="myFunction()" class="table-search-bar"
+                                        placeholder="Search for a Class Request">
                                 </div>
 
                             </div>
@@ -108,26 +111,31 @@
                                                 <td th:text="${client.FirstName + ' ' + client.LastName}"></td>
                                             </div>
                                         </div>
-                                        <div th:each="coach : ${coachesList}">
-                                            <div th:if="${coach.ID == reservedClass.CoachID}">
-                                                <td th:text="${coach.Name}"></td>
-                                            </div>
+                                        <div th:each="coach : ${coachesList}"
+                                            th:if="${coach.ID == reservedClass.CoachID}">
+                                            <td th:text="${coach.Name}"></td>
                                         </div>
-                                        <div th:each="assignedClass : ${assignedClassesList}">
-                                            <div th:if="${assignedClass.ID == reservedClass.AssignedClassID}">
-                                                <div th:each="class : ${classesList}">
-                                                    <div th:if="${class.ID == assignedClass.ClassID}">
-                                                        <td th:text="${class.Name}"></td>
-                                                    </div>
-                                                </div>
-                                                <td th:text="${assignedClass.Date}"></td>
-                                                <td th:text="${assignedClass.StartTime}"></td>
-                                                <td th:text="${assignedClass.EndTime}"></td>
-                                                <td th:text="${assignedClass.Price}"></td>
-                                                <td>
-                                                    <a href="#!" class="btn btn-sm btn-primary">Accept</a>
-                                                    <a href="#!" class="btn btn-sm btn-delete">Decline</a>
-                                                </td>
+                                        <div th:each="assignedClass : ${assignedClassesList}"
+                                            th:if="${assignedClass.ID == reservedClass.AssignedClassID}">
+                                            <div th:each="class : ${classesList}"
+                                                th:if="${class.ID == assignedClass.ClassID}">
+                                                <td th:text="${class.Name}"></td>
+                                            </div>
+                                            <td th:text="${assignedClass.Date}"></td>
+                                            <td th:text="${assignedClass.StartTime}"></td>
+                                            <td th:text="${assignedClass.EndTime}"></td>
+                                            <td th:text="${assignedClass.Price}"></td>
+                                        </div>
+                                        <td>
+                                            <form th:action="@{/admindashboard/acceptReservedClass}" method="post" style="display: inline;">
+                                            <input type="hidden" name="reservedClassId" th:value="${reservedClass.ID}" />
+                                            <button type="submit" class="btn btn-sm btn-primary">Accept</button>
+                                            </form>
+                                            <form th:action="@{/admindashboard/declineReservedClass}" method="post" style="display: inline;">
+                                                <input type="hidden" name="reservedClassId" th:value="${reservedClass.ID}" />
+                                                <button type="submit" class="btn btn-sm btn-primary">Decline</button>
+                                            </form>
+                                        </td>
                                     </tr>
                                 </tbody>
                             </table>
