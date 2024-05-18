@@ -253,39 +253,39 @@ public class AdminController {
 
     }
 
-    @GetMapping("packages")
-    public ModelAndView viewPackages() {
-        System.out.println("viewPackages() method called");
-        ModelAndView mav = new ModelAndView("packageAdminDash.html");
-        List<Package> packages = this.packageRespository.findAll();
-        mav.addObject("packages", packages);
-        return mav;
-    }
+    // @GetMapping("packages")
+    // public ModelAndView viewPackages() {
+    //     System.out.println("viewPackages() method called");
+    //     ModelAndView mav = new ModelAndView("packageAdminDash.html");
+    //     List<Package> packages = this.packageRespository.findAll();
+    //     mav.addObject("packages", packages);
+    //     return mav;
+    // }
 
-    @PostMapping("/package-activation")
-    public ModelAndView handlePackageActivation(@RequestParam("id") int id,
-            HttpServletRequest request) {
-        ModelAndView modelAndView = new ModelAndView();
+    // @PostMapping("/package-activation")
+    // public ModelAndView handlePackageActivation(@RequestParam("id") int id,
+    //         HttpServletRequest request) {
+    //     ModelAndView modelAndView = new ModelAndView();
 
-        try {
-            Package existingPackage = this.packageRespository.findById(id);
+    //     try {
+    //         Package existingPackage = this.packageRespository.findById(id);
 
-            if ("activate".equals(request.getParameter("action"))) {
-                existingPackage.setIsActivated("Activated");
-            } else {
-                existingPackage.setIsActivated("Not Activated");
-            }
+    //         if ("activate".equals(request.getParameter("action"))) {
+    //             existingPackage.setIsActivated("Activated");
+    //         } else {
+    //             existingPackage.setIsActivated("Not Activated");
+    //         }
 
-            this.packageRespository.save(existingPackage);
+    //         this.packageRespository.save(existingPackage);
 
-            modelAndView.setViewName("redirect:/admindashboard/packages");
-        } catch (Exception e) {
-            modelAndView.setViewName("error_page");
-            System.out.println("Error handling package activation: " + e.getMessage());
-        }
+    //         modelAndView.setViewName("redirect:/admindashboard/packages");
+    //     } catch (Exception e) {
+    //         modelAndView.setViewName("error_page");
+    //         System.out.println("Error handling package activation: " + e.getMessage());
+    //     }
 
-        return modelAndView;
-    }
+    //     return modelAndView;
+    // }
 
     @GetMapping("clientrequests")
     public ModelAndView viewRequests() {
@@ -743,21 +743,21 @@ public class AdminController {
         return fileName;
     }
 
-    @GetMapping("addpackage")
-    public ModelAndView getPackageForm() {
-        ModelAndView mav = new ModelAndView("addPackageAdminDash.html");
-        mav.addObject("packageObj", new Package());
-        return mav;
-    }
+    // @GetMapping("addpackage")
+    // public ModelAndView getPackageForm() {
+    //     ModelAndView mav = new ModelAndView("addPackageAdminDash.html");
+    //     mav.addObject("packageObj", new Package());
+    //     return mav;
+    // }
 
-    @SuppressWarnings("null")
-    @PostMapping("addpackage")
-    public ModelAndView savePackage(@ModelAttribute Package packageObj) {
-        this.packageRespository.save(packageObj);
-        ModelAndView modelAndView = new ModelAndView();
-        modelAndView.setViewName("redirect:/admindashboard/addpackage");
-        return modelAndView;
-    }
+    // @SuppressWarnings("null")
+    // @PostMapping("addpackage")
+    // public ModelAndView savePackage(@ModelAttribute Package packageObj) {
+    //     this.packageRespository.save(packageObj);
+    //     ModelAndView modelAndView = new ModelAndView();
+    //     modelAndView.setViewName("redirect:/admindashboard/addpackage");
+    //     return modelAndView;
+    // }
 
     @GetMapping("assignclass")
     public ModelAndView getClasses() {
