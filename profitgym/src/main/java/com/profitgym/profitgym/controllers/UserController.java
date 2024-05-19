@@ -109,20 +109,48 @@ public class UserController {
         Client loggedInUser = (Client) session.getAttribute("loggedInUser");
         if (loggedInUser == null) {
             mav.setViewName("redirect:/login");
-        } else {
-            Memberships membership = membershipsRepository.findByClientID(loggedInUser.getID());
-            Package pack = null;
-            LocalDate now = LocalDate.now();
-            if (membership != null && membership.getIsActivated().equals("Activated") && membership.getEndDate().isAfter(now)) {
-                pack = packageRepository.findById(membership.getPackageID());
-                mav.addObject("package", pack);
-                mav.addObject("membership", membership);
+            return mav;
+        }
+    
+        // Retrieve user's memberships and package details
+        Memberships membership = membershipsRepository.findByClientID(loggedInUser.getID());
+        Package pack = null;
+        LocalDate now = LocalDate.now();
+        if (membership != null && membership.getIsActivated().equals("Activated") && membership.getEndDate().isAfter(now)) {
+            pack = packageRepository.findById(membership.getPackageID());
+            mav.addObject("package", pack);
+            mav.addObject("membership", membership);
+        }
+    
+        List<ReservedClass> reservedClasses = reservedClassRepository.findByClientID(loggedInUser.getID());
+    
+        List<Classes> reservedClassesDetails = new ArrayList<>();
+        List<String> coachNames = new ArrayList<>();
+    
+        for (ReservedClass reservedClass : reservedClasses) {
+            if (reservedClass.getIsActivated().equals("Activated")) {
+                int classId = reservedClass.getAssignedClassID();
+                Optional<AssignedClass> assignedClassDetails = assignedClassRepository.findById(classId);
+                assignedClassDetails.ifPresent(assignedClass -> {
+                    Employee coachDetails = employeeRepository.findByID(reservedClass.getCoachID());
+                    if (coachDetails != null) {
+                        coachNames.add(coachDetails.getName());
+                    } else {
+                        coachNames.add("");
+                    }
+                    Optional<Classes> classDetails = classesRepository.findById(assignedClass.getClassID());
+                    classDetails.ifPresent(reservedClassesDetails::add);
+                });
             }
         }
+    
+        mav.addObject("reservedClassesDetails", reservedClassesDetails);
+        mav.addObject("coaches", coachNames);
         mav.addObject("loggedInUser", loggedInUser);
+    
         return mav;
     }
-
+    
     @GetMapping("bookpackage")
     public ModelAndView getPackageBooking() {
         System.out.println("viewPackages() method called");

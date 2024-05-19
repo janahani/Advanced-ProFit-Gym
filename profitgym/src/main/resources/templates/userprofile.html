@@ -15,7 +15,7 @@
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
 
 </head>
-
+ 
 <body>
     <!-- usersidebar -->
     <div th:replace="~{partials/usersidebar}"></div>
@@ -39,21 +39,24 @@
     </div>
     <h2 class="reminder-title"><i class='bx bxs-bell-ring'></i>REMINDER:</h2>
     <div class="reminders">
-        <div class="reminder">
-            <p class="class">Class:</p>
-            <div class="class-title">YOGA</div>
-            <div class="dates">
-                <div class="date">
-                    <p>Date:</p>
-                    <div class="class-date">21-10-2023</div>
-                </div>
-                <div class="time">
-                    <p>Time:</p>
-                    <div class="class-time">4:30 - 6:00 p.m</div>
+        <th:block th:each="reservedClass : ${reservedClassesDetails}">
+            <div class="reminder">
+                <p class="class">Class:</p>
+                <div class="class-title" th:text="${reservedClass.name}">YOGA</div>
+                <div class="dates">
+                    <div class="date">
+                        <p>Date:</p>
+                        <div class="class-date">29-5-2024</div>
+                    </div>
+                    <div class="time">
+                        <p>Time:</p>
+                        <div class="class-time">4:30 - 6:00 p.m</div>
+                    </div>
                 </div>
             </div>
-        </div>
+        </th:block>
     </div>
+    
 
     <!-- footer -->
     <div th:replace="~{partials/footer}"></div>
