@@ -50,13 +50,16 @@
                                 <tbody>
                                     <tr th:each="membership : ${memberships}">
                                         <td th:text="${membership.clientID}"></td>
-                                        <td th:each="client : ${clients}" th:if="${client.ID == membership.ClientID}"
-                                            th:text="${client.FirstName + ' ' + client.LastName}"></td>
+                                        <td th:each="client : ${clients}" th:if="${client.ID == membership.ClientID}" th:text="${client.FirstName + ' ' + client.LastName}"></td>
                                         <td th:each="package : ${packages}" th:if="${package.id == membership.PackageID}">
-                                            <td th:text="${package.Title}"></td>
-                                            <td th:text="${package.NumOfMonths}"></td>
-                                            <td th:text="${package.Price}"></td>
-                                        </td> 
+                                            <span th:text="${package.Title}"></span>
+                                        </td>
+                                        <td th:each="package : ${packages}" th:if="${package.id == membership.PackageID}">
+                                            <span th:text="${package.NumOfMonths}"></span>
+                                        </td>
+                                        <td th:each="package : ${packages}" th:if="${package.id == membership.PackageID}">
+                                            <span th:text="${package.Price}"></span>
+                                        </td>
                                         <td th:text="${membership.StartDate}"></td>
                                         <td th:text="${membership.EndDate}"></td>
                                         <td>
@@ -71,6 +74,7 @@
                                         </td>
                                     </tr>
                                 </tbody>
+                                
                             </table>
                         </div>
                     </div>

@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 
 <head>
@@ -53,118 +54,90 @@
                                 </thead>
                                 <tbody>
                                     <tr th:each="membership, idx  : ${memberships}">
-                                        <div th:unless="${#lists.isEmpty(clients)}">
-                                            <div th:unless="${#lists.isEmpty(packages)}">
-                                                <div th:each="client : ${clients}">
-                                                    <div th:if="${client.ID == membership.clientID}">
-                                                        <td scope="row" th:if="${client != null}"
-                                                            th:text="${membership.ID}"></td>
-                                                        <td th:text="${client.FirstName} + ' ' + ${client.LastName}">
-                                                        </td>
-                                                    </div>
-                                                </div>
-                                                <div th:each="package : ${packages}">
-                                                    <div th:if="${package.id == membership.PackageID}">
-                                                        <td th:text="${package.Title}"></td>
-                                                    </div>
-                                                </div>
-                                                <td th:text="${membership.VisitsCount}"></td>
-                                                <td th:text="${membership.InbodySessionsCount}"></td>
-                                                    <div th:if="${membership.isActivated} == 'Activated'">
-                                                        <div th:if="${membership.Freezed} == 'Not Freezed'">
-                                                            <form th:action="@{/admindashboard/requestfreeze(id=${membership.ID})}"
-                                                                method="post">
-                                                                <button type="button"
-                                                                    th:data-membershipID="${membership.ID}"
-                                                                    onclick="showModal(this.getAttribute('data-membershipID'));"
-                                                                    id="freeze-button" class="btn btn-sm btn-freeze">
-                                                                    Freeze
-                                                                </button>
-                                                                <div th:id="'modal-' + ${membership.ID}" class="modal">
-                                                                    <div class="modal-content">
-                                                                        <div class="modal-sandbox"></div>
-                                                                        <div class="modal-box">
-                                                                            <div class="close-modal"
-                                                                                th:data-membershipID="${membership.ID}"
-                                                                                onclick="closeModal(this.getAttribute('data-membershipID'));">
-                                                                                &#10006;
-                                                                            </div>
-                                                                            <div class="modal-body">
-                                                                                <div class="datePicking"
-                                                                                    id="datePickerContainer">
-                                                                                    <label for="datepicker">Choose a
-                                                                                        Date:</label>
-                                                                                    <input type="date"
-                                                                                        th:id="'datepicker-' + ${membership.ID}"
-                                                                                        th:data-dataPickerID="${membership.ID}"
-                                                                                        onchange="handleDateChange(this.getAttribute('data-dataPickerID'));"
-                                                                                        name="freezeEndDate"
-                                                                                        th:min="${minFreezeDate}"
-                                                                                        th:max="${maxFreezeDates[idx.index]}" />
-                                                                                </div>
-                                                                                <p class="confirmation-text"
-                                                                                    id="confirmation-text"></p>
-                                                                                <br />
-                                                                                <button type="submit"
-                                                                                    id=" freeze-button"
-                                                                                    class="btn btn-sm btn-freeze">
-                                                                                    Freeze
-                                                                                </button>
-                                                                            </div>
+                                        <td th:text="${membership.ID}"></td>
+                                        <td th:each="client : ${clients}" th:if="${client.ID == membership.clientID}"
+                                            th:text="${client.FirstName} + ' ' + ${client.LastName}"></td>
+                                        <td th:each="package : ${packages}" th:if="${package.id == membership.PackageID}"
+                                            th:text="${package.Title}"></td>
+                                        <td th:text="${membership.VisitsCount}"></td>
+                                        <td th:text="${membership.InbodySessionsCount}"></td>
+                                        <td>
+                                            <div th:if="${membership.isActivated == 'Activated'}">
+                                                <div th:if="${membership.Freezed == 'Not Freezed'}">
+                                                    <form th:action="@{/admindashboard/requestfreeze(id=${membership.ID})}"
+                                                        method="post">
+                                                        <button type="button" th:data-membershipID="${membership.ID}"
+                                                            onclick="showModal(this.getAttribute('data-membershipID'));"
+                                                            class="btn btn-sm btn-freeze">Freeze</button>
+                                                        <div th:id="'modal-' + ${membership.ID}" class="modal">
+                                                            <div class="modal-content">
+                                                                <div class="modal-sandbox"></div>
+                                                                <div class="modal-box">
+                                                                    <div class="close-modal"
+                                                                        th:data-membershipID="${membership.ID}"
+                                                                        onclick="closeModal(this.getAttribute('data-membershipID'));">
+                                                                        &#10006;
+                                                                    </div>
+                                                                    <div class="modal-body">
+                                                                        <div class="datePicking"
+                                                                            id="datePickerContainer">
+                                                                            <label for="datepicker">Choose a
+                                                                                Date:</label>
+                                                                            <input type="date"
+                                                                                th:id="'datepicker-' + ${membership.ID}"
+                                                                                th:data-dataPickerID="${membership.ID}"
+                                                                                onchange="handleDateChange(this.getAttribute('data-dataPickerID'));"
+                                                                                name="freezeEndDate"
+                                                                                th:min="${minFreezeDate}"
+                                                                                th:max="${maxFreezeDates[idx.index]}" />
                                                                         </div>
+                                                                        <p class="confirmation-text"
+                                                                            id="confirmation-text"></p>
+                                                                        <br />
+                                                                        <button type="submit" class="btn btn-sm btn-freeze">Freeze</button>
                                                                     </div>
                                                                 </div>
-                                                            </form>
+                                                            </div>
                                                         </div>
-                                                        <div th:if="${membership.Freezed} == 'Freezed'">
-                                                          <form th:action="@{/admindashboard/requestunfreeze(id=${membership.ID})}"
-                                                                method="post">
-                                                                <button type="button"
-                                                                    th:data-membershipID="${membership.ID}"
-                                                                    onclick="showModal(this.getAttribute('data-membershipID'));"
-                                                                    id="freeze-button" class="btn btn-sm btn-unfreeze">
-                                                                    Unfreeze
-                                                                </button>
-                                                                <div th:id="'modal-' + ${membership.ID}" class="modal">
-                                                                  <div class="modal-content">
-                                                                      <div class="modal-sandbox"></div>
-                                                                      <div class="modal-box">
-                                                                          <div class="close-modal"
-                                                                              th:data-membershipID="${membership.ID}"
-                                                                              onclick="closeModal(this.getAttribute('data-membershipID'));">
-                                                                              &#10006;
-                                                                          </div>
-                                                                          <div class="modal-body">
-                                                                              <p class="confirmation-text"
-                                                                                  id="confirmation-text">Are you sure you want to unfreeze this membership?</p>
-                                                                              <br />
-                                                                              <button type="submit"
-                                                                                  id=" freeze-button"
-                                                                                  class="btn btn-sm btn-unfreeze">
-                                                                                  Unfreeze
-                                                                              </button>
-                                                                          </div>
-                                                                      </div>
-                                                                  </div>
-                                                              </div>
-                                                            </form>
-                                                        </div>
-                                                    </div>
-                                                <td th:text="${membership.Freezed}"></td>
-                                                <td th:text="${membership.FreezeCount}"></td>
-                                                <td th:text="${membership.isActivated}"></td>
-
-                                                <td>
-                                                    <form th:action="@{/admindashboard/deletemembership}" method="post">
-                                                        <input type="hidden" name="membershipId"
-                                                            th:value="${membership.ID}" />
-                                                        <button type="submit" class="btn btn-sm btn-delete">
-                                                            Delete
-                                                        </button>
                                                     </form>
-                                                </td>
+                                                </div>
+                                                <div th:if="${membership.Freezed == 'Freezed'}">
+                                                    <form th:action="@{/admindashboard/requestunfreeze(id=${membership.ID})}"
+                                                        method="post">
+                                                        <button type="button" th:data-membershipID="${membership.ID}"
+                                                            onclick="showModal(this.getAttribute('data-membershipID'));"
+                                                            class="btn btn-sm btn-unfreeze">Unfreeze</button>
+                                                        <div th:id="'modal-' + ${membership.ID}" class="modal">
+                                                            <div class="modal-content">
+                                                                <div class="modal-sandbox"></div>
+                                                                <div class="modal-box">
+                                                                    <div class="close-modal"
+                                                                        th:data-membershipID="${membership.ID}"
+                                                                        onclick="closeModal(this.getAttribute('data-membershipID'));">
+                                                                        &#10006;
+                                                                    </div>
+                                                                    <div class="modal-body">
+                                                                        <p class="confirmation-text"
+                                                                            id="confirmation-text">Are you sure you want to unfreeze this membership?</p>
+                                                                        <br />
+                                                                        <button type="submit" class="btn btn-sm btn-unfreeze">Unfreeze</button>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </form>
+                                                </div>
                                             </div>
-                                        </div>
+                                        </td>
+                                        <td th:text="${membership.Freezed}"></td>
+                                        <td th:text="${membership.FreezeCount}"></td>
+                                        <td th:text="${membership.isActivated}"></td>
+                                        <td>
+                                            <form th:action="@{/admindashboard/deletemembership}" method="post">
+                                                <input type="hidden" name="membershipId" th:value="${membership.ID}" />
+                                                <button type="submit" class="btn btn-sm btn-delete">Delete</button>
+                                            </form>
+                                        </td>
                                     </tr>
                                 </tbody>
                             </table>

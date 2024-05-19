@@ -175,7 +175,7 @@ public class UserController {
             {
                 return new RedirectView("/user/bookpackage?AlreadySubscribedInAMembership");
             }
-            else if(memb.getIsActivated()=="Pending")
+            else if(memb.getIsActivated().equals("Pending"))
             {
                 return new RedirectView("/user/bookpackage?RequestAlreadySentAndPending");
             }
@@ -349,47 +349,47 @@ public class UserController {
         return mav;
     }
 
-    @PostMapping("requestfreeze")
-    public ModelAndView freezeMembership(@RequestParam("freezeEndDate") String freezeEndDate,
-            HttpSession session) {
-        Client loggedInUser = (Client) session.getAttribute("loggedInUser");
-        int freezeDuration = calculateFreezeDuration(LocalDate.now(), LocalDate.parse(freezeEndDate));
-        Memberships membership = membershipsRepository.findByClientID(loggedInUser.getID());
+    // @PostMapping("requestfreeze")
+    // public ModelAndView freezeMembership(@RequestParam("freezeEndDate") String freezeEndDate,
+    //         HttpSession session) {
+    //     Client loggedInUser = (Client) session.getAttribute("loggedInUser");
+    //     int freezeDuration = calculateFreezeDuration(LocalDate.now(), LocalDate.parse(freezeEndDate));
+    //     Memberships membership = membershipsRepository.findByClientID(loggedInUser.getID());
 
-        updateMembershipEndDate(membership, freezeDuration);
+    //     updateMembershipEndDate(membership, freezeDuration);
 
-        createScheduledUnfreeze(membership.getID(), LocalDate.now(), LocalDate.parse(freezeEndDate));
+    //     createScheduledUnfreeze(membership.getID(), LocalDate.now(), LocalDate.parse(freezeEndDate));
 
-        ModelAndView modelAndView = new ModelAndView();
-        modelAndView.setViewName("redirect:/user/requestfreeze");
-        return modelAndView;
-    }
+    //     ModelAndView modelAndView = new ModelAndView();
+    //     modelAndView.setViewName("redirect:/user/requestfreeze");
+    //     return modelAndView;
+    // }
 
-    @PostMapping("requestunfreeze")
-    public ModelAndView unfreezeMembership(HttpSession session) {
-        Client loggedInUser = (Client) session.getAttribute("loggedInUser");
-        Memberships membership = membershipsRepository.findByClientID(loggedInUser.getID());
+    // @PostMapping("requestunfreeze")
+    // public ModelAndView unfreezeMembership(HttpSession session) {
+    //     Client loggedInUser = (Client) session.getAttribute("loggedInUser");
+    //     Memberships membership = membershipsRepository.findByClientID(loggedInUser.getID());
 
-        ScheduledUnfreeze scheduledUnfreeze = scheduledUnfreezeRepository.findByMembershipID(membership.getID());
-        // get the difference between old freeze duration and the new freeze duration
-        int newFreezeDuration = calculateFreezeDuration(scheduledUnfreeze.getFreezeStartDate(), LocalDate.now());
-        int oldFreezeDuration = calculateFreezeDuration(scheduledUnfreeze.getFreezeStartDate(),
-                scheduledUnfreeze.getFreezeEndDate());
-        int freezeDuration = oldFreezeDuration - newFreezeDuration;
+    //     ScheduledUnfreeze scheduledUnfreeze = scheduledUnfreezeRepository.findByMembershipID(membership.getID());
+    //     // get the difference between old freeze duration and the new freeze duration
+    //     int newFreezeDuration = calculateFreezeDuration(scheduledUnfreeze.getFreezeStartDate(), LocalDate.now());
+    //     int oldFreezeDuration = calculateFreezeDuration(scheduledUnfreeze.getFreezeStartDate(),
+    //             scheduledUnfreeze.getFreezeEndDate());
+    //     int freezeDuration = oldFreezeDuration - newFreezeDuration;
 
-        // update membership end date by subtracting the new freeze duration
-        membership.setEndDate(membership.getEndDate().minusDays(freezeDuration));
-        membership.setFreezeCount(membership.getFreezeCount() + freezeDuration);
-        membership.setFreezed("Not Freezed");
-        this.membershipsRepository.save(membership);
+    //     // update membership end date by subtracting the new freeze duration
+    //     membership.setEndDate(membership.getEndDate().minusDays(freezeDuration));
+    //     membership.setFreezeCount(membership.getFreezeCount() + freezeDuration);
+    //     membership.setFreezed("Not Freezed");
+    //     this.membershipsRepository.save(membership);
 
-        // remove scheduled unfreeze
-        this.scheduledUnfreezeRepository.delete(scheduledUnfreeze);
+    //     // remove scheduled unfreeze
+    //     this.scheduledUnfreezeRepository.delete(scheduledUnfreeze);
 
-        ModelAndView modelAndView = new ModelAndView();
-        modelAndView.setViewName("redirect:/user/requestfreeze");
-        return modelAndView;
-    }
+    //     ModelAndView modelAndView = new ModelAndView();
+    //     modelAndView.setViewName("redirect:/user/requestfreeze");
+    //     return modelAndView;
+    // }
 
     @GetMapping("profsettings")
     public ModelAndView viewProfSettings() {
