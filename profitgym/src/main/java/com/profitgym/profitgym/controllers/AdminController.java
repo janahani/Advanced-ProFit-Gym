@@ -9,6 +9,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -602,18 +603,23 @@ public class AdminController {
         }
     }
 
-    @PostMapping("deleteemployee")
-    public ModelAndView deleteEmployee(@RequestParam("id") int employeeId) {
-        ModelAndView modelAndView = new ModelAndView();
-        try {
-            employeeRepository.deleteById(employeeId);
-            System.out.println("Employee deleted");
-            modelAndView.setViewName("redirect:/admindashboard/employees");
-        } catch (Exception e) {
-            System.out.println("Error deleting employee: " + e.getMessage());
-        }
-        return modelAndView;
+    @PostMapping("/deleteemployee")
+public ModelAndView deleteEmployee(@RequestParam("id") int employeeId) {
+    ModelAndView modelAndView = new ModelAndView();
+    try {
+        employeeRepository.deleteById(employeeId);
+        System.out.println("Employee deleted");
+        // Redirect to the employees page after successful deletion
+        modelAndView.setViewName("redirect:/admindashboard/employees");
+    } catch (Exception e) {
+        System.out.println("Error deleting employee: " + e.getMessage());
+        // Redirect to an error page or display an error message
+        modelAndView.setViewName("error");
+        modelAndView.addObject("message", "Error deleting employee: " + e.getMessage());
     }
+    return modelAndView;
+}
+
 
     @GetMapping("editclient")
     public ModelAndView editClientForm(@RequestParam("id") int clientId) {
@@ -890,5 +896,46 @@ public class AdminController {
         return modelAndView;
     }
 
+
+
+    @GetMapping("profilesettings")
+    public ModelAndView viewProfSettings(HttpSession session) {
+        ModelAndView mav = new ModelAndView("employeeProfileSettings.html");
+        Employee sessionEmployee = (Employee) session.getAttribute("loggedInEmp");
+        mav.addObject("employeeObj", sessionEmployee);
+        return mav;
+    }
+
+
+    @PostMapping("/profilesettings")
+    public ModelAndView updateEmployeeProfile(@Valid @ModelAttribute Employee empObj, BindingResult bindingResult,
+            HttpSession session, @RequestParam("action") String action) {
+        Employee sessionEmployee = (Employee) session.getAttribute("loggedInEmp");
+    
+        ModelAndView modelAndView = new ModelAndView();
+    
+        if (action.equals("updateProfile")) {
+            if (bindingResult.hasErrors()) {
+                modelAndView.setViewName("employeeProfileSettings.html"); 
+                return modelAndView;
+            }
+    
+
+            sessionEmployee.setName(empObj.getName());
+            sessionEmployee.setEmail(empObj.getEmail());
+            sessionEmployee.setPhoneNumber(empObj.getPhoneNumber());
+            sessionEmployee.setAddress(empObj.getAddress());
+    
+            session.setAttribute("loggedInEmp", sessionEmployee);
+    
+            modelAndView.setViewName("/admindashboard/employees");
+            return modelAndView;
+        } else {
+            modelAndView.setViewName("errorPage"); 
+            modelAndView.addObject("errorMessage", "Invalid action specified.");
+            return modelAndView;
+        }
+    }
+    
 
 }
