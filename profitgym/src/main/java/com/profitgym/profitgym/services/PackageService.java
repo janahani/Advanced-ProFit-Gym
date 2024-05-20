@@ -31,12 +31,12 @@ public class PackageService {
     }
 
     public void addPackage(Package packageObj){
-        String url = baseUrl + "admindashboard/addpackage";
+        String url = baseUrl + "/admindashboard/addpackage";
         this.restTemplate.postForObject(url, packageObj, Package.class);
     }
 
     public void packageActivation(int packageID) {
-        String url = baseUrl + "admindashboard/package-activation";
+        String url = baseUrl + "/admindashboard/package-activation";
         this.restTemplate.postForObject(url, packageID, Package.class);
 
 
