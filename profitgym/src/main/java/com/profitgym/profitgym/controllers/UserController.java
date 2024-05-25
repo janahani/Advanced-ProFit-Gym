@@ -77,10 +77,20 @@ public class UserController {
     @Autowired
     private EmployeeRepository employeeRepository;
 
-    public UserController(ClientRepository clientRepository,AssignedClassRepository assignedClassRepository,ReservedClassRepository reservedClassRepository) {
+    public UserController(ClientRepository clientRepository) {
         this.clientRepository = clientRepository;
+    }
+
+    public UserController(AssignedClassRepository assignedClassRepository,ReservedClassRepository reservedClassRepository)
+    {
         this.assignedClassRepository = assignedClassRepository;
         this.reservedClassRepository = reservedClassRepository;
+    }
+
+    public UserController(MembershipsRepository membershipsRepository, PackageRepository packageRepository)
+    {
+        this.membershipsRepository = membershipsRepository;
+        this.packageRepository = packageRepository;
     }
 
     public int calculateFreezeDuration(LocalDate currentDate, LocalDate freezeEndDate) {
@@ -168,6 +178,10 @@ public class UserController {
             HttpSession session) {
 
         Client loggedInUser = (Client) session.getAttribute("loggedInUser");
+        if(loggedInUser == null)
+        {
+            return new RedirectView("/login");
+        }
         int numOfMonths = 0;
         int freezeCount = 0;
         try {

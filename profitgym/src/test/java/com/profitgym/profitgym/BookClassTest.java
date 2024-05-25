@@ -15,7 +15,6 @@ import org.springframework.mock.web.MockHttpSession;
 import org.springframework.web.servlet.view.RedirectView;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -32,8 +31,6 @@ public class BookClassTest {
     @Mock
     private AssignedClassRepository assignedClassRepository;
 
-    @Mock
-    private ClientRepository clientRepository;
 
     private MockHttpSession session;
     private Client loggedInUser;
@@ -57,7 +54,7 @@ public class BookClassTest {
         reservedClass.setAssignedClassID(1);
         reservedClass.setClientID(1);
 
-        userController = new UserController(clientRepository, assignedClassRepository, reservedClassRepository);
+        userController = new UserController(assignedClassRepository, reservedClassRepository);
     }
 
     @Test
