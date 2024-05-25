@@ -77,8 +77,10 @@ public class UserController {
     @Autowired
     private EmployeeRepository employeeRepository;
 
-    public UserController(ClientRepository clientRepository) {
+    public UserController(ClientRepository clientRepository,AssignedClassRepository assignedClassRepository,ReservedClassRepository reservedClassRepository) {
         this.clientRepository = clientRepository;
+        this.assignedClassRepository = assignedClassRepository;
+        this.reservedClassRepository = reservedClassRepository;
     }
 
     public int calculateFreezeDuration(LocalDate currentDate, LocalDate freezeEndDate) {
@@ -242,6 +244,10 @@ public class UserController {
 
         try {
            Client loggedInUser = (Client) session.getAttribute("loggedInUser");
+           if(loggedInUser == null)
+           {
+                return new RedirectView("/login");
+           }
            List<ReservedClass> reservedClasses = this.reservedClassRepository.findByClientID(loggedInUser.getID());
            List<AssignedClass> assignedClasses= new ArrayList<>();
            AssignedClass assignedClass1;
