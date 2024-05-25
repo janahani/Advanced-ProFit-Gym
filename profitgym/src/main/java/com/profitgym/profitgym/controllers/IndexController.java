@@ -54,6 +54,12 @@ public class IndexController {
         this.clientRepository = clientRepository;
     }
 
+    public IndexController(EmployeeRepository employeeRepository, EmployeeAuthoritiesRepository employeeAuthoritiesRepository, AuthorityRepository authorityRepository)
+    {
+        this.employeeRepository = employeeRepository;
+        this.employeeAuthoritiesRepository = employeeAuthoritiesRepository;
+        this.authorityRepository = authorityRepository;
+    }
 
     @GetMapping("/index")
     public ModelAndView getIndex() {

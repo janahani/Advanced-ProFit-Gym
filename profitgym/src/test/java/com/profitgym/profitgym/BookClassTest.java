@@ -5,7 +5,6 @@ import com.profitgym.profitgym.models.AssignedClass;
 import com.profitgym.profitgym.models.Client;
 import com.profitgym.profitgym.models.ReservedClass;
 import com.profitgym.profitgym.repositories.AssignedClassRepository;
-import com.profitgym.profitgym.repositories.ClientRepository;
 import com.profitgym.profitgym.repositories.ReservedClassRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
