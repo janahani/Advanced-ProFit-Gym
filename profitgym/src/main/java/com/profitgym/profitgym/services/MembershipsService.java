@@ -8,6 +8,7 @@ import com.profitgym.profitgym.repositories.PackageRepository;
 import com.profitgym.profitgym.repositories.ScheduledUnfreezeRepository;
 
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
@@ -41,9 +42,7 @@ public class MembershipsService {
     private final RestTemplate restTemplate;
     private final String baseUrl = "http://localhost:8081";
 
-    public MembershipsService() {
-        this.restTemplate = new RestTemplate();
-    }
+
 
     public List<Memberships> findAll() {
         String url = baseUrl + "/admindashboard/memberships";
@@ -55,70 +54,48 @@ public class MembershipsService {
                 }).getBody();
     }
 
-    public Memberships findById(int membershipId) {
-        return membershipsRepository.findById(membershipId);
+    public MembershipsService() {
+        this.restTemplate = new RestTemplate();
     }
 
-    public void acceptMembership(int membershipId) {
-        String url = baseUrl + "/admindashboard/acceptMembership?membershipId=" + membershipId;
-        this.restTemplate.postForObject(url, membershipId, Memberships.class);
+    public void saveMembership(Memberships membership) {
+        String url = baseUrl + "/admindashboard/memberships";
+        String url2 = baseUrl + "/admindashboard/acceptMembership";
+        String url4 = baseUrl + "/admindashboard/declineMembership";
+        String url5 = baseUrl + "/admindashboard/requestmembership";
+        String url6 = baseUrl + "/admindashboard/requestunfreeze";
+        String url7 = baseUrl + "/user/requestunfreeze";
+
+        this.restTemplate.postForObject(url, membership, Memberships.class);
+        this.restTemplate.postForObject(url2, membership, Memberships.class);
+        this.restTemplate.postForObject(url4, membership, Memberships.class);
+        this.restTemplate.postForObject(url5, membership, Memberships.class);
+        this.restTemplate.postForObject(url6, membership, Memberships.class);
+        this.restTemplate.postForObject(url7, membership, Memberships.class);
+
     }
 
-    public void activateMembership(int membershipId, int clientId, int packageid) {
-        String url = baseUrl + "/admindashboard/activateMembership?membershipId=" + membershipId;
-        this.restTemplate.postForObject(url, membershipId, Memberships.class);
+    public Memberships findMembershipById(int membershipId) {
+        String url = baseUrl + "/admindashboard/memberships/" + membershipId;
+          return restTemplate.getForObject(url, Memberships.class);
     }
 
-    public void declineMembership(int membershipId) {
-        String url = baseUrl + "/admindashboard/declineMembership?membershipId=" + membershipId;
-        this.restTemplate.postForObject(url, membershipId, Memberships.class);
-    }
 
     public void deleteMembership(int membershipId) {
         String url = baseUrl + "/admindashboard/deletemembership?membershipId=" + membershipId;
-        this.restTemplate.postForObject(url, membershipId, Memberships.class);
+        restTemplate.delete(url);
+    }
+
+    public Memberships findByClientIDForFreeze(int clientId) {
+        String url = baseUrl + "/user/requestfreeze";
+        return restTemplate.getForObject(url, Memberships.class, clientId);
     }
     
-    public void requestMembership(int clientId, int packageId) {
-        String url = baseUrl + "/admindashboard/requestmembership";
-
-        // Create a map to represent the request body data
-        Map<String, Object> requestBody = new HashMap<>();
-        requestBody.put("clientId", clientId);
-        requestBody.put("packageId", packageId);
-
-        // Set the headers to specify that the request body is in JSON format
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-
-        // Create an HTTP entity with the request body and headers
-        HttpEntity<Map<String, Object>> requestEntity = new HttpEntity<>(requestBody, headers);
-
-        // Send the POST request with the request entity
-        this.restTemplate.postForObject(url, requestEntity, Memberships.class);
+    public Memberships findByClientIDForUnfreeze(int clientId) {
+        String url = baseUrl + "/user/requestunfreeze";
+        return restTemplate.getForObject(url, Memberships.class, clientId);
     }
-    public void requestFreeze(int id, String freezeEndDate) {
-        String url = baseUrl + "/admindashboard/requestfreeze?id=" + id + "&freezeEndDate=" + freezeEndDate;
-        this.restTemplate.postForObject(url, id, Memberships.class);
-    }
-
-    public void requestUnfreeze(int id) {
-        String url = baseUrl + "/admindashboard/requestunfreeze?id=" + id;
-        this.restTemplate.postForObject(url, id, Memberships.class);
-    }
-
-    // ------ client side services ---------------
-
-    public void freezeMembership(int id, String freezeEndDate) {
-
-        String url = baseUrl + "/user/requestfreeze?id=" + id + "&freezeEndDate=" + freezeEndDate;
-        this.restTemplate.postForObject(url, id, Memberships.class);
-
-    }
-
-    public void unfreezeMembership(int id) {
-        String url = baseUrl + "/user/requestunfreeze?id=" + id;
-        this.restTemplate.postForObject(url, id, Memberships.class);
-    }
-
+    
+    
+   
 }
