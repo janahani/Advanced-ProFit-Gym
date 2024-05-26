@@ -1,13 +1,17 @@
-package main.java.com.profitgym.membershipsmicroservices.membershipsmicroservices.controllers;
+package com.profitgym.membershipsmicroservices.membershipsmicroservices.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import com.profitgym.profitgym.models.Memberships;
-import com.profitgym.profitgym.models.ScheduledUnfreeze;
-import com.profitgym.membershipmicroservices.repositories.MembershipsRepository;
-import com.profitgym.membershipmicroservices.repositories.ScheduledUnfreezeRepository;
+
+import com.profitgym.membershipsmicroservices.membershipsmicroservices.models.Client;
+import  com.profitgym.membershipsmicroservices.membershipsmicroservices.models.Memberships;
+import  com.profitgym.membershipsmicroservices.membershipsmicroservices.models.ScheduledUnfreeze;
+import  com.profitgym.membershipsmicroservices.membershipsmicroservices.repositories.MembershipsRepository;
+import  com.profitgym.membershipsmicroservices.membershipsmicroservices.repositories.ScheduledUnfreezeRepository;
+
+import jakarta.servlet.http.HttpSession;
 
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
@@ -84,14 +88,6 @@ public class MembershipsController {
         return (int) ChronoUnit.DAYS.between(currentDate, freezeEndDate);
     }
 
-    private void updateMembershipEndDate(Memberships membership, int freezeDuration) {
-        LocalDate membershipEndDate = membership.getEndDate().plusDays(freezeDuration);
-        int newFreezeCount = membership.getFreezeCount() - freezeDuration;
-        membership.setFreezeCount(newFreezeCount);
-        membership.setEndDate(membershipEndDate);
-        membership.setFreezed("Freezed");
-        membershipsRepository.save(membership);
-    }
 
     private void createScheduledUnfreeze(int membershipID, LocalDate currentDate, LocalDate freezeEndDate) {
         ScheduledUnfreeze scheduledUnfreeze = new ScheduledUnfreeze();
@@ -107,7 +103,7 @@ public class MembershipsController {
     @GetMapping("/user/memberships")
     public ResponseEntity<List<Memberships>> getUserMemberships(HttpSession session) {
         Client loggedInUser = (Client) session.getAttribute("loggedInUser");
-        List<Memberships> memberships = membershipsRepository.findByClientId(loggedInUser.getID());
+        List<Memberships> memberships = membershipsRepository.findByClientID(loggedInUser.getID());
         return new ResponseEntity<>(memberships, HttpStatus.OK);
     }
 
@@ -115,7 +111,7 @@ public class MembershipsController {
     public ResponseEntity<String> requestFreeze(@RequestParam("freezeEndDate") String freezeEndDate, HttpSession session) {
         Client loggedInUser = (Client) session.getAttribute("loggedInUser");
         int freezeDuration = calculateFreezeDuration(LocalDate.now(), LocalDate.parse(freezeEndDate));
-        Memberships membership = membershipsRepository.findByClientIdForFreeze(loggedInUser.getID());
+        Memberships membership = membershipsRepository.findByClientIDForFreeze(loggedInUser.getID());
         updateMembershipEndDate(membership, freezeDuration);
         createScheduledUnfreezeClient(membership.getID(), LocalDate.now(), LocalDate.parse(freezeEndDate));
         return new ResponseEntity<>("Membership frozen", HttpStatus.OK);
@@ -124,7 +120,7 @@ public class MembershipsController {
     @PostMapping("/user/requestunfreeze")
     public ResponseEntity<String> requestUnfreeze(HttpSession session) {
         Client loggedInUser = (Client) session.getAttribute("loggedInUser");
-        Memberships membership = membershipsRepository.findByClientIdForUnfreeze(loggedInUser.getID());
+        Memberships membership = membershipsRepository.findByClientIDForFreeze(loggedInUser.getID());
         ScheduledUnfreeze scheduledUnfreeze = scheduledUnfreezeRepository.findByMembershipID(membership.getID());
         int newFreezeDuration = calculateFreezeDuration(scheduledUnfreeze.getFreezeStartDate(), LocalDate.now());
         int oldFreezeDuration = calculateFreezeDuration(scheduledUnfreeze.getFreezeStartDate(),

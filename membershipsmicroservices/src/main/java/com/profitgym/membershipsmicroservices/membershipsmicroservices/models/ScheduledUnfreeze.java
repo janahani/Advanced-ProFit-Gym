@@ -1,4 +1,4 @@
-package main.java.com.profitgym.membershipsmicroservices.membershipsmicroservices.models;
+package com.profitgym.membershipsmicroservices.membershipsmicroservices.models;
 import java.io.Serializable;
 import java.time.LocalDate;
 

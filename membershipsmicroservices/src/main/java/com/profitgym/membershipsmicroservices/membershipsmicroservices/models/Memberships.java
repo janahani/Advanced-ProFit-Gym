@@ -1,4 +1,4 @@
-package main.java.com.profitgym.membershipsmicroservices.membershipsmicroservices.models;
+package com.profitgym.membershipsmicroservices.membershipsmicroservices.models;
 
 import java.time.LocalDate;
 
@@ -7,7 +7,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import java.util.Objects;
-import com.profitgym.profitgym.models.Package;
+import com.profitgym.membershipsmicroservices.membershipsmicroservices.models.Package;
 
 @Entity
 public class Memberships {
