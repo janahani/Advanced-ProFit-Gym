@@ -14,7 +14,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 @RestController
-@RequestMapping("/memberships")
+@RequestMapping("")
 public class MembershipsController {
 
     @Autowired
@@ -29,7 +29,7 @@ public class MembershipsController {
         return new ResponseEntity<>(memberships, HttpStatus.OK);
     }
 
-    @PostMapping("/accept")
+    @PostMapping("/admindashboard/accept")
     public ResponseEntity<Memberships> acceptMembership(@RequestParam("membershipId") int membershipId) {
         Memberships membership = membershipsRepository.findById(membershipId).orElse(null);
         if (membership != null) {
@@ -39,7 +39,7 @@ public class MembershipsController {
         return new ResponseEntity<>(membership, HttpStatus.OK);
     }
 
-    @PostMapping("/decline")
+    @PostMapping("/admindashboard/decline")
     public ResponseEntity<Memberships> declineMembership(@RequestParam("membershipId") int membershipId) {
         Memberships membership = membershipsRepository.findById(membershipId).orElse(null);
         if (membership != null) {
@@ -49,7 +49,7 @@ public class MembershipsController {
         return new ResponseEntity<>(membership, HttpStatus.OK);
     }
 
-    @PostMapping("/freeze")
+    @PostMapping("/admindashboard/freeze")
     public ResponseEntity<String> freezeMembership(@RequestParam("id") int id,
                                                    @RequestParam("freezeEndDate") String freezeEndDate) {
         Memberships membership = membershipsRepository.findById(id).orElse(null);
@@ -61,7 +61,7 @@ public class MembershipsController {
         return new ResponseEntity<>("Membership frozen", HttpStatus.OK);
     }
 
-    @PostMapping("/unfreeze")
+    @PostMapping("/admindashboard/unfreeze")
     public ResponseEntity<String> unfreezeMembership(@RequestParam("id") int id) {
         Memberships membership = membershipsRepository.findById(id).orElse(null);
         if (membership != null) {
