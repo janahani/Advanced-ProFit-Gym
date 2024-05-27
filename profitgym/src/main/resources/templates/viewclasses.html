@@ -12,7 +12,7 @@
     <link rel="stylesheet"
         th:href="@{https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@48,400,0,0}" />
     <script src="https://kit.fontawesome.com/3472d45ca0.js" crossorigin="anonymous"></script>
-    <script src="https://kit.fontawesome.come/a076d05399.js"></script>
+    <script src="https://kit.fontawesome.com/a076d05399.js"></script>
     <!--css/icons/boostrap/jquery/fonts/images end-->
     <link th:href="@{https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css}" rel='stylesheet'>
 
@@ -22,9 +22,7 @@
     <!-- usersidebar -->
     <div th:replace="~{partials/usersidebar}"></div>
 
-
     <div class="profile">
-
         <div class="greeting">
             <p class="hello-classes"><i class="fas fa-calendar"></i> Your Upcoming Classes</p>
         </div>
@@ -32,42 +30,42 @@
         <div th:if="${errorMessage}">
             <p th:text="${errorMessage}"></p>
         </div>
+
         <div th:each="reservedClass : ${reservedClassesDetails}">
-
-        <div class="reminders">
-            <div class="reminder">
-                <p class="class">Class:</p>
-                <div class="class-title" th:text="${reservedClass.name}"></div>
-                <div class="dates">
-                    <div class="date">
-                        <p>Date:</p>
-                        <div class="class-date">21-10-2023</div>
+            <div class="reminders">
+                <div class="reminder">
+                    <p class="class">Class:</p>
+                    <div class="class-title" th:text="${reservedClass.name}"></div>
+                    <div class="dates">
+                        <div class="date">
+                            <p>Date:</p>
+                            <div class="class-date">21-10-2023</div>
+                        </div>
+                        <div class="time">
+                            <p>Time:</p>
+                            <div class="class-time">4:30 - 6:00 p.m</div>
+                        </div>
+                        <div class="day">
+                            <p>Day:</p>
+                            <div class="class-day">Sunday</div>
+                        </div>
                     </div>
-                    <div class="time">
-                        <p>Time:</p>
-                        <div class="class-time">4:30 - 6:00 p.m</div>
+
+                    <div class="rem-info">
+                        <p>Description:</p>
+                        <p class="actual-rem" th:text="${reservedClass.Description}">Moderate</p>
+
+                        <p>Instructor:</p>
+                        <p class="actual-rem" th:text="${coaches[0]}"></p>
+
+                        <p>Class Fees:</p>
+                        <p class="actual-rem">200 L.E.</p>
                     </div>
-
-                    <div class="day">
-                        <p>Day:</p>
-                        <div class="class-day">Sunday</div>
-                    </div>
-                </div>
-
-                <div class="rem-info">
-                    <p>Description:</p>
-                    <p class="actual-rem" th:text="${reservedClass.Description}"> Moderate</p>
-
-                    <p>Instructor:</p>
-                    <p class="actual-rem" th:text="${coaches[0]}"> </p>
-
-                    <p>Class Fees:</p>
-                    <p class="actual-rem"> 200 L.E.</p>
                 </div>
             </div>
+        </div>
+    </div>
 
-
-    
     <!-- footer -->
     <div th:replace="~{partials/footer}"></div>
 

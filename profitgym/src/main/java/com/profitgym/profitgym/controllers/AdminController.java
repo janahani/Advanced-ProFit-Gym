@@ -1,19 +1,19 @@
 package com.profitgym.profitgym.controllers;
 
-import java.util.Optional;
-
 import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.jms.activemq.ActiveMQProperties.Packages;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
@@ -29,7 +29,6 @@ import com.profitgym.profitgym.models.Employee;
 import com.profitgym.profitgym.models.Memberships;
 import com.profitgym.profitgym.models.Package;
 import com.profitgym.profitgym.models.ReservedClass;
-import com.profitgym.profitgym.models.ScheduledUnfreeze;
 import com.profitgym.profitgym.models.ServiceResponse;
 import com.profitgym.profitgym.repositories.AssignedClassRepository;
 import com.profitgym.profitgym.repositories.ClassDaysRepository;
@@ -38,11 +37,9 @@ import com.profitgym.profitgym.repositories.ClientRepository;
 import com.profitgym.profitgym.repositories.EmployeeRepository;
 import com.profitgym.profitgym.repositories.JobTitlesRepository;
 import com.profitgym.profitgym.repositories.MembershipsRepository;
-import com.profitgym.profitgym.repositories.PackageRepository;
+import com.profitgym.profitgym.services.PackageService;
 import com.profitgym.profitgym.repositories.ReservedClassRepository;
-import com.profitgym.profitgym.repositories.ScheduledUnfreezeRepository;
 
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 
@@ -56,7 +53,6 @@ import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
-import java.time.temporal.ChronoUnit;
 import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -70,7 +66,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 public class AdminController {
 
     @Autowired
-    private PackageRepository packageRespository;
+    private PackageService packageService;
 
     @Autowired
     private EmployeeRepository employeeRepository;
@@ -96,9 +92,6 @@ public class AdminController {
     private MembershipsRepository membershipsRepository;
 
     @Autowired
-    private ScheduledUnfreezeRepository scheduledUnfreezeRepository;
-
-    @Autowired
     private JavaMailSender emailSender;
 
     private static final String RANDOMCHAR_STRING = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
@@ -114,8 +107,8 @@ public class AdminController {
 
         return builder.toString();
     }
-    private void saveUpdatedFieldsForEmp(Employee employeeObj, Employee employee)
-    {
+
+    private void saveUpdatedFieldsForEmp(Employee employeeObj, Employee employee) {
         if (employeeObj.getJobTitle() != 0) {
             employee.setJobTitle(employeeObj.getJobTitle());
         }
@@ -175,29 +168,6 @@ public class AdminController {
 
     }
 
-    public int calculateFreezeDuration(LocalDate currentDate, LocalDate freezeEndDate) {
-        int freezeDuration = (int) ChronoUnit.DAYS.between(currentDate, freezeEndDate);
-        return freezeDuration;
-    }
-
-    public void updateMembershipEndDate(Memberships membership, int freezeDuration) {
-        LocalDate membershipEndDate = membership.getEndDate().plusDays(freezeDuration);
-        int newFreezeCount = membership.getFreezeCount() - freezeDuration;
-        membership.setFreezeCount(newFreezeCount);
-        membership.setEndDate(membershipEndDate);
-        membership.setFreezed("Freezed");
-        this.membershipsRepository.save(membership);
-    }
-
-    public void createScheduledUnfreeze(Memberships membership, LocalDate currentDate, LocalDate freezeEnddate) {
-        ScheduledUnfreeze scheduledUnfreeze = new ScheduledUnfreeze();
-        scheduledUnfreeze.setFreezeStartDate(currentDate);
-        scheduledUnfreeze.setFreezeEndDate(freezeEnddate);
-        scheduledUnfreeze.setMembershipID(membership.getID());
-        scheduledUnfreeze.setFreezeCount(membership.getFreezeCount());
-        this.scheduledUnfreezeRepository.save(scheduledUnfreeze);
-    }
-
     @GetMapping("")
     public ModelAndView getAdminDash() {
         int jobTitleValue = 3;
@@ -205,8 +175,8 @@ public class AdminController {
 
         List<Client> recentClients = this.clientRepository.findTop5ByOrderByCreatedAtDesc();
         mav.addObject("recentClients", recentClients);
-
-        long packagesCount = this.packageRespository.count();
+        List<Package> packages=this.packageService.findAll();
+        long packagesCount = packages.size();
         long classesCount = this.classesRepository.count();
         long employeesCount = this.employeeRepository.count();
         long coachesCount = this.employeeRepository.countByJobTitle(jobTitleValue);
@@ -250,54 +220,25 @@ public class AdminController {
 
     }
 
-    @GetMapping("packages")
-    public ModelAndView viewPackages() {
-        System.out.println("viewPackages() method called");
-        ModelAndView mav = new ModelAndView("packageAdminDash.html");
-        List<Package> packages = this.packageRespository.findAll();
-        mav.addObject("packages", packages);
-        return mav;
-    }
-
-    @PostMapping("/package-activation")
-    public ModelAndView handlePackageActivation(@RequestParam("id") int id,
-            HttpServletRequest request) {
-        ModelAndView modelAndView = new ModelAndView();
-
-        try {
-            Package existingPackage = this.packageRespository.findById(id);
-
-            if ("activate".equals(request.getParameter("action"))) {
-                existingPackage.setIsActivated("Activated");
-            } else {
-                existingPackage.setIsActivated("Not Activated");
-            }
-
-            this.packageRespository.save(existingPackage);
-
-            modelAndView.setViewName("redirect:/admindashboard/packages");
-        } catch (Exception e) {
-            modelAndView.setViewName("error_page");
-            System.out.println("Error handling package activation: " + e.getMessage());
-        }
-
-        return modelAndView;
-    }
-
     @GetMapping("clientrequests")
     public ModelAndView viewRequests() {
         ModelAndView mav = new ModelAndView("clientReqAdminDash.html");
-        List<Memberships> memberships = this.membershipsRepository.findByIsActivated("Pending");
-        List<Package> packages = new ArrayList<>();
+        List<Memberships> memberships = membershipsRepository.findByIsActivated("Pending");
         List<Client> clients = new ArrayList<>();
-        for (Memberships membership : memberships) {
-            int packageId = membership.getPackageID();
-            int clientId = membership.getClientID();
-            Package packageInfo = this.packageRespository.findById(packageId);
-            Client clientInfo = this.clientRepository.findById(clientId);
-            packages.add(packageInfo);
-            clients.add(clientInfo);
-        }
+        List<Package> packages = new ArrayList<>();
+        if (memberships != null) {
+            for (Memberships membership : memberships) {
+
+                    Client client = clientRepository.findById(membership.getClientID());
+                    if (clients.contains(client) == false) {
+                        clients.add(client);
+                    }
+                    Package package1 = packageService.findById(membership.getPackageID());
+                    if (packages.contains(package1) == false) {
+                        packages.add(package1);
+                    }
+        }}
+        
         mav.addObject("memberships", memberships);
         mav.addObject("packages", packages);
         mav.addObject("clients", clients);
@@ -313,18 +254,30 @@ public class AdminController {
             int coachId = reservedClass.getCoachID();
 
             AssignedClass assignedClassInfo = this.assignedClassRepository.findByID(assignedClassId);
-            assignedClassesList.add(assignedClassInfo);
-            if (assignedClassInfo != null) {
+            if (assignedClassesList.contains(assignedClassInfo) == false) 
+            {
+                assignedClassesList.add(assignedClassInfo);
+        
                 int classId = assignedClassInfo.getClassID();
                 Classes classInfo = this.classesRepository.findByID(classId);
-                classesList.add(classInfo);
-            } else {
+                if (classesList.contains(classInfo) == false) {
+                    classesList.add(classInfo);
+                }
+            } 
+            else 
+            {
                 System.out.println("error");
             }
             Client clientInfo = this.clientRepository.findById(clientId);
-            clientsList.add(clientInfo);
+            if (clientsList.contains(clientInfo) == false) {
+                clientsList.add(clientInfo);
+            }
+
             Employee coachInfo = this.employeeRepository.findByID(coachId);
-            coachesList.add(coachInfo);
+            if (coachesList.contains(coachInfo) == false) {
+                coachesList.add(coachInfo);
+            }
+
         }
         mav.addObject("reservedClassesList", reservedClassesList);
         mav.addObject("classesList", classesList);
@@ -335,31 +288,17 @@ public class AdminController {
         return mav;
     }
 
-    @PostMapping("/acceptMembership")
-    public ModelAndView acceptMembership(@RequestParam("membershipId") int membershipId) {
-        Memberships membership = membershipsRepository.findById(membershipId);
-        if (membership != null) {
-            membership.setIsActivated("Accepted");
-            membershipsRepository.save(membership);
-        }
-        return new ModelAndView("redirect:/admindashboard/clientrequests");
-    }
-
-    @PostMapping("/declineMembership")
-    public ModelAndView declineMembership(@RequestParam("membershipId") int membershipId) {
-        Memberships membership = membershipsRepository.findById(membershipId);
-        if (membership != null) {
-            membership.setIsActivated("Declined");
-            membershipsRepository.save(membership);
-        }
-        return new ModelAndView("redirect:/admindashboard/clientrequests");
-    }
-
     @PostMapping("/acceptReservedClass")
     public ModelAndView acceptReservedClass(@RequestParam("reservedClassId") int reservedClassId) {
         ReservedClass reservedClass = this.reservedClassRepository.findByID(reservedClassId);
-        if (reservedClass != null) {
-            reservedClass.setIsActivated("Accepted");
+        AssignedClass assignedClass= this.assignedClassRepository.findByID(reservedClass.getAssignedClassID());
+
+        if (reservedClass != null && assignedClass.getAvailablePlaces()>0) {
+            reservedClass.setIsActivated("Activated");
+            int availablePlaces=assignedClass.getAvailablePlaces();
+            availablePlaces=availablePlaces-1;
+            assignedClass.setAvailablePlaces(availablePlaces);
+            this.assignedClassRepository.save(assignedClass);
             reservedClassRepository.save(reservedClass);
         }
         return new ModelAndView("redirect:/admindashboard/clientrequests");
@@ -369,109 +308,10 @@ public class AdminController {
     public ModelAndView declineReservedClass(@RequestParam("reservedClassId") int reservedClassId) {
         ReservedClass reservedClass = this.reservedClassRepository.findByID(reservedClassId);
         if (reservedClass != null) {
-            reservedClass.setIsActivated("Declined");
+            reservedClass.setIsActivated("Not Activated");
             reservedClassRepository.save(reservedClass);
         }
         return new ModelAndView("redirect:/admindashboard/clientrequests");
-    }
-
-    @GetMapping("memberships")
-    public ModelAndView viewMemberships() {
-        ModelAndView mav = new ModelAndView("membershipAdminDash.html");
-        List<Memberships> memberships = membershipsRepository.findAll();
-        List<Client> clients = new ArrayList<>();
-        List<Package> packages = new ArrayList<>();
-        if (memberships != null) {
-
-            LocalDate currentDate = LocalDate.now();
-            LocalDate minFreezeDate = currentDate.plusDays(3);
-            List<LocalDate> maxFreezeDates = new ArrayList<>();
-            for (Memberships membership : memberships) {
-                Client client = clientRepository.findById(membership.getClientID());
-                clients.add(client);
-                Package package1 = packageRespository.findById(membership.getPackageID());
-                if (packages.contains(package1) == false) {
-                    packages.add(package1);
-                }
-
-                maxFreezeDates.add(currentDate.plusDays(membership.getFreezeCount()));
-            }
-            mav.addObject("minFreezeDate", minFreezeDate);
-            mav.addObject("maxFreezeDates", maxFreezeDates);
-        }
-        mav.addObject("memberships", memberships);
-        mav.addObject("clients", clients);
-        mav.addObject("packages", packages);
-        return mav;
-    }
-
-    @PostMapping("requestfreeze")
-    public ModelAndView freezeMembership(@RequestParam("id") int id,
-            @RequestParam("freezeEndDate") String freezeEndDate,
-            HttpSession session) {
-        int freezeDuration = calculateFreezeDuration(LocalDate.now(), LocalDate.parse(freezeEndDate));
-        Memberships membership = membershipsRepository.findById(id);
-
-        updateMembershipEndDate(membership, freezeDuration);
-
-        createScheduledUnfreeze(membership, LocalDate.now(), LocalDate.parse(freezeEndDate));
-
-        return new ModelAndView("redirect:/admindashboard/memberships");
-    }
-
-    @PostMapping("requestunfreeze")
-    public ModelAndView unfreezeMembership(@RequestParam("id") int id, HttpSession session) {
-        Memberships membership = membershipsRepository.findById(id);
-        ScheduledUnfreeze scheduledUnfreeze = scheduledUnfreezeRepository.findByMembershipID(membership.getID());
-        // get the difference between old freeze duration and the new freeze duration
-        int newFreezeDuration = calculateFreezeDuration(scheduledUnfreeze.getFreezeStartDate(), LocalDate.now());
-        int oldFreezeDuration = calculateFreezeDuration(scheduledUnfreeze.getFreezeStartDate(),
-                scheduledUnfreeze.getFreezeEndDate());
-        int freezeDuration = oldFreezeDuration - newFreezeDuration;
-
-        membership.setEndDate(membership.getEndDate().minusDays(freezeDuration));
-        membership.setFreezeCount(membership.getFreezeCount() + freezeDuration);
-        membership.setFreezed("Not Freezed");
-        this.membershipsRepository.save(membership);
-
-        this.scheduledUnfreezeRepository.delete(scheduledUnfreeze);
-
-        return new ModelAndView("redirect:/admindashboard/memberships");
-
-    }
-
-    @GetMapping("addmembership")
-    public ModelAndView getMembershipForm() {
-        ModelAndView mav = new ModelAndView("addMembershipAdminDash.html");
-        mav.addObject("membershipObj", new Memberships());
-        return mav;
-    }
-
-    @PostMapping("addmembership")
-    public ModelAndView saveMembership(@ModelAttribute Memberships membershipObj) {
-
-        membershipsRepository.save(membershipObj);
-
-        ModelAndView modelAndView = new ModelAndView();
-        modelAndView.setViewName("redirect:/admindashboard/addmembership");
-        // Redirect to the add membership page
-        return modelAndView;
-    }
-
-    @PostMapping("/deletemembership")
-    public ModelAndView DeleteMemebership(@RequestParam("membershipId") int membershipId) {
-        ModelAndView modelAndView = new ModelAndView();
-        try {
-            membershipsRepository.deleteById(membershipId);
-            modelAndView.setViewName("redirect:/admindashboard/memberships");
-
-        } catch (Exception e) {
-
-            System.out.println("Error deleting employee: " + e.getMessage());
-
-        }
-
-        return modelAndView;
     }
 
     @GetMapping("checkin")
@@ -567,18 +407,23 @@ public class AdminController {
         }
     }
 
-    @PostMapping("deleteemployee")
-    public ModelAndView deleteEmployee(@RequestParam("id") int employeeId) {
-        ModelAndView modelAndView = new ModelAndView();
-        try {
-            employeeRepository.deleteById(employeeId);
-            System.out.println("Employee deleted");
-            modelAndView.setViewName("redirect:/admindashboard/employees");
-        } catch (Exception e) {
-            System.out.println("Error deleting employee: " + e.getMessage());
-        }
-        return modelAndView;
+    @PostMapping("/deleteemployee")
+public ModelAndView deleteEmployee(@RequestParam("id") int employeeId) {
+    ModelAndView modelAndView = new ModelAndView();
+    try {
+        employeeRepository.deleteById(employeeId);
+        System.out.println("Employee deleted");
+        // Redirect to the employees page after successful deletion
+        modelAndView.setViewName("redirect:/admindashboard/employees");
+    } catch (Exception e) {
+        System.out.println("Error deleting employee: " + e.getMessage());
+        // Redirect to an error page or display an error message
+        modelAndView.setViewName("error");
+        modelAndView.addObject("message", "Error deleting employee: " + e.getMessage());
     }
+    return modelAndView;
+}
+
 
     @GetMapping("editclient")
     public ModelAndView editClientForm(@RequestParam("id") int clientId) {
@@ -712,22 +557,6 @@ public class AdminController {
         return fileName;
     }
 
-    @GetMapping("addpackage")
-    public ModelAndView getPackageForm() {
-        ModelAndView mav = new ModelAndView("addPackageAdminDash.html");
-        mav.addObject("packageObj", new Package());
-        return mav;
-    }
-
-    @SuppressWarnings("null")
-    @PostMapping("addpackage")
-    public ModelAndView savePackage(@ModelAttribute Package packageObj) {
-        this.packageRespository.save(packageObj);
-        ModelAndView modelAndView = new ModelAndView();
-        modelAndView.setViewName("redirect:/admindashboard/addpackage");
-        return modelAndView;
-    }
-
     @GetMapping("assignclass")
     public ModelAndView getClasses() {
         ModelAndView mav = new ModelAndView("assignClassAdminDash.html");
@@ -735,39 +564,38 @@ public class AdminController {
         mav.addObject("classes", classes);
         List<Employee> coaches = this.employeeRepository.findByJobTitle(3);
         mav.addObject("coaches", coaches);
-
         mav.addObject("assignClassObj", new AssignedClass());
+        return mav;
+    }
 
+    @GetMapping("/assignclass/classdays/{classId}")
+    @ResponseBody
+    public List<String> getClassDays(@PathVariable("classId") int classId) {
         LocalDate currentDate = LocalDate.now();
         List<String> availableClassDays = new ArrayList<>();
 
-        // Iterate through the classes to find the upcoming class days
-        for (Classes classObj : classes) {
-            int classId = classObj.getID();
-            List<ClassDays> classDays = this.classDaysRepository.findByClassID(classId);
+        // Classes classObj = this.classesRepository.findById(classId);
+        List<ClassDays> classDays = this.classDaysRepository.findByClassID(classId);
 
-            Map<String, DayOfWeek> dayNameToDayOfWeek = new HashMap<>();
-            dayNameToDayOfWeek.put("Monday", DayOfWeek.MONDAY);
-            dayNameToDayOfWeek.put("Tuesday", DayOfWeek.TUESDAY);
-            dayNameToDayOfWeek.put("Wednesday", DayOfWeek.WEDNESDAY);
-            dayNameToDayOfWeek.put("Thursday", DayOfWeek.THURSDAY);
-            dayNameToDayOfWeek.put("Friday", DayOfWeek.FRIDAY);
-            dayNameToDayOfWeek.put("Saturday", DayOfWeek.SATURDAY);
-            dayNameToDayOfWeek.put("Sunday", DayOfWeek.SUNDAY);
+        Map<String, DayOfWeek> dayNameToDayOfWeek = new HashMap<>();
+        dayNameToDayOfWeek.put("Monday", DayOfWeek.MONDAY);
+        dayNameToDayOfWeek.put("Tuesday", DayOfWeek.TUESDAY);
+        dayNameToDayOfWeek.put("Wednesday", DayOfWeek.WEDNESDAY);
+        dayNameToDayOfWeek.put("Thursday", DayOfWeek.THURSDAY);
+        dayNameToDayOfWeek.put("Friday", DayOfWeek.FRIDAY);
+        dayNameToDayOfWeek.put("Saturday", DayOfWeek.SATURDAY);
+        dayNameToDayOfWeek.put("Sunday", DayOfWeek.SUNDAY);
 
-            // Iterate through the class days to find the upcoming dates
-            for (ClassDays day : classDays) {
-                String dayOfWeekStr = day.getDays();
-                DayOfWeek dayOfWeek = dayNameToDayOfWeek.get(dayOfWeekStr);
-                LocalDate upcomingDate = currentDate.with(TemporalAdjusters.nextOrSame(dayOfWeek));
-                String formattedDate = upcomingDate.format(DateTimeFormatter.ofPattern("EEEE dd-MM-yyyy"));
-                availableClassDays.add(formattedDate);
-            }
+        // Iterate through the class days to find the upcoming dates
+        for (ClassDays day : classDays) {
+            String dayOfWeekStr = day.getDays();
+            DayOfWeek dayOfWeek = dayNameToDayOfWeek.get(dayOfWeekStr);
+            LocalDate upcomingDate = currentDate.with(TemporalAdjusters.nextOrSame(dayOfWeek));
+            String formattedDate = upcomingDate.format(DateTimeFormatter.ofPattern("EEEE dd-MM-yyyy"));
+            availableClassDays.add(formattedDate);
         }
 
-        mav.addObject("availableClassDays", availableClassDays);
-
-        return mav;
+        return availableClassDays;
     }
 
     @PostMapping("assignclass")
@@ -801,27 +629,78 @@ public class AdminController {
         return modelAndView;
     }
 
-    @GetMapping("requestmembership")
-    public ModelAndView requestMembership(@RequestParam("id") int clientId) {
-        ModelAndView mav = new ModelAndView("bookMembershipAdminDash.html");
-        List<Package> packages = this.packageRespository.findAll();
-        Client client = this.clientRepository.findById(clientId);
-        mav.addObject("packages", packages);
-        mav.addObject("client", client);
+    @GetMapping("/viewAssignedClasses")
+    public ModelAndView viewAssignedClasses(HttpSession session) {
+        ModelAndView mav = new ModelAndView("coach_classes.html");
+        Employee coach = (Employee) session.getAttribute("loggedInEmp");
+        if (coach == null || coach.getJobTitle() != 3) {
+            mav.setViewName("/loginemployee");
+        }
+
+        int coachID = coach.getID();
+        List<AssignedClass> assignedClasses = assignedClassRepository.findByCoachID(coachID);
+        List<Classes> classes = new ArrayList<>();
+        if (assignedClasses != null) {
+            for (AssignedClass assignedClass : assignedClasses) {
+                Classes classObj = this.classesRepository.findByID(assignedClass.getClassID());
+                if (classes.contains(classObj) == false) {
+                    classes.add(classObj);
+                }
+            }
+            mav.addObject("assignedClasses", assignedClasses);
+            mav.addObject("classes", classes);
+        }
         return mav;
     }
 
-    @PostMapping("requestmembership")
-    public ModelAndView activateMembership(@RequestParam("id") int clientId, @RequestParam("packageID") int packageId) {
-        ModelAndView mav = new ModelAndView();
-        Package pack = this.packageRespository.findById(packageId);
-        Memberships membership = new Memberships();
-        membership.setClientID(clientId);
-        membership.setIsActivated("Activated");
-        membership.setPackage(pack);
-        this.membershipsRepository.save(membership);
-        mav.setViewName("redirect:/admindashboard/clients");
+    @GetMapping("/logout")
+    public ModelAndView logout(HttpSession session) {
+        ModelAndView modelAndView = new ModelAndView();
+        session.invalidate();
+        modelAndView.setViewName("redirect:/loginemployee");
+        return modelAndView;
+    }
+
+
+
+    @GetMapping("profilesettings")
+    public ModelAndView viewProfSettings(HttpSession session) {
+        ModelAndView mav = new ModelAndView("employeeProfileSettings.html");
+        Employee sessionEmployee = (Employee) session.getAttribute("loggedInEmp");
+        mav.addObject("employeeObj", sessionEmployee);
         return mav;
     }
+
+
+    @PostMapping("/profilesettings")
+    public ModelAndView updateEmployeeProfile(@Valid @ModelAttribute Employee empObj, BindingResult bindingResult,
+            HttpSession session, @RequestParam("action") String action) {
+        Employee sessionEmployee = (Employee) session.getAttribute("loggedInEmp");
+    
+        ModelAndView modelAndView = new ModelAndView();
+    
+        if (action.equals("updateProfile")) {
+            if (bindingResult.hasErrors()) {
+                modelAndView.setViewName("employeeProfileSettings.html"); 
+                return modelAndView;
+            }
+    
+
+            sessionEmployee.setName(empObj.getName());
+            sessionEmployee.setEmail(empObj.getEmail());
+            sessionEmployee.setPhoneNumber(empObj.getPhoneNumber());
+            sessionEmployee.setAddress(empObj.getAddress());
+    
+            session.setAttribute("loggedInEmp", sessionEmployee);
+    
+            modelAndView.setViewName("/admindashboard/employees");
+            return modelAndView;
+        } else {
+            modelAndView.setViewName("errorPage"); 
+            modelAndView.addObject("errorMessage", "Invalid action specified.");
+            return modelAndView;
+        }
+    }
+    
 
 }

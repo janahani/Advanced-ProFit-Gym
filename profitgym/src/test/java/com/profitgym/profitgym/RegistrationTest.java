@@ -34,7 +34,7 @@ public class RegistrationTest {
     public void setUp() {
         MockitoAnnotations.openMocks(this);
     }
-
+ 
    @Test
 public void testSaveClient() {
     // Mock client object

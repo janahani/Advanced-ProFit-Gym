@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.view.RedirectView;
 import org.springframework.validation.annotation.Validated;
 
 import com.profitgym.profitgym.models.AssignedClass;
@@ -37,10 +38,10 @@ import com.profitgym.profitgym.repositories.AssignedClassRepository;
 import com.profitgym.profitgym.repositories.ClassesRepository;
 import com.profitgym.profitgym.repositories.ClientRepository;
 import com.profitgym.profitgym.repositories.EmployeeRepository;
-import com.profitgym.profitgym.repositories.PackageRepository;
+import com.profitgym.profitgym.services.PackageService;
 import com.profitgym.profitgym.repositories.ReservedClassRepository;
 import com.profitgym.profitgym.repositories.MembershipsRepository;
-import com.profitgym.profitgym.repositories.ScheduledUnfreezeRepository;
+// import com.profitgym.profitgym.repositories.ScheduledUnfreezeRepository;
 
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
@@ -53,7 +54,7 @@ public class UserController {
     private ClientRepository clientRepository;
 
     @Autowired
-    private PackageRepository packageRepository;
+    private PackageService packageService;
 
     @Autowired
     IndexController indexController;
@@ -70,14 +71,31 @@ public class UserController {
     @Autowired
     private ReservedClassRepository reservedClassRepository;
 
-    @Autowired
-    private ScheduledUnfreezeRepository scheduledUnfreezeRepository;
+    // @Autowired
+    // private ScheduledUnfreezeRepository scheduledUnfreezeRepository;
 
     @Autowired
     private EmployeeRepository employeeRepository;
 
+    public UserController()
+    {
+        
+    }
+
     public UserController(ClientRepository clientRepository) {
         this.clientRepository = clientRepository;
+    }
+
+    public UserController(AssignedClassRepository assignedClassRepository,ReservedClassRepository reservedClassRepository)
+    {
+        this.assignedClassRepository = assignedClassRepository;
+        this.reservedClassRepository = reservedClassRepository;
+    }
+
+    public UserController(MembershipsRepository membershipsRepository, PackageService packageservice)
+    {
+        this.membershipsRepository = membershipsRepository;
+        this.packageService = packageservice;
     }
 
     public int calculateFreezeDuration(LocalDate currentDate, LocalDate freezeEndDate) {
@@ -94,13 +112,13 @@ public class UserController {
         this.membershipsRepository.save(membership);
     }
 
-    public void createScheduledUnfreeze(int membershipID, LocalDate currentDate, LocalDate freezeEnddate) {
-        ScheduledUnfreeze scheduledUnfreeze = new ScheduledUnfreeze();
-        scheduledUnfreeze.setFreezeStartDate(currentDate);
-        scheduledUnfreeze.setFreezeEndDate(freezeEnddate);
-        scheduledUnfreeze.setMembershipID(membershipID);
-        this.scheduledUnfreezeRepository.save(scheduledUnfreeze);
-    }
+    // public void createScheduledUnfreeze(int membershipID, LocalDate currentDate, LocalDate freezeEnddate) {
+    //     ScheduledUnfreeze scheduledUnfreeze = new ScheduledUnfreeze();
+    //     scheduledUnfreeze.setFreezeStartDate(currentDate);
+    //     scheduledUnfreeze.setFreezeEndDate(freezeEnddate);
+    //     scheduledUnfreeze.setMembershipID(membershipID);
+    //     this.scheduledUnfreezeRepository.save(scheduledUnfreeze);
+    // }
 
     @GetMapping("/profile")
     public ModelAndView getUserProfile(HttpSession session) {
@@ -108,43 +126,86 @@ public class UserController {
         Client loggedInUser = (Client) session.getAttribute("loggedInUser");
         if (loggedInUser == null) {
             mav.setViewName("redirect:/login");
-        } else {
-            Memberships membership = membershipsRepository.findByClientID(loggedInUser.getID());
-            Package pack = null;
-            if (membership != null) {
-                pack = packageRepository.findById(membership.getPackageID());
-            }
+            return mav;
+        }
+    
+        // Retrieve user's memberships and package details
+        Memberships membership = membershipsRepository.findByClientID(loggedInUser.getID());
+        Package pack = null;
+        LocalDate now = LocalDate.now();
+        if (membership != null && membership.getIsActivated().equals("Activated") && membership.getEndDate().isAfter(now)) {
+            pack = packageService.findById(membership.getPackageID());
             mav.addObject("package", pack);
             mav.addObject("membership", membership);
-            mav.addObject("loggedInUser", loggedInUser);
-
         }
+    
+        List<ReservedClass> reservedClasses = reservedClassRepository.findByClientID(loggedInUser.getID());
+    
+        List<Classes> reservedClassesDetails = new ArrayList<>();
+        List<String> coachNames = new ArrayList<>();
+    
+        for (ReservedClass reservedClass : reservedClasses) {
+            if (reservedClass.getIsActivated().equals("Activated")) {
+                int classId = reservedClass.getAssignedClassID();
+                Optional<AssignedClass> assignedClassDetails = assignedClassRepository.findById(classId);
+                assignedClassDetails.ifPresent(assignedClass -> {
+                    Employee coachDetails = employeeRepository.findByID(reservedClass.getCoachID());
+                    if (coachDetails != null) {
+                        coachNames.add(coachDetails.getName());
+                    } else {
+                        coachNames.add("");
+                    }
+                    Optional<Classes> classDetails = classesRepository.findById(assignedClass.getClassID());
+                    classDetails.ifPresent(reservedClassesDetails::add);
+                });
+            }
+        }
+    
+        mav.addObject("reservedClassesDetails", reservedClassesDetails);
+        mav.addObject("coaches", coachNames);
+        mav.addObject("loggedInUser", loggedInUser);
+    
         return mav;
     }
-
+    
     @GetMapping("bookpackage")
     public ModelAndView getPackageBooking() {
         System.out.println("viewPackages() method called");
         ModelAndView mav = new ModelAndView("packagebooking.html");
-        List<Package> packages = this.packageRepository.findAll();
+        List<Package> packages = this.packageService.findAll();
         mav.addObject("packages", packages);
         mav.addObject("MembershipObj", new Memberships());
         return mav;
     }
 
     @PostMapping("bookpackage")
-    public ModelAndView RequestPackage(@ModelAttribute("MembershipObj") Memberships membership,
+    public RedirectView RequestPackage(@ModelAttribute("MembershipObj") Memberships membership,
             HttpSession session) {
 
-        ModelAndView modelAndView = new ModelAndView();
         Client loggedInUser = (Client) session.getAttribute("loggedInUser");
+        if(loggedInUser == null)
+        {
+            return new RedirectView("/login");
+        }
         int numOfMonths = 0;
         int freezeCount = 0;
         try {
+            Memberships memb = this.membershipsRepository.findByClientID(loggedInUser.getID());
+            if(memb != null){
+            if(memb.getIsActivated().equals("Activated"))
+            {
+                return new RedirectView("/user/bookpackage?AlreadySubscribedInAMembership");
+            }
+            else if(memb.getIsActivated().equals("Pending"))
+            {
+                return new RedirectView("/user/bookpackage?RequestAlreadySentAndPending");
+            }
+            }
+            else{
             membership.setClientID(loggedInUser.getID());
 
             Optional<Package> packageOptional = Optional
-                    .ofNullable(this.packageRepository.findById(membership.getPackageID()));
+                    .ofNullable(this.packageService.findById(membership.getPackageID()));
 
             if (packageOptional.isPresent()) {
                 Package Package = packageOptional.get();
@@ -166,13 +227,15 @@ public class UserController {
 
             this.membershipsRepository.save(membership);
 
-            modelAndView.setViewName("redirect:/user/bookpackage");
+            return new RedirectView("/user/bookpackage?RequestSent");
+        }
         } catch (Exception ex) {
             System.out.println("Error: " + ex.getMessage());
-            modelAndView.setViewName("error_page");
+            return new RedirectView("error_page");
         }
-        return modelAndView;
+        return null;
     }
+
 
     @GetMapping("bookclass")
     public ModelAndView getClassBooking(HttpSession session) {
@@ -195,27 +258,77 @@ public class UserController {
     }
 
     @PostMapping("bookclass")
-    public ModelAndView RequestClass(@ModelAttribute("ReservedClassObj") ReservedClass reservedClass) {
+    public RedirectView RequestClass(@ModelAttribute("ReservedClassObj") ReservedClass reservedClass, HttpSession session) {
 
-        ModelAndView modelAndView = new ModelAndView();
+
         try {
+           Client loggedInUser = (Client) session.getAttribute("loggedInUser");
+           if(loggedInUser == null)
+           {
+                return new RedirectView("/login");
+           }
+           List<ReservedClass> reservedClasses = this.reservedClassRepository.findByClientID(loggedInUser.getID());
+           List<AssignedClass> assignedClasses= new ArrayList<>();
+           AssignedClass assignedClass1;
+           for (ReservedClass reservedClasses1 : reservedClasses) 
+           {
+               assignedClass1= this.assignedClassRepository.findByID(reservedClasses1.getAssignedClassID());
+               assignedClasses.add(assignedClass1);
+           }
+           
+           AssignedClass assignedClass= this.assignedClassRepository.findByID(reservedClass.getAssignedClassID());
 
-            AssignedClass assignedClass = this.assignedClassRepository.findByID(reservedClass.getAssignedClassID());
+           if(assignedClasses.contains(assignedClass)==false)
+           { 
+            
             double price = assignedClass.getPrice();
-            if (price > 0) {
+            if (price > 0 && assignedClass.getAvailablePlaces()>0 )
+            {
                 reservedClass.setIsActivated("Pending");
-            } else {
+                this.reservedClassRepository.save(reservedClass);
+                return new RedirectView("/user/bookclass?RequestSent");
+            } 
+            else if(assignedClass.getAvailablePlaces()>0) 
+            {
                 reservedClass.setIsActivated("Activated");
-
+               
+                int availablePlaces=assignedClass.getAvailablePlaces();
+                availablePlaces=availablePlaces-1;
+                assignedClass.setAvailablePlaces(availablePlaces);
+                this.assignedClassRepository.save(assignedClass);
+                this.reservedClassRepository.save(reservedClass);
+                return new RedirectView("/user/bookclass?ClassActivated");
             }
-            this.reservedClassRepository.save(reservedClass);
+            else
+            {
+                return new RedirectView("/user/bookclass?NoAvailablePlaces");
+            }
+            
+        }
+        else
+        {
+            for (ReservedClass reservedClasses1 : reservedClasses) 
+            {
+                if(reservedClasses1.getAssignedClassID()==reservedClass.getAssignedClassID())
+                {
 
-            modelAndView.setViewName("redirect:/user/bookclass");
+                    if(reservedClasses1.getIsActivated().equals("Activated"))
+                    {
+                         return new RedirectView("/user/bookclass?AlreadyBookedThisClass");
+                    }
+                    else if(reservedClasses1.getIsActivated().equals("Pending"))
+                    {
+                          return new RedirectView("/user/bookclass?RequestAlreadySentAndPending");
+                    }
+                }
+            }
+            
+        }
         } catch (Exception ex) {
             System.out.println("Error: " + ex.getMessage());
-            modelAndView.setViewName("error_page");
+            return new RedirectView("error_page");
         }
-        return modelAndView;
+        return null;
     }
 
     @GetMapping("viewpackage")
@@ -225,8 +338,10 @@ public class UserController {
         int id = loggedInUser.getID();
         Memberships membership = this.membershipsRepository.findByClientID(id);
 
-        if (membership != null) {
-            Package packages = this.packageRepository.findById(membership.getPackageID());
+        LocalDate now = LocalDate.now();
+        System.out.println(membership.getIsActivated());
+        if (membership != null && membership.getIsActivated().equals("Activated")  && membership.getEndDate().isAfter(now)) {
+            Package packages = this.packageService.findById(membership.getPackageID());
             mav.addObject("membership", membership);
             mav.addObject("package", packages);
         }
@@ -242,7 +357,7 @@ public class UserController {
         Memberships membership = membershipsRepository.findByClientID(loggedInUser.getID());
         Package pack = null;
         if (membership != null) {
-            pack = packageRepository.findById(membership.getPackageID());
+            pack = packageService.findById(membership.getPackageID());
 
             LocalDate currentDate = LocalDate.now();
             LocalDate minFreezeDate = currentDate.plusDays(3);
@@ -259,47 +374,47 @@ public class UserController {
         return mav;
     }
 
-    @PostMapping("requestfreeze")
-    public ModelAndView freezeMembership(@RequestParam("freezeEndDate") String freezeEndDate,
-            HttpSession session) {
-        Client loggedInUser = (Client) session.getAttribute("loggedInUser");
-        int freezeDuration = calculateFreezeDuration(LocalDate.now(), LocalDate.parse(freezeEndDate));
-        Memberships membership = membershipsRepository.findByClientID(loggedInUser.getID());
+    // @PostMapping("requestfreeze")
+    // public ModelAndView freezeMembership(@RequestParam("freezeEndDate") String freezeEndDate,
+    //         HttpSession session) {
+    //     Client loggedInUser = (Client) session.getAttribute("loggedInUser");
+    //     int freezeDuration = calculateFreezeDuration(LocalDate.now(), LocalDate.parse(freezeEndDate));
+    //     Memberships membership = membershipsRepository.findByClientID(loggedInUser.getID());
 
-        updateMembershipEndDate(membership, freezeDuration);
+    //     updateMembershipEndDate(membership, freezeDuration);
 
-        createScheduledUnfreeze(membership.getID(), LocalDate.now(), LocalDate.parse(freezeEndDate));
+    //     createScheduledUnfreeze(membership.getID(), LocalDate.now(), LocalDate.parse(freezeEndDate));
 
-        ModelAndView modelAndView = new ModelAndView();
-        modelAndView.setViewName("redirect:/user/requestfreeze");
-        return modelAndView;
-    }
+    //     ModelAndView modelAndView = new ModelAndView();
+    //     modelAndView.setViewName("redirect:/user/requestfreeze");
+    //     return modelAndView;
+    // }
 
-    @PostMapping("requestunfreeze")
-    public ModelAndView unfreezeMembership(HttpSession session) {
-        Client loggedInUser = (Client) session.getAttribute("loggedInUser");
-        Memberships membership = membershipsRepository.findByClientID(loggedInUser.getID());
+    // @PostMapping("requestunfreeze")
+    // public ModelAndView unfreezeMembership(HttpSession session) {
+    //     Client loggedInUser = (Client) session.getAttribute("loggedInUser");
+    //     Memberships membership = membershipsRepository.findByClientID(loggedInUser.getID());
 
-        ScheduledUnfreeze scheduledUnfreeze = scheduledUnfreezeRepository.findByMembershipID(membership.getID());
-        // get the difference between old freeze duration and the new freeze duration
-        int newFreezeDuration = calculateFreezeDuration(scheduledUnfreeze.getFreezeStartDate(), LocalDate.now());
-        int oldFreezeDuration = calculateFreezeDuration(scheduledUnfreeze.getFreezeStartDate(),
-                scheduledUnfreeze.getFreezeEndDate());
-        int freezeDuration = oldFreezeDuration - newFreezeDuration;
+    //     ScheduledUnfreeze scheduledUnfreeze = scheduledUnfreezeRepository.findByMembershipID(membership.getID());
+    //     // get the difference between old freeze duration and the new freeze duration
+    //     int newFreezeDuration = calculateFreezeDuration(scheduledUnfreeze.getFreezeStartDate(), LocalDate.now());
+    //     int oldFreezeDuration = calculateFreezeDuration(scheduledUnfreeze.getFreezeStartDate(),
+    //             scheduledUnfreeze.getFreezeEndDate());
+    //     int freezeDuration = oldFreezeDuration - newFreezeDuration;
 
-        // update membership end date by subtracting the new freeze duration
-        membership.setEndDate(membership.getEndDate().minusDays(freezeDuration));
-        membership.setFreezeCount(membership.getFreezeCount() + freezeDuration);
-        membership.setFreezed("Not Freezed");
-        this.membershipsRepository.save(membership);
+    //     // update membership end date by subtracting the new freeze duration
+    //     membership.setEndDate(membership.getEndDate().minusDays(freezeDuration));
+    //     membership.setFreezeCount(membership.getFreezeCount() + freezeDuration);
+    //     membership.setFreezed("Not Freezed");
+    //     this.membershipsRepository.save(membership);
 
-        // remove scheduled unfreeze
-        this.scheduledUnfreezeRepository.delete(scheduledUnfreeze);
+    //     // remove scheduled unfreeze
+    //     this.scheduledUnfreezeRepository.delete(scheduledUnfreeze);
 
-        ModelAndView modelAndView = new ModelAndView();
-        modelAndView.setViewName("redirect:/user/requestfreeze");
-        return modelAndView;
-    }
+    //     ModelAndView modelAndView = new ModelAndView();
+    //     modelAndView.setViewName("redirect:/user/requestfreeze");
+    //     return modelAndView;
+    // }
 
     @GetMapping("profsettings")
     public ModelAndView viewProfSettings() {
@@ -366,6 +481,7 @@ public class UserController {
     
             List<ReservedClass> reservedClasses = this.reservedClassRepository.findByClientID(userId);
     
+            LocalDate now = LocalDate.now();
             if (reservedClasses.isEmpty()) {
                 mav.addObject("errorMessage", "No reserved classes found for the client.");
             } else {
@@ -373,7 +489,8 @@ public class UserController {
                 List<Classes> reservedClassesDetails = new ArrayList<>();
                 List<String> coachNames = new ArrayList<>();
                 for (ReservedClass reservedClass : reservedClasses) {
-                    int classId = reservedClass.getAssignedClassID();
+                    if(reservedClass.getIsActivated().equals("Activated")){
+                  int classId = reservedClass.getAssignedClassID();
                     Optional<AssignedClass> assignedClassDetails = this.assignedClassRepository.findById(classId);
                     assignedClassDetails.ifPresent(assignedClassesDetails::add);
     
@@ -385,6 +502,9 @@ public class UserController {
                     }else{
                         coachNames.add("");
                     }
+                    mav.addObject("reservedClassesDetails", reservedClassesDetails);
+                    mav.addObject("coaches", coachNames);
+                }
                 }
 
                 
@@ -395,8 +515,6 @@ public class UserController {
                     ClassDetails.ifPresent(reservedClassesDetails::add);
                 }
                 
-                mav.addObject("reservedClassesDetails", reservedClassesDetails);
-                mav.addObject("coaches", coachNames);
             }
         } else {
             mav.addObject("errorMessage", "User not logged in.");
