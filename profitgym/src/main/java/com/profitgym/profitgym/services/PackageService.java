@@ -13,34 +13,40 @@ import com.profitgym.profitgym.models.Package;
 
 public class PackageService {
     private RestTemplate restTemplate;
-    private String baseUrl = "http://localhost:8081";
+    private String baseUrl = "http://localhost:8083";
 
     public PackageService() {
         this.restTemplate = new RestTemplate();
     }
 
     public List<Package> findAll() {
-        String url = baseUrl + "admindashboard/packages";
+        String url = baseUrl + "/admindashboard/packages";
     
         return this.restTemplate.exchange(
             url, 
             HttpMethod.GET, 
             null, 
-            new ParameterizedTypeReference<List<Package>>() {}
-        ).getBody();
+            new ParameterizedTypeReference<List<Package>>() {
+
+            }).getBody();
     }
 
-    public void addPackage(Package packageObj){
+    public void savePackage(Package packageObj){
         String url = baseUrl + "/admindashboard/addpackage";
         this.restTemplate.postForObject(url, packageObj, Package.class);
     }
 
-    public void packageActivation(int packageID) {
-        String url = baseUrl + "/admindashboard/package-activation";
-        this.restTemplate.postForObject(url, packageID, Package.class);
-
-
-    }
+    // public void packageActivation(int packageID) {
+    //     String url = baseUrl + "/admindashboard/package-activation";
+    //     this.restTemplate.postForObject(url, packageID, Package.class);
+    // }
     
+
+    public Package findById(int id) {
+        String url = baseUrl + "/admindashboard/package"+id;
+        Package existingPackage = restTemplate.getForObject(url,Package.class);
+        return existingPackage;
+    }
+
 
 }
