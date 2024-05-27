@@ -5,11 +5,12 @@ import com.profitgym.profitgym.models.Client;
 import com.profitgym.profitgym.models.Memberships;
 import com.profitgym.profitgym.models.Package;
 import com.profitgym.profitgym.repositories.MembershipsRepository;
-import com.profitgym.profitgym.repositories.PackageRepository;
+import com.profitgym.profitgym.services.PackageService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mock.web.MockHttpSession;
 import org.springframework.web.servlet.view.RedirectView;
 
@@ -25,7 +26,7 @@ public class BookPackageTest {
     private MembershipsRepository membershipsRepository;
 
     @Mock
-    private PackageRepository packageRepository;
+    private PackageService packageService;
 
     private MockHttpSession session;
     private Client loggedInUser;
@@ -49,7 +50,7 @@ public class BookPackageTest {
         packageEntity.setNumOfMonths(6);
         packageEntity.setFreezeLimit(2);
 
-        userController = new UserController(membershipsRepository, packageRepository);
+        userController = new UserController(membershipsRepository, packageService);
     }
 
     @Test
@@ -87,7 +88,7 @@ public class BookPackageTest {
         session.setAttribute("loggedInUser", loggedInUser);
 
         when(membershipsRepository.findByClientID(anyInt())).thenReturn(null);
-        when(packageRepository.findById(anyInt())).thenReturn(packageEntity);
+        when(packageService.findById(anyInt())).thenReturn(packageEntity);
 
         RedirectView result = userController.RequestPackage(membership, session);
 
