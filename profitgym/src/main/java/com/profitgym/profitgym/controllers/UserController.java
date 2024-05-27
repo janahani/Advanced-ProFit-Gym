@@ -41,7 +41,7 @@ import com.profitgym.profitgym.repositories.EmployeeRepository;
 import com.profitgym.profitgym.services.PackageService;
 import com.profitgym.profitgym.repositories.ReservedClassRepository;
 import com.profitgym.profitgym.repositories.MembershipsRepository;
-import com.profitgym.profitgym.repositories.ScheduledUnfreezeRepository;
+// import com.profitgym.profitgym.repositories.ScheduledUnfreezeRepository;
 
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
@@ -71,8 +71,8 @@ public class UserController {
     @Autowired
     private ReservedClassRepository reservedClassRepository;
 
-    @Autowired
-    private ScheduledUnfreezeRepository scheduledUnfreezeRepository;
+    // @Autowired
+    // private ScheduledUnfreezeRepository scheduledUnfreezeRepository;
 
     @Autowired
     private EmployeeRepository employeeRepository;
@@ -112,13 +112,13 @@ public class UserController {
         this.membershipsRepository.save(membership);
     }
 
-    public void createScheduledUnfreeze(int membershipID, LocalDate currentDate, LocalDate freezeEnddate) {
-        ScheduledUnfreeze scheduledUnfreeze = new ScheduledUnfreeze();
-        scheduledUnfreeze.setFreezeStartDate(currentDate);
-        scheduledUnfreeze.setFreezeEndDate(freezeEnddate);
-        scheduledUnfreeze.setMembershipID(membershipID);
-        this.scheduledUnfreezeRepository.save(scheduledUnfreeze);
-    }
+    // public void createScheduledUnfreeze(int membershipID, LocalDate currentDate, LocalDate freezeEnddate) {
+    //     ScheduledUnfreeze scheduledUnfreeze = new ScheduledUnfreeze();
+    //     scheduledUnfreeze.setFreezeStartDate(currentDate);
+    //     scheduledUnfreeze.setFreezeEndDate(freezeEnddate);
+    //     scheduledUnfreeze.setMembershipID(membershipID);
+    //     this.scheduledUnfreezeRepository.save(scheduledUnfreeze);
+    // }
 
     @GetMapping("/profile")
     public ModelAndView getUserProfile(HttpSession session) {

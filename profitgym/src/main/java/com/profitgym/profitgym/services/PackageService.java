@@ -43,7 +43,7 @@ public class PackageService {
     
 
     public Package findById(int id) {
-        String url = baseUrl + "/admindashboard/package"+id;
+        String url = baseUrl + "/admindashboard/package/" + id; 
         Package existingPackage = restTemplate.getForObject(url,Package.class);
         return existingPackage;
     }
