@@ -53,7 +53,7 @@ public class MembershipsController {
         Memberships membership = this.membershipsService.findMembershipById(membershipId);
         if (membership != null) {
             membership.setIsActivated("Activated");
-            membershipsService.saveMembership(membership);
+            membershipsService.acceptMembership(membershipId);
         }
         return new ModelAndView("redirect:/admindashboard/clientrequests");
     }
@@ -71,7 +71,7 @@ public class MembershipsController {
     @GetMapping("/admindashboard/memberships")
     public ModelAndView viewMemberships() {
         ModelAndView mav = new ModelAndView("membershipAdminDash.html");
-        List<Memberships> memberships = this.membershipsService.findByIsActivated();
+        List<Memberships> memberships = this.membershipsService.findByIsActivated("Activated");
         List<Client> clients = new ArrayList<>();
         List<Package> packages = new ArrayList<>();
         if (memberships != null) {
@@ -97,6 +97,32 @@ public class MembershipsController {
         mav.addObject("packages", packages);
         return mav;
     }
+
+    // @GetMapping("/admindashboard/clientrequests")
+    // public ModelAndView viewRequests() {
+    //     ModelAndView mav = new ModelAndView("clientReqAdminDash.html");
+    //     List<Memberships> memberships = membershipsService.getAllClientRequests("Pending");
+    //     List<Client> clients = new ArrayList<>();
+    //     List<Package> packages = new ArrayList<>();
+    //     if (memberships != null) {
+    //         for (Memberships membership : memberships) {
+    //             Client client = clientRepository.findById(membership.getClientID());
+    //             if (!clients.contains(client)) {
+    //                 clients.add(client);
+    //             }
+    //             Package package1 = packageService.findById(membership.getPackageID());
+    //             if (!packages.contains(package1)) {
+    //                 packages.add(package1);
+    //             }
+    //         }
+    //     }
+        
+    //     mav.addObject("memberships", memberships);
+    //     mav.addObject("packages", packages);
+    //     mav.addObject("clients", clients);
+    //     return mav;
+    // }
+
 
     @PostMapping("/admindashboard/deletemembership")
     public ModelAndView deleteMembership(@RequestParam("membershipId") int membershipId) {

@@ -50,8 +50,9 @@ public class MembershipsService {
     private final RestTemplate restTemplate;
     private final String baseUrl = "http://localhost:8082";
 
-    public List<Memberships> findByIsActivated() {
+    public List<Memberships> findByIsActivated(String string) {
         String url = baseUrl + "/admindashboard/memberships";
+
         return this.restTemplate.exchange(
                 url,
                 HttpMethod.GET,
@@ -60,28 +61,33 @@ public class MembershipsService {
                 }).getBody();
     }
 
+    public List<Memberships> getAllClientRequests(String string) {
+        String url = baseUrl + "/admindashboard/clientrequests";
+        return this.restTemplate.exchange(
+            url,
+            HttpMethod.GET,
+            null,
+            new ParameterizedTypeReference<List<Memberships>>() {
+            }).getBody();
+    }
+
     public MembershipsService() {
         this.restTemplate = new RestTemplate();
     }
 
     public void saveMembership(Memberships membership) {
         String url = baseUrl + "/admindashboard/memberships";
-        String url2 = baseUrl + "/admindashboard/acceptMembership";
-        String url4 = baseUrl + "/admindashboard/declineMembership";
-        String url5 = baseUrl + "/admindashboard/requestmembership";
-        String url6 = baseUrl + "/admindashboard/requestunfreeze";
-        String url7 = baseUrl + "/user/requestunfreeze";
-        String url8 = baseUrl + "/admindashboard/requestfreeze";
 
         this.restTemplate.postForObject(url, membership, Memberships.class);
-        this.restTemplate.postForObject(url2, membership, Memberships.class);
-        this.restTemplate.postForObject(url4, membership, Memberships.class);
-        this.restTemplate.postForObject(url5, membership, Memberships.class);
-        this.restTemplate.postForObject(url6, membership, Memberships.class);
-        this.restTemplate.postForObject(url7, membership, Memberships.class);
-        this.restTemplate.postForObject(url8, membership, Memberships.class);
 
     }
+
+    // public void saveMembershipReq(Memberships membership) {
+    //     String url = baseUrl + "/admindashboard/acceptMembership";
+
+    //     this.restTemplate.postForObject(url, membership, Memberships.class);
+
+    // }
 
     @PostMapping("/admindashboard/requestfreeze")
     public ModelAndView freezeMembership(@RequestParam("id") int id,

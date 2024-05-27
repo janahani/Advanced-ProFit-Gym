@@ -41,6 +41,15 @@ public class MembershipsController {
         System.out.println(memberships.size());
         return new ResponseEntity<>(memberships, HttpStatus.OK);
     }
+
+    @GetMapping("/admindashboard/clientrequests")
+    public ResponseEntity<List<Memberships>> getAllClientRequests() {
+        System.out.println("Request received to fetch all client requests");
+        List<Memberships> memberships = membershipsRepository.findByIsActivated("Pending");
+        System.out.println(memberships.size());
+        return new ResponseEntity<>(memberships, HttpStatus.OK);
+    }
+
     
     @DeleteMapping("/admindashboard/deletemembership")
     public ResponseEntity<String> deleteMembership(@RequestParam("membershipId") int membershipId) {
