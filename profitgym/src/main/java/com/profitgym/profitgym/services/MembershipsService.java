@@ -7,9 +7,7 @@ import com.profitgym.profitgym.repositories.ClientRepository;
 import com.profitgym.profitgym.repositories.MembershipsRepository;
 import com.profitgym.profitgym.services.PackageService;
 
-
 import jakarta.servlet.http.HttpSession;
-
 
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -37,15 +35,11 @@ import java.util.Map;
 @Service
 public class MembershipsService {
 
-   
-
     @Autowired
     private ClientRepository clientRepository;
 
     @Autowired
     private PackageService packageService;
-
-    
 
     private final RestTemplate restTemplate;
     private final String baseUrl = "http://localhost:8082";
@@ -64,11 +58,11 @@ public class MembershipsService {
     public List<Memberships> getAllClientRequests(String string) {
         String url = baseUrl + "/admindashboard/clientrequests";
         return this.restTemplate.exchange(
-            url,
-            HttpMethod.GET,
-            null,
-            new ParameterizedTypeReference<List<Memberships>>() {
-            }).getBody();
+                url,
+                HttpMethod.GET,
+                null,
+                new ParameterizedTypeReference<List<Memberships>>() {
+                }).getBody();
     }
 
     public MembershipsService() {
@@ -82,11 +76,10 @@ public class MembershipsService {
 
     }
 
-
     @PostMapping("/admindashboard/requestfreeze")
     public ModelAndView freezeMembership(@RequestParam("id") int id,
-                                          @RequestParam("freezeEndDate") String freezeEndDate,
-                                          HttpSession session) {
+            @RequestParam("freezeEndDate") String freezeEndDate,
+            HttpSession session) {
         String url = baseUrl + "/admindashboard/requestfreeze?id=" + id + "&freezeEndDate=" + freezeEndDate;
         restTemplate.postForEntity(url, null, String.class);
         return new ModelAndView("redirect:/admindashboard/memberships");
@@ -94,15 +87,14 @@ public class MembershipsService {
 
     @PostMapping("/admindashboard/requestunfreeze")
     public ModelAndView unfreezeMembership(@RequestParam("id") int id,
-                                          HttpSession session) {
+            HttpSession session) {
         String url = baseUrl + "/admindashboard/requestunfreeze?id=" + id;
         restTemplate.postForEntity(url, null, String.class);
         return new ModelAndView("redirect:/admindashboard/memberships");
     }
 
-
     @PostMapping("/admindashboard/acceptMembership")
-        public void acceptMembership(int membershipId) {
+    public void acceptMembership(int membershipId) {
         String url = baseUrl + "/admindashboard/acceptMembership?membershipId=" + membershipId;
 
         try {
@@ -114,16 +106,27 @@ public class MembershipsService {
 
     @PostMapping("/admindashboard/declineMembership")
     public void declineMembership(int membershipId) {
-    String url = baseUrl + "/admindashboard/declineMembership?membershipId=" + membershipId;
+        String url = baseUrl + "/admindashboard/declineMembership?membershipId=" + membershipId;
 
-    try {
-        restTemplate.exchange(url, HttpMethod.POST, null, String.class);
-    } catch (HttpClientErrorException e) {
-        throw new RuntimeException("Failed to accept membership: " + e.getMessage());
+        try {
+            restTemplate.exchange(url, HttpMethod.POST, null, String.class);
+        } catch (HttpClientErrorException e) {
+            throw new RuntimeException("Failed to accept membership: " + e.getMessage());
+        }
     }
-}
+    @PostMapping("/admindashboard/requestmembership")
+    public void requestmembership(int clientId, int packageId) {
+        String url = baseUrl + "/admindashboard/requestmembership?id=" + clientId + "&packageID=" + packageId;
+        
+        try {
+            restTemplate.postForObject(url, null, Void.class);
+        } catch (HttpClientErrorException e) {
+            throw new RuntimeException("Failed to request membership: " + e.getMessage());
+        }
+    }
     
     
+
     public Memberships findMembershipById(int membershipId) {
         String url = baseUrl + "/admindashboard/memberships/" + membershipId;
         return restTemplate.getForObject(url, Memberships.class);
@@ -147,6 +150,4 @@ public class MembershipsService {
 
     }
 
-
-    
 }

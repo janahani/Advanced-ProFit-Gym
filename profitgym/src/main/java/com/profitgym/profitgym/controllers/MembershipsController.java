@@ -150,15 +150,11 @@ public class MembershipsController {
     @PostMapping("/admindashboard/requestmembership")
     public ModelAndView activateMembership(@RequestParam("id") int clientId, @RequestParam("packageID") int packageId) {
         ModelAndView mav = new ModelAndView();
-        Package pack = packageService.findById(packageId);
-        Memberships membership = new Memberships();
-        membership.setClientID(clientId);
-        membership.setIsActivated("Activated");
-        membership.setPackage(pack);
-        membershipsService.saveMembership(membership);
+        membershipsService.requestmembership(clientId, packageId);
         mav.setViewName("redirect:/admindashboard/clients");
         return mav;
     }
+    
 
     public int calculateFreezeDuration(LocalDate currentDate, LocalDate freezeEndDate) {
         int freezeDuration = (int) ChronoUnit.DAYS.between(currentDate, freezeEndDate);

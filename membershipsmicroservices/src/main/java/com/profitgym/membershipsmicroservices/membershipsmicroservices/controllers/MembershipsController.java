@@ -12,17 +12,21 @@ import com.profitgym.membershipsmicroservices.membershipsmicroservices.models.Sc
 import com.profitgym.membershipsmicroservices.membershipsmicroservices.repositories.MembershipsRepository;
 import com.profitgym.membershipsmicroservices.membershipsmicroservices.repositories.ScheduledUnfreezeRepository;
 
+
+
 import jakarta.servlet.http.HttpSession;
 
 import java.io.Console;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("")
@@ -50,6 +54,21 @@ public class MembershipsController {
         return new ResponseEntity<>(memberships, HttpStatus.OK);
     }
 
+    @PostMapping("/admindashboard/requestmembership")
+    public ResponseEntity<Map<String, String>> requestMembership(@RequestParam("id") int clientId, @RequestParam("packageID") int packageId) {
+        Memberships membership = new Memberships();
+        membership.setClientID(clientId);
+        membership.setIsActivated("Activated");
+        membership.setPackageID(packageId);
+    
+        membershipsRepository.save(membership);
+    
+        Map<String, String> response = new HashMap<>();
+        response.put("message", "Membership requested successfully.");
+        
+        return ResponseEntity.ok().body(response);
+    }
+    
     
     @DeleteMapping("/admindashboard/deletemembership")
     public ResponseEntity<String> deleteMembership(@RequestParam("membershipId") int membershipId) {
