@@ -37,7 +37,7 @@ import com.profitgym.profitgym.repositories.ClientRepository;
 import com.profitgym.profitgym.repositories.EmployeeRepository;
 import com.profitgym.profitgym.repositories.JobTitlesRepository;
 import com.profitgym.profitgym.repositories.MembershipsRepository;
-import com.profitgym.profitgym.repositories.PackageRepository;
+import com.profitgym.profitgym.services.PackageService;
 import com.profitgym.profitgym.repositories.ReservedClassRepository;
 
 import jakarta.servlet.http.HttpSession;
@@ -66,7 +66,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 public class AdminController {
 
     @Autowired
-    private PackageRepository packageRespository;
+    private PackageService packageService;
 
     @Autowired
     private EmployeeRepository employeeRepository;
@@ -176,8 +176,8 @@ public class AdminController {
 
         List<Client> recentClients = this.clientRepository.findTop5ByOrderByCreatedAtDesc();
         mav.addObject("recentClients", recentClients);
-
-        long packagesCount = this.packageRespository.count();
+        List<Package> packages=this.packageService.findAll();
+        long packagesCount = packages.size();
         long classesCount = this.classesRepository.count();
         long employeesCount = this.employeeRepository.count();
         long coachesCount = this.employeeRepository.countByJobTitle(jobTitleValue);
@@ -234,7 +234,7 @@ public class AdminController {
                     if (clients.contains(client) == false) {
                         clients.add(client);
                     }
-                    Package package1 = packageRespository.findById(membership.getPackageID());
+                    Package package1 = packageService.findById(membership.getPackageID());
                     if (packages.contains(package1) == false) {
                         packages.add(package1);
                     }
