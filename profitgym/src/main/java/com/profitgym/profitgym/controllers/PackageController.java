@@ -11,8 +11,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.profitgym.profitgym.models.Package;
 
-import com.profitgym.profitgym.repositories.PackageRepository;
-
+import com.profitgym.profitgym.services.PackageService;
 
 import jakarta.servlet.http.HttpServletRequest;
 
@@ -23,7 +22,7 @@ import java.util.List;
 public class PackageController {
 
     @Autowired
-    private PackageRepository packageRespository;
+    private PackageService packageService;
 
      @GetMapping("addpackage")
     public ModelAndView getPackageForm() {
@@ -35,7 +34,7 @@ public class PackageController {
     @SuppressWarnings("null")
     @PostMapping("addpackage")
     public ModelAndView savePackage(@ModelAttribute Package packageObj) {
-        this.packageRespository.save(packageObj);
+        this.packageService.savePackage(packageObj);
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("redirect:/admindashboard/addpackage");
         return modelAndView;
@@ -45,7 +44,7 @@ public class PackageController {
     public ModelAndView viewPackages() {
         System.out.println("viewPackages() method called");
         ModelAndView mav = new ModelAndView("packageAdminDash.html");
-        List<Package> packages = this.packageRespository.findAll();
+        List<Package> packages = this.packageService.findAll();
         mav.addObject("packages", packages);
         return mav;
     }
@@ -56,7 +55,7 @@ public class PackageController {
         ModelAndView modelAndView = new ModelAndView();
 
         try {
-            Package existingPackage = this.packageRespository.findById(id);
+            Package existingPackage = this.packageService.findById(id);
 
             if ("activate".equals(request.getParameter("action"))) {
                 existingPackage.setIsActivated("Activated");
@@ -64,7 +63,7 @@ public class PackageController {
                 existingPackage.setIsActivated("Not Activated");
             }
 
-            this.packageRespository.save(existingPackage);
+            this.packageService.savePackage(existingPackage);
 
             modelAndView.setViewName("redirect:/admindashboard/packages");
         } catch (Exception e) {

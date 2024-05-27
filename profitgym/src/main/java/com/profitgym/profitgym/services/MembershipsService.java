@@ -3,9 +3,13 @@ package com.profitgym.profitgym.services;
 import com.profitgym.profitgym.models.Memberships;
 import com.profitgym.profitgym.models.Package;
 import com.profitgym.profitgym.repositories.ClientRepository;
-import com.profitgym.profitgym.repositories.PackageRepository;
+
+import com.profitgym.profitgym.repositories.MembershipsRepository;
+import com.profitgym.profitgym.services.PackageService;
+
 
 import jakarta.servlet.http.HttpSession;
+
 
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -38,7 +42,7 @@ public class MembershipsService {
     private ClientRepository clientRepository;
 
     @Autowired
-    private PackageRepository packageRepository;
+    private PackageService packageService;
 
     
 

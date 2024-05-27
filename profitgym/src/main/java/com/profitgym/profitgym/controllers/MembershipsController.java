@@ -9,9 +9,14 @@ import com.profitgym.profitgym.models.Memberships;
 import com.profitgym.profitgym.models.Package;
 import com.profitgym.profitgym.models.ScheduledUnfreeze;
 import com.profitgym.profitgym.repositories.ClientRepository;
+
+import com.profitgym.profitgym.services.PackageService;
+
+
 // import com.profitgym.profitgym.repositories.MembershipsRepository;
-import com.profitgym.profitgym.repositories.PackageRepository;
+
 // import com.profitgym.profitgym.repositories.ScheduledUnfreezeRepository;
+
 import com.profitgym.profitgym.services.MembershipsService;
 
 import jakarta.servlet.http.HttpSession;
@@ -34,14 +39,14 @@ public class MembershipsController {
     private ClientRepository clientRepository;
 
     @Autowired
-    private PackageRepository packageRepository;
+    private PackageService packageService;
 
     // @Autowired
     // private ScheduledUnfreezeRepository scheduledUnfreezeRepository;
 
     @Autowired
     private MembershipsService membershipsService;
-
+    
 
     @PostMapping("/admindashboard/acceptMembership")
     public ModelAndView acceptMembership(@RequestParam("membershipId") int membershipId) {
@@ -77,7 +82,7 @@ public class MembershipsController {
                 if ("Activated".equals(membership.getIsActivated())) {
                     Client client = clientRepository.findById(membership.getClientID());
                     clients.add(client);
-                    Package package1 = packageRepository.findById(membership.getPackageID());
+                    Package package1 = packageService.findById(membership.getPackageID());
                     if (!packages.contains(package1)) {
                         packages.add(package1);
                     }
@@ -108,7 +113,7 @@ public class MembershipsController {
     @GetMapping("/admindashboard/requestmembership")
     public ModelAndView requestMembership(@RequestParam("id") int clientId) {
         ModelAndView mav = new ModelAndView("bookMembershipAdminDash.html");
-        List<Package> packages = packageRepository.findAll();
+        List<Package> packages = packageService.findAll();
         Client client = clientRepository.findById(clientId);
         mav.addObject("packages", packages);
         mav.addObject("client", client);
@@ -119,7 +124,7 @@ public class MembershipsController {
     @PostMapping("/admindashboard/requestmembership")
     public ModelAndView activateMembership(@RequestParam("id") int clientId, @RequestParam("packageID") int packageId) {
         ModelAndView mav = new ModelAndView();
-        Package pack = packageRepository.findById(packageId);
+        Package pack = packageService.findById(packageId);
         Memberships membership = new Memberships();
         membership.setClientID(clientId);
         membership.setIsActivated("Activated");
