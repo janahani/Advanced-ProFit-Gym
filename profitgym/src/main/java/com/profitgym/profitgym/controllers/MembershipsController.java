@@ -169,25 +169,32 @@ public class MembershipsController {
     }
 
     @PostMapping("/admindashboard/requestunfreeze")
-    public ModelAndView unfreezeMembership(@RequestParam("id") int id, HttpSession session) {
-        Memberships membership = membershipsService.findMembershipById(id);
-        ScheduledUnfreeze scheduledUnfreeze = scheduledUnfreezeRepository.findByMembershipID(membership.getID());
-        // get the difference between old freeze duration and the new freeze duration
-        int newFreezeDuration = calculateFreezeDuration(scheduledUnfreeze.getFreezeStartDate(), LocalDate.now());
-        int oldFreezeDuration = calculateFreezeDuration(scheduledUnfreeze.getFreezeStartDate(),
-                scheduledUnfreeze.getFreezeEndDate());
-        int freezeDuration = oldFreezeDuration - newFreezeDuration;
-
-        membership.setEndDate(membership.getEndDate().minusDays(freezeDuration));
-        membership.setFreezeCount(membership.getFreezeCount() + freezeDuration);
-        membership.setFreezed("Not Freezed");
-        this.membershipsService.saveMembership(membership);
-
-        this.scheduledUnfreezeRepository.delete(scheduledUnfreeze);
-
+    public ModelAndView unfreezeMembership(@RequestParam("id") int id,
+                                          HttpSession session) {
+        membershipsService.unfreezeMembership(id, session);
         return new ModelAndView("redirect:/admindashboard/memberships");
-
     }
+
+    // @PostMapping("/admindashboard/requestunfreeze")
+    // public ModelAndView unfreezeMembership(@RequestParam("id") int id, HttpSession session) {
+    //     Memberships membership = membershipsService.findMembershipById(id);
+    //     ScheduledUnfreeze scheduledUnfreeze = scheduledUnfreezeRepository.findByMembershipID(membership.getID());
+    //     // get the difference between old freeze duration and the new freeze duration
+    //     int newFreezeDuration = calculateFreezeDuration(scheduledUnfreeze.getFreezeStartDate(), LocalDate.now());
+    //     int oldFreezeDuration = calculateFreezeDuration(scheduledUnfreeze.getFreezeStartDate(),
+    //             scheduledUnfreeze.getFreezeEndDate());
+    //     int freezeDuration = oldFreezeDuration - newFreezeDuration;
+
+    //     membership.setEndDate(membership.getEndDate().minusDays(freezeDuration));
+    //     membership.setFreezeCount(membership.getFreezeCount() + freezeDuration);
+    //     membership.setFreezed("Not Freezed");
+    //     this.membershipsService.saveMembership(membership);
+
+    //     this.scheduledUnfreezeRepository.delete(scheduledUnfreeze);
+
+    //     return new ModelAndView("redirect:/admindashboard/memberships");
+
+    // }
 
 
 

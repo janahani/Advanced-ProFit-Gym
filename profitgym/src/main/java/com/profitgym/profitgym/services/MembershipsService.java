@@ -90,6 +90,15 @@ public class MembershipsService {
         restTemplate.postForEntity(url, null, String.class);
         return new ModelAndView("redirect:/admindashboard/memberships");
     }
+
+    @PostMapping("/admindashboard/requestunfreeze")
+    public ModelAndView unfreezeMembership(@RequestParam("id") int id,
+                                          HttpSession session) {
+        String url = baseUrl + "/admindashboard/requestunfreeze?id=" + id;
+        restTemplate.postForEntity(url, null, String.class);
+        return new ModelAndView("redirect:/admindashboard/memberships");
+    }
+    
     
     
     public Memberships findMembershipById(int membershipId) {
