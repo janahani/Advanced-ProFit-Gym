@@ -56,6 +56,22 @@ public class PackageController {
         this.packageRespository.save(myPackage);
         return new ResponseEntity(myPackage, HttpStatus.CREATED);
     }
+
+    @PostMapping("activatepackage")
+    public ResponseEntity activatePackage(@RequestBody Package body) {
+        Package myPackage = this.packageRespository.findById(body.getId());
+        myPackage.setIsActivated("Activated");
+        this.packageRespository.save(myPackage);
+        return new ResponseEntity(myPackage, HttpStatus.OK);
+    }
+
+    @PostMapping("deactivatepackage")
+    public ResponseEntity deactivatePackage(@RequestBody Package body) {
+        Package myPackage = this.packageRespository.findById(body.getId());
+        myPackage.setIsActivated("Not Activated");
+        this.packageRespository.save(myPackage);
+        return new ResponseEntity(myPackage, HttpStatus.OK);
+    }
     
     @GetMapping("package/{id}")
     public ResponseEntity<Package> getPackage(@PathVariable int id) {

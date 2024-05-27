@@ -136,7 +136,6 @@ public class AdminController {
             employee.setPhoneNumber(employeeObj.getPhoneNumber());
         }
         if (employeeObj.getPassword() != null) {
-            System.out.println(employeeObj.getPassword());
             String encoddedPassword = BCrypt.hashpw(employeeObj.getPassword(), BCrypt.gensalt(12));
             employee.setPassword(encoddedPassword);
         }
@@ -482,25 +481,25 @@ public ModelAndView deleteEmployee(@RequestParam("id") int employeeId) {
     @PostMapping("editemployee")
     public ResponseEntity<Object> updateEmployee(@RequestBody String employeeJson)
             throws JsonMappingException, JsonProcessingException {
-        System.out.println("Received JSON data: " + employeeJson);
         ObjectMapper objectMapper = new ObjectMapper();
         Employee employeeObj = objectMapper.readValue(employeeJson, Employee.class);
-        // Log the ID of the employeeObj before saving
-        System.out.println("Employee ID before saving: " + employeeObj.getID());
+        
         String status;
         Employee employee = this.employeeRepository.findByID(employeeObj.getID());
         System.out.println(employeeObj);
         saveUpdatedFieldsForEmp(employeeObj, employee);
-
+        ServiceResponse<String> response;
         try {
             this.employeeRepository.save(employee);
             status = "Employee updated successfully";
+            response = new ServiceResponse<String>("success", status);
             System.out.println("Employee updated successfully");
         } catch (Exception e) {
             status = "Error updating employee: " + e.getMessage();
             System.out.println("Error updating employee: " + e.getMessage());
+            response = new ServiceResponse<String>("error", status);
         }
-        ServiceResponse<String> response = new ServiceResponse<String>("success", status);
+        
         return new ResponseEntity<Object>(response, HttpStatus.OK);
     }
 

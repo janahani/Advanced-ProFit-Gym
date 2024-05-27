@@ -112,6 +112,7 @@ public class UserController {
         this.membershipsRepository.save(membership);
     }
 
+
     // public void createScheduledUnfreeze(int membershipID, LocalDate currentDate, LocalDate freezeEnddate) {
     //     ScheduledUnfreeze scheduledUnfreeze = new ScheduledUnfreeze();
     //     scheduledUnfreeze.setFreezeStartDate(currentDate);
@@ -119,6 +120,7 @@ public class UserController {
     //     scheduledUnfreeze.setMembershipID(membershipID);
     //     this.scheduledUnfreezeRepository.save(scheduledUnfreeze);
     // }
+
 
     @GetMapping("/profile")
     public ModelAndView getUserProfile(HttpSession session) {
