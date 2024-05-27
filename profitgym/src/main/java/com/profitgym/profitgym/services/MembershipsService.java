@@ -4,7 +4,7 @@ import com.profitgym.profitgym.models.Memberships;
 import com.profitgym.profitgym.models.Package;
 import com.profitgym.profitgym.repositories.ClientRepository;
 import com.profitgym.profitgym.repositories.MembershipsRepository;
-import com.profitgym.profitgym.repositories.PackageRepository;
+import com.profitgym.profitgym.services.PackageService;
 import com.profitgym.profitgym.repositories.ScheduledUnfreezeRepository;
 
 import org.springframework.http.MediaType;
@@ -34,7 +34,7 @@ public class MembershipsService {
     private ClientRepository clientRepository;
 
     @Autowired
-    private PackageRepository packageRepository;
+    private PackageService packageService;
 
     @Autowired
     private ScheduledUnfreezeRepository scheduledUnfreezeRepository;
