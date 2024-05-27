@@ -27,7 +27,7 @@ import com.profitgym.profitgym.repositories.ClassesRepository;
 import com.profitgym.profitgym.repositories.ClientRepository;
 import com.profitgym.profitgym.repositories.EmployeeAuthoritiesRepository;
 import com.profitgym.profitgym.repositories.EmployeeRepository;
-import com.profitgym.profitgym.repositories.PackageRepository;
+import com.profitgym.profitgym.services.PackageService;
 
 import jakarta.servlet.http.HttpSession;
 
@@ -40,7 +40,7 @@ public class IndexController {
     @Autowired
     private EmployeeRepository employeeRepository;
     @Autowired
-    private PackageRepository packageRepository;
+    private PackageService packageService;
     @Autowired
     private EmployeeAuthoritiesRepository employeeAuthoritiesRepository;
     @Autowired
@@ -48,7 +48,10 @@ public class IndexController {
     @Autowired
     private ClassesRepository classesRepository;
 
-
+    public IndexController()
+    {
+        
+    }
 
     public IndexController(ClientRepository clientRepository) {
         this.clientRepository = clientRepository;
@@ -181,7 +184,7 @@ public class IndexController {
     public ModelAndView getMemberships() {
         System.out.println("viewPackages() method called");
         ModelAndView mav = new ModelAndView("memberships.html");
-        List<Package> packages = this.packageRepository.findAll();
+        List<Package> packages = this.packageService.findAll();
         mav.addObject("packages", packages);
         return mav;
     }
