@@ -7,15 +7,22 @@ import com.profitgym.profitgym.repositories.MembershipsRepository;
 import com.profitgym.profitgym.repositories.PackageRepository;
 import com.profitgym.profitgym.repositories.ScheduledUnfreezeRepository;
 
+import jakarta.servlet.http.HttpSession;
+
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.client.RestTemplate;
-
+import org.springframework.web.servlet.ModelAndView;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import java.time.LocalDate;
@@ -65,7 +72,6 @@ public class MembershipsService {
         String url7 = baseUrl + "/user/requestunfreeze";
         String url8 = baseUrl + "/admindashboard/requestfreeze";
 
-
         this.restTemplate.postForObject(url, membership, Memberships.class);
         this.restTemplate.postForObject(url2, membership, Memberships.class);
         this.restTemplate.postForObject(url4, membership, Memberships.class);
@@ -74,11 +80,18 @@ public class MembershipsService {
         this.restTemplate.postForObject(url7, membership, Memberships.class);
         this.restTemplate.postForObject(url8, membership, Memberships.class);
 
-
     }
 
+    @PostMapping("/admindashboard/requestfreeze")
+    public ModelAndView freezeMembership(@RequestParam("id") int id,
+                                          @RequestParam("freezeEndDate") String freezeEndDate,
+                                          HttpSession session) {
+        String url = baseUrl + "/admindashboard/requestfreeze?id=" + id + "&freezeEndDate=" + freezeEndDate;
+        restTemplate.postForEntity(url, null, String.class);
+        return new ModelAndView("redirect:/admindashboard/memberships");
+    }
     
-
+    
     public Memberships findMembershipById(int membershipId) {
         String url = baseUrl + "/admindashboard/memberships/" + membershipId;
         return restTemplate.getForObject(url, Memberships.class);

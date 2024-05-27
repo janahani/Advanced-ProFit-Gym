@@ -162,15 +162,9 @@ public class MembershipsController {
 
     @PostMapping("/admindashboard/requestfreeze")
     public ModelAndView freezeMembership(@RequestParam("id") int id,
-            @RequestParam("freezeEndDate") String freezeEndDate,
-            HttpSession session) {
-        int freezeDuration = calculateFreezeDuration(LocalDate.now(), LocalDate.parse(freezeEndDate));
-        Memberships membership = membershipsService.findMembershipById(id);
-
-        updateMembershipEndDate(membership, freezeDuration);
-
-        createScheduledUnfreezeAdmin(membership, LocalDate.now(), LocalDate.parse(freezeEndDate));
-
+                                          @RequestParam("freezeEndDate") String freezeEndDate,
+                                          HttpSession session) {
+        membershipsService.freezeMembership(id, freezeEndDate, session);
         return new ModelAndView("redirect:/admindashboard/memberships");
     }
 
