@@ -41,9 +41,18 @@ public class PackageService {
     //     this.restTemplate.postForObject(url, packageID, Package.class);
     // }
     
+    public void activatePackage(Package packageObj){
+        String url = baseUrl + "/admindashboard/activatepackage";
+        this.restTemplate.postForObject(url, packageObj, Package.class);
+    }
+
+    public void deactivatePackage(Package packageObj){
+        String url = baseUrl + "/admindashboard/deactivatepackage";
+        this.restTemplate.postForObject(url, packageObj, Package.class);
+    }
 
     public Package findById(int id) {
-        String url = baseUrl + "/admindashboard/package"+id;
+        String url = baseUrl + "/admindashboard/package/"+id;
         Package existingPackage = restTemplate.getForObject(url,Package.class);
         return existingPackage;
     }
