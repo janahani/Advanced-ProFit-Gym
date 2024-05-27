@@ -56,14 +56,13 @@ public class PackageController {
 
         try {
             Package existingPackage = this.packageService.findById(id);
-
+            System.out.println("");
             if ("activate".equals(request.getParameter("action"))) {
-                existingPackage.setIsActivated("Activated");
+                this.packageService.activatePackage(existingPackage);      
             } else {
-                existingPackage.setIsActivated("Not Activated");
-            }
 
-            this.packageService.savePackage(existingPackage);
+                this.packageService.deactivatePackage(existingPackage);      
+            }
 
             modelAndView.setViewName("redirect:/admindashboard/packages");
         } catch (Exception e) {
