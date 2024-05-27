@@ -82,12 +82,6 @@ public class MembershipsService {
 
     }
 
-    // public void saveMembershipReq(Memberships membership) {
-    //     String url = baseUrl + "/admindashboard/acceptMembership";
-
-    //     this.restTemplate.postForObject(url, membership, Memberships.class);
-
-    // }
 
     @PostMapping("/admindashboard/requestfreeze")
     public ModelAndView freezeMembership(@RequestParam("id") int id,
@@ -118,7 +112,16 @@ public class MembershipsService {
         }
     }
 
-    
+    @PostMapping("/admindashboard/declineMembership")
+    public void declineMembership(int membershipId) {
+    String url = baseUrl + "/admindashboard/declineMembership?membershipId=" + membershipId;
+
+    try {
+        restTemplate.exchange(url, HttpMethod.POST, null, String.class);
+    } catch (HttpClientErrorException e) {
+        throw new RuntimeException("Failed to accept membership: " + e.getMessage());
+    }
+}
     
     
     public Memberships findMembershipById(int membershipId) {

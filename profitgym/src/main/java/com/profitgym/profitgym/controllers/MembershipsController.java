@@ -63,7 +63,7 @@ public class MembershipsController {
         Memberships membership = this.membershipsService.findMembershipById(membershipId);
         if (membership != null) {
             membership.setIsActivated("Not Activated");
-            membershipsService.saveMembership(membership);
+            membershipsService.declineMembership(membershipId);
         }
         return new ModelAndView("redirect:/admindashboard/clientrequests");
     }
