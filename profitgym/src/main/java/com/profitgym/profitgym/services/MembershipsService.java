@@ -23,6 +23,7 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.http.HttpEntity;
@@ -49,7 +50,7 @@ public class MembershipsService {
     private final RestTemplate restTemplate;
     private final String baseUrl = "http://localhost:8082";
 
-    public List<Memberships> findAll() {
+    public List<Memberships> findByIsActivated() {
         String url = baseUrl + "/admindashboard/memberships";
         return this.restTemplate.exchange(
                 url,
@@ -98,6 +99,19 @@ public class MembershipsService {
         restTemplate.postForEntity(url, null, String.class);
         return new ModelAndView("redirect:/admindashboard/memberships");
     }
+
+
+    @PostMapping("/admindashboard/acceptMembership")
+        public void acceptMembership(int membershipId) {
+        String url = baseUrl + "/admindashboard/acceptMembership?membershipId=" + membershipId;
+
+        try {
+            restTemplate.exchange(url, HttpMethod.POST, null, String.class);
+        } catch (HttpClientErrorException e) {
+            throw new RuntimeException("Failed to accept membership: " + e.getMessage());
+        }
+    }
+
     
     
     

@@ -71,7 +71,7 @@ public class MembershipsController {
     @GetMapping("/admindashboard/memberships")
     public ModelAndView viewMemberships() {
         ModelAndView mav = new ModelAndView("membershipAdminDash.html");
-        List<Memberships> memberships = this.membershipsService.findAll();
+        List<Memberships> memberships = this.membershipsService.findByIsActivated();
         List<Client> clients = new ArrayList<>();
         List<Package> packages = new ArrayList<>();
         if (memberships != null) {

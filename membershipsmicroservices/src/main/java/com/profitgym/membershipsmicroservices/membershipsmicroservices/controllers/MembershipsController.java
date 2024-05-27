@@ -35,13 +35,13 @@ public class MembershipsController {
     private ScheduledUnfreezeRepository scheduledUnfreezeRepository;
 
     @GetMapping("/admindashboard/memberships")
-    public ResponseEntity<List<Memberships>> getAllMemberships() {
-        System.out.println("Request received to fetch all memberships");
-        List<Memberships> memberships = membershipsRepository.findAll();
+    public ResponseEntity<List<Memberships>> getAllActivatedMemberships() {
+        System.out.println("Request received to fetch all activated memberships");
+        List<Memberships> memberships = membershipsRepository.findByIsActivated("Activated");
         System.out.println(memberships.size());
         return new ResponseEntity<>(memberships, HttpStatus.OK);
     }
-
+    
     @DeleteMapping("/admindashboard/deletemembership")
     public ResponseEntity<String> deleteMembership(@RequestParam("membershipId") int membershipId) {
         try {
