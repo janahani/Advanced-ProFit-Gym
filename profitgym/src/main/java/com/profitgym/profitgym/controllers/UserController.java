@@ -38,7 +38,7 @@ import com.profitgym.profitgym.repositories.AssignedClassRepository;
 import com.profitgym.profitgym.repositories.ClassesRepository;
 import com.profitgym.profitgym.repositories.ClientRepository;
 import com.profitgym.profitgym.repositories.EmployeeRepository;
-import com.profitgym.profitgym.repositories.PackageRepository;
+import com.profitgym.profitgym.services.PackageService;
 import com.profitgym.profitgym.repositories.ReservedClassRepository;
 import com.profitgym.profitgym.repositories.MembershipsRepository;
 import com.profitgym.profitgym.repositories.ScheduledUnfreezeRepository;
@@ -54,7 +54,7 @@ public class UserController {
     private ClientRepository clientRepository;
 
     @Autowired
-    private PackageRepository packageRepository;
+    private PackageService packageService;
 
     @Autowired
     IndexController indexController;
@@ -77,6 +77,11 @@ public class UserController {
     @Autowired
     private EmployeeRepository employeeRepository;
 
+    public UserController()
+    {
+        
+    }
+
     public UserController(ClientRepository clientRepository) {
         this.clientRepository = clientRepository;
     }
@@ -87,10 +92,10 @@ public class UserController {
         this.reservedClassRepository = reservedClassRepository;
     }
 
-    public UserController(MembershipsRepository membershipsRepository, PackageRepository packageRepository)
+    public UserController(MembershipsRepository membershipsRepository, PackageService packageservice)
     {
         this.membershipsRepository = membershipsRepository;
-        this.packageRepository = packageRepository;
+        this.packageService = packageservice;
     }
 
     public int calculateFreezeDuration(LocalDate currentDate, LocalDate freezeEndDate) {
@@ -129,7 +134,7 @@ public class UserController {
         Package pack = null;
         LocalDate now = LocalDate.now();
         if (membership != null && membership.getIsActivated().equals("Activated") && membership.getEndDate().isAfter(now)) {
-            pack = packageRepository.findById(membership.getPackageID());
+            pack = packageService.findById(membership.getPackageID());
             mav.addObject("package", pack);
             mav.addObject("membership", membership);
         }
@@ -167,7 +172,7 @@ public class UserController {
     public ModelAndView getPackageBooking() {
         System.out.println("viewPackages() method called");
         ModelAndView mav = new ModelAndView("packagebooking.html");
-        List<Package> packages = this.packageRepository.findAll();
+        List<Package> packages = this.packageService.findAll();
         mav.addObject("packages", packages);
         mav.addObject("MembershipObj", new Memberships());
         return mav;
@@ -200,7 +205,7 @@ public class UserController {
             membership.setClientID(loggedInUser.getID());
 
             Optional<Package> packageOptional = Optional
-                    .ofNullable(this.packageRepository.findById(membership.getPackageID()));
+                    .ofNullable(this.packageService.findById(membership.getPackageID()));
 
             if (packageOptional.isPresent()) {
                 Package Package = packageOptional.get();
@@ -336,7 +341,7 @@ public class UserController {
         LocalDate now = LocalDate.now();
         System.out.println(membership.getIsActivated());
         if (membership != null && membership.getIsActivated().equals("Activated")  && membership.getEndDate().isAfter(now)) {
-            Package packages = this.packageRepository.findById(membership.getPackageID());
+            Package packages = this.packageService.findById(membership.getPackageID());
             mav.addObject("membership", membership);
             mav.addObject("package", packages);
         }
@@ -352,7 +357,7 @@ public class UserController {
         Memberships membership = membershipsRepository.findByClientID(loggedInUser.getID());
         Package pack = null;
         if (membership != null) {
-            pack = packageRepository.findById(membership.getPackageID());
+            pack = packageService.findById(membership.getPackageID());
 
             LocalDate currentDate = LocalDate.now();
             LocalDate minFreezeDate = currentDate.plusDays(3);
