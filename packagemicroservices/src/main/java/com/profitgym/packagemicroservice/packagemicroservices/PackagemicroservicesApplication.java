@@ -10,4 +10,4 @@ public class PackagemicroservicesApplication {
 		SpringApplication.run(PackagemicroservicesApplication.class, args);
 	}
 
-}
+} 
