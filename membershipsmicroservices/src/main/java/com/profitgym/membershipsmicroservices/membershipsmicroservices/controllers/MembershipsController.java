@@ -171,33 +171,7 @@ public ResponseEntity<String> unfreezeMembership(@RequestParam("id") int id) {
         return new ResponseEntity<>(membershipsList, HttpStatus.OK);
     }
 
-    @PostMapping("/user/requestfreeze")
-    public ResponseEntity<String> requestFreeze(@RequestParam("freezeEndDate") String freezeEndDate,
-            HttpSession session) {
-        Client loggedInUser = (Client) session.getAttribute("loggedInUser");
-        int freezeDuration = calculateFreezeDuration(LocalDate.now(), LocalDate.parse(freezeEndDate));
-        Memberships membership = membershipsRepository.findByClientID(loggedInUser.getID());
-        updateMembershipEndDate(membership, freezeDuration);
-        createScheduledUnfreezeClient(membership.getID(), LocalDate.now(), LocalDate.parse(freezeEndDate));
-        return new ResponseEntity<>("Membership frozen", HttpStatus.OK);
-    }
-
-    @PostMapping("/user/requestunfreeze")
-    public ResponseEntity<String> requestUnfreeze(HttpSession session) {
-        Client loggedInUser = (Client) session.getAttribute("loggedInUser");
-        Memberships membership = membershipsRepository.findByClientID(loggedInUser.getID());
-        ScheduledUnfreeze scheduledUnfreeze = scheduledUnfreezeRepository.findByMembershipID(membership.getID());
-        int newFreezeDuration = calculateFreezeDuration(scheduledUnfreeze.getFreezeStartDate(), LocalDate.now());
-        int oldFreezeDuration = calculateFreezeDuration(scheduledUnfreeze.getFreezeStartDate(),
-                scheduledUnfreeze.getFreezeEndDate());
-        int freezeDuration = oldFreezeDuration - newFreezeDuration;
-        membership.setEndDate(membership.getEndDate().minusDays(freezeDuration));
-        membership.setFreezeCount(membership.getFreezeCount() + freezeDuration);
-        membership.setFreezed("Not Freezed");
-        membershipsRepository.save(membership);
-        scheduledUnfreezeRepository.delete(scheduledUnfreeze);
-        return new ResponseEntity<>("Membership unfrozen", HttpStatus.OK);
-    }
+   
 
     // User side membership functionalities end
     // -----------------------------------------------------
@@ -211,15 +185,7 @@ public ResponseEntity<String> unfreezeMembership(@RequestParam("id") int id) {
         membershipsRepository.save(membership);
     }
 
-    private void createScheduledUnfreezeClient(int membershipID, LocalDate currentDate, LocalDate freezeEndDate) {
-        ScheduledUnfreeze scheduledUnfreeze = new ScheduledUnfreeze();
-        scheduledUnfreeze.setFreezeStartDate(currentDate);
-        scheduledUnfreeze.setFreezeEndDate(freezeEndDate);
-        scheduledUnfreeze.setMembershipID(membershipID);
-        scheduledUnfreeze.setFreezeCount(membershipsRepository.findById(membershipID).getFreezeCount());
-        scheduledUnfreezeRepository.save(scheduledUnfreeze);
-    }
-
+  
     public void createScheduledUnfreezeAdmin(Memberships membership, LocalDate currentDate, LocalDate freezeEnddate) {
         ScheduledUnfreeze scheduledUnfreeze = new ScheduledUnfreeze();
         scheduledUnfreeze.setFreezeStartDate(currentDate);
