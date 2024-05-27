@@ -9,9 +9,9 @@ import com.profitgym.profitgym.models.Memberships;
 import com.profitgym.profitgym.models.Package;
 import com.profitgym.profitgym.models.ScheduledUnfreeze;
 import com.profitgym.profitgym.repositories.ClientRepository;
-import com.profitgym.profitgym.repositories.MembershipsRepository;
+// import com.profitgym.profitgym.repositories.MembershipsRepository;
 import com.profitgym.profitgym.repositories.PackageRepository;
-import com.profitgym.profitgym.repositories.ScheduledUnfreezeRepository;
+// import com.profitgym.profitgym.repositories.ScheduledUnfreezeRepository;
 import com.profitgym.profitgym.services.MembershipsService;
 
 import jakarta.servlet.http.HttpSession;
@@ -27,8 +27,8 @@ import java.util.List;
 
 public class MembershipsController {
 
-    @Autowired
-    private MembershipsRepository membershipsRepository;
+    // @Autowired
+    // private MembershipsRepository membershipsRepository;
 
     @Autowired
     private ClientRepository clientRepository;
@@ -36,8 +36,8 @@ public class MembershipsController {
     @Autowired
     private PackageRepository packageRepository;
 
-    @Autowired
-    private ScheduledUnfreezeRepository scheduledUnfreezeRepository;
+    // @Autowired
+    // private ScheduledUnfreezeRepository scheduledUnfreezeRepository;
 
     @Autowired
     private MembershipsService membershipsService;
@@ -143,22 +143,8 @@ public class MembershipsController {
         this.membershipsService.saveMembership(membership);
     }
 
-    public void createScheduledUnfreezeAdmin(Memberships membership, LocalDate currentDate, LocalDate freezeEnddate) {
-        ScheduledUnfreeze scheduledUnfreeze = new ScheduledUnfreeze();
-        scheduledUnfreeze.setFreezeStartDate(currentDate);
-        scheduledUnfreeze.setFreezeEndDate(freezeEnddate);
-        scheduledUnfreeze.setMembershipID(membership.getID());
-        scheduledUnfreeze.setFreezeCount(membership.getFreezeCount());
-        this.scheduledUnfreezeRepository.save(scheduledUnfreeze);
-    }
+  
 
-    public void createScheduledUnfreezeClient(int membershipID, LocalDate currentDate, LocalDate freezeEnddate) {
-        ScheduledUnfreeze scheduledUnfreeze = new ScheduledUnfreeze();
-        scheduledUnfreeze.setFreezeStartDate(currentDate);
-        scheduledUnfreeze.setFreezeEndDate(freezeEnddate);
-        scheduledUnfreeze.setMembershipID(membershipID);
-        this.scheduledUnfreezeRepository.save(scheduledUnfreeze);
-    }
 
     @PostMapping("/admindashboard/requestfreeze")
     public ModelAndView freezeMembership(@RequestParam("id") int id,
@@ -175,26 +161,6 @@ public class MembershipsController {
         return new ModelAndView("redirect:/admindashboard/memberships");
     }
 
-    // @PostMapping("/admindashboard/requestunfreeze")
-    // public ModelAndView unfreezeMembership(@RequestParam("id") int id, HttpSession session) {
-    //     Memberships membership = membershipsService.findMembershipById(id);
-    //     ScheduledUnfreeze scheduledUnfreeze = scheduledUnfreezeRepository.findByMembershipID(membership.getID());
-    //     // get the difference between old freeze duration and the new freeze duration
-    //     int newFreezeDuration = calculateFreezeDuration(scheduledUnfreeze.getFreezeStartDate(), LocalDate.now());
-    //     int oldFreezeDuration = calculateFreezeDuration(scheduledUnfreeze.getFreezeStartDate(),
-    //             scheduledUnfreeze.getFreezeEndDate());
-    //     int freezeDuration = oldFreezeDuration - newFreezeDuration;
-
-    //     membership.setEndDate(membership.getEndDate().minusDays(freezeDuration));
-    //     membership.setFreezeCount(membership.getFreezeCount() + freezeDuration);
-    //     membership.setFreezed("Not Freezed");
-    //     this.membershipsService.saveMembership(membership);
-
-    //     this.scheduledUnfreezeRepository.delete(scheduledUnfreeze);
-
-    //     return new ModelAndView("redirect:/admindashboard/memberships");
-
-    // }
 
 
 
@@ -202,47 +168,48 @@ public class MembershipsController {
 
 
     
-    @PostMapping("/user/requestfreeze")
-    public ModelAndView freezeMembership(@RequestParam("freezeEndDate") String freezeEndDate,
-            HttpSession session) {
-        Client loggedInUser = (Client) session.getAttribute("loggedInUser");
-        int freezeDuration = calculateFreezeDuration(LocalDate.now(), LocalDate.parse(freezeEndDate));
-        Memberships membership = membershipsService.findByClientID(loggedInUser.getID());
+    // @PostMapping("/user/requestfreeze")
+    // public ModelAndView freezeMembership(@RequestParam("freezeEndDate") String freezeEndDate,
+    //         HttpSession session) {
+    //     Client loggedInUser = (Client) session.getAttribute("loggedInUser");
+    //     int freezeDuration = calculateFreezeDuration(LocalDate.now(), LocalDate.parse(freezeEndDate));
+    //     Memberships membership = membershipsService.findByClientID(loggedInUser.getID());
 
-        updateMembershipEndDate(membership, freezeDuration);
+    //     updateMembershipEndDate(membership, freezeDuration);
 
-        createScheduledUnfreezeClient(membership.getID(), LocalDate.now(), LocalDate.parse(freezeEndDate));
+    //     createScheduledUnfreezeClient(membership.getID(), LocalDate.now(), LocalDate.parse(freezeEndDate));
 
-        ModelAndView modelAndView = new ModelAndView();
-        modelAndView.setViewName("redirect:/user/requestfreeze");
-        return modelAndView;
-    }
+    //     ModelAndView modelAndView = new ModelAndView();
+    //     modelAndView.setViewName("redirect:/user/requestfreeze");
+    //     return modelAndView;
+    // }
 
-    @PostMapping("/user/requestunfreeze")
-    public ModelAndView unfreezeMembership(HttpSession session) {
-        Client loggedInUser = (Client) session.getAttribute("loggedInUser");
-        Memberships membership = membershipsService.findByClientID(loggedInUser.getID());
+    // @PostMapping("/user/requestunfreeze")
+    // public ModelAndView unfreezeMembership(HttpSession session) {
+    //     Client loggedInUser = (Client) session.getAttribute("loggedInUser");
+    //     Memberships membership = membershipsService.findByClientID(loggedInUser.getID());
 
-        ScheduledUnfreeze scheduledUnfreeze = scheduledUnfreezeRepository.findByMembershipID(membership.getID());
-        // get the difference between old freeze duration and the new freeze duration
-        int newFreezeDuration = calculateFreezeDuration(scheduledUnfreeze.getFreezeStartDate(), LocalDate.now());
-        int oldFreezeDuration = calculateFreezeDuration(scheduledUnfreeze.getFreezeStartDate(),
-                scheduledUnfreeze.getFreezeEndDate());
-        int freezeDuration = oldFreezeDuration - newFreezeDuration;
+    //     ScheduledUnfreeze scheduledUnfreeze = scheduledUnfreezeRepository.findByMembershipID(membership.getID());
+    //     // get the difference between old freeze duration and the new freeze duration
+    //     int newFreezeDuration = calculateFreezeDuration(scheduledUnfreeze.getFreezeStartDate(), LocalDate.now());
+    //     int oldFreezeDuration = calculateFreezeDuration(scheduledUnfreeze.getFreezeStartDate(),
+    //             scheduledUnfreeze.getFreezeEndDate());
+    //     int freezeDuration = oldFreezeDuration - newFreezeDuration;
 
-        // update membership end date by subtracting the new freeze duration
-        membership.setEndDate(membership.getEndDate().minusDays(freezeDuration));
-        membership.setFreezeCount(membership.getFreezeCount() + freezeDuration);
-        membership.setFreezed("Not Freezed");
-        this.membershipsService.saveMembership(membership);
+    //     // update membership end date by subtracting the new freeze duration
+    //     membership.setEndDate(membership.getEndDate().minusDays(freezeDuration));
+    //     membership.setFreezeCount(membership.getFreezeCount() + freezeDuration);
+    //     membership.setFreezed("Not Freezed");
+    //     this.membershipsService.saveMembership(membership);
 
-        // remove scheduled unfreeze
-        this.scheduledUnfreezeRepository.delete(scheduledUnfreeze);
+    //     // remove scheduled unfreeze
+    //     this.scheduledUnfreezeRepository.delete(scheduledUnfreeze);
 
-        ModelAndView modelAndView = new ModelAndView();
-        modelAndView.setViewName("redirect:/user/requestfreeze");
-        return modelAndView;
-    }
+    //     ModelAndView modelAndView = new ModelAndView();
+    //     modelAndView.setViewName("redirect:/user/requestfreeze");
+    //     return modelAndView;
+    // }
+
 
 
 

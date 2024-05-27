@@ -123,15 +123,7 @@ public ResponseEntity<String> unfreezeMembership(@RequestParam("id") int id) {
 }
 
     
-    private void createScheduledUnfreeze(int membershipID, LocalDate currentDate, LocalDate freezeEndDate) {
-        ScheduledUnfreeze scheduledUnfreeze = new ScheduledUnfreeze();
-        scheduledUnfreeze.setFreezeStartDate(currentDate);
-        scheduledUnfreeze.setFreezeEndDate(freezeEndDate);
-        scheduledUnfreeze.setMembershipID(membershipID);
-        scheduledUnfreeze.setFreezeCount(membershipsRepository.findById(membershipID).getFreezeCount());
-        scheduledUnfreezeRepository.save(scheduledUnfreeze);
-    }
-
+    
     public int calculateFreezeDuration(LocalDate currentDate, LocalDate freezeEndDate) {
         int freezeDuration = (int) ChronoUnit.DAYS.between(currentDate, freezeEndDate);
         return freezeDuration;

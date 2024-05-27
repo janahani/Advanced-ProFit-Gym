@@ -3,9 +3,7 @@ package com.profitgym.profitgym.services;
 import com.profitgym.profitgym.models.Memberships;
 import com.profitgym.profitgym.models.Package;
 import com.profitgym.profitgym.repositories.ClientRepository;
-import com.profitgym.profitgym.repositories.MembershipsRepository;
 import com.profitgym.profitgym.repositories.PackageRepository;
-import com.profitgym.profitgym.repositories.ScheduledUnfreezeRepository;
 
 import jakarta.servlet.http.HttpSession;
 
@@ -34,8 +32,7 @@ import java.util.Map;
 @Service
 public class MembershipsService {
 
-    @Autowired
-    private MembershipsRepository membershipsRepository;
+   
 
     @Autowired
     private ClientRepository clientRepository;
@@ -43,8 +40,7 @@ public class MembershipsService {
     @Autowired
     private PackageRepository packageRepository;
 
-    @Autowired
-    private ScheduledUnfreezeRepository scheduledUnfreezeRepository;
+    
 
     private final RestTemplate restTemplate;
     private final String baseUrl = "http://localhost:8082";
@@ -123,4 +119,7 @@ public class MembershipsService {
         }
 
     }
+
+
+    
 }
