@@ -206,7 +206,7 @@ public class MembershipsController {
             HttpSession session) {
         Client loggedInUser = (Client) session.getAttribute("loggedInUser");
         int freezeDuration = calculateFreezeDuration(LocalDate.now(), LocalDate.parse(freezeEndDate));
-        Memberships membership = membershipsService.findByClientIDForFreeze(loggedInUser.getID());
+        Memberships membership = membershipsService.findByClientID(loggedInUser.getID());
 
         updateMembershipEndDate(membership, freezeDuration);
 
@@ -220,7 +220,7 @@ public class MembershipsController {
     @PostMapping("/user/requestunfreeze")
     public ModelAndView unfreezeMembership(HttpSession session) {
         Client loggedInUser = (Client) session.getAttribute("loggedInUser");
-        Memberships membership = membershipsService.findByClientIDForUnfreeze(loggedInUser.getID());
+        Memberships membership = membershipsService.findByClientID(loggedInUser.getID());
 
         ScheduledUnfreeze scheduledUnfreeze = scheduledUnfreezeRepository.findByMembershipID(membership.getID());
         // get the difference between old freeze duration and the new freeze duration

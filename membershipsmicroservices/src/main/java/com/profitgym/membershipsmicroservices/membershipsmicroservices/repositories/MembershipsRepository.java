@@ -5,7 +5,9 @@ import com.profitgym.membershipsmicroservices.membershipsmicroservices.models.Me
 import java.util.List;
 
 public interface MembershipsRepository extends JpaRepository<Memberships, Integer> {
-    List<Memberships> findByClientID(int clientID);
     List<Memberships> findByIsActivated(String isActivated);
-    Memberships findByClientIDForFreeze(int id);
+    Memberships findByClientID(int ClientID); 
+
+    Memberships findById(int ID); 
+
 }

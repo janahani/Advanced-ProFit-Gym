@@ -40,9 +40,7 @@ public class MembershipsService {
     private ScheduledUnfreezeRepository scheduledUnfreezeRepository;
 
     private final RestTemplate restTemplate;
-    private final String baseUrl = "http://localhost:8081";
-
-
+    private final String baseUrl = "http://localhost:8082";
 
     public List<Memberships> findAll() {
         String url = baseUrl + "/admindashboard/memberships";
@@ -65,6 +63,8 @@ public class MembershipsService {
         String url5 = baseUrl + "/admindashboard/requestmembership";
         String url6 = baseUrl + "/admindashboard/requestunfreeze";
         String url7 = baseUrl + "/user/requestunfreeze";
+        String url8 = baseUrl + "/admindashboard/requestfreeze";
+
 
         this.restTemplate.postForObject(url, membership, Memberships.class);
         this.restTemplate.postForObject(url2, membership, Memberships.class);
@@ -72,30 +72,33 @@ public class MembershipsService {
         this.restTemplate.postForObject(url5, membership, Memberships.class);
         this.restTemplate.postForObject(url6, membership, Memberships.class);
         this.restTemplate.postForObject(url7, membership, Memberships.class);
+        this.restTemplate.postForObject(url8, membership, Memberships.class);
+
 
     }
+
+    
 
     public Memberships findMembershipById(int membershipId) {
         String url = baseUrl + "/admindashboard/memberships/" + membershipId;
-          return restTemplate.getForObject(url, Memberships.class);
+        return restTemplate.getForObject(url, Memberships.class);
     }
-
 
     public void deleteMembership(int membershipId) {
         String url = baseUrl + "/admindashboard/deletemembership?membershipId=" + membershipId;
         restTemplate.delete(url);
     }
 
-    public Memberships findByClientIDForFreeze(int clientId) {
-        String url = baseUrl + "/user/requestfreeze";
-        return restTemplate.getForObject(url, Memberships.class, clientId);
+    public Memberships findByClientID(int clientId) {
+        String freezeUrl = baseUrl + "/user/requestfreeze";
+        Memberships memberships = restTemplate.getForObject(freezeUrl, Memberships.class, clientId);
+
+        if (memberships != null) {
+            return memberships;
+        } else {
+            String unfreezeUrl = baseUrl + "/user/requestunfreeze";
+            return restTemplate.getForObject(unfreezeUrl, Memberships.class, clientId);
+        }
+
     }
-    
-    public Memberships findByClientIDForUnfreeze(int clientId) {
-        String url = baseUrl + "/user/requestunfreeze";
-        return restTemplate.getForObject(url, Memberships.class, clientId);
-    }
-    
-    
-   
 }
