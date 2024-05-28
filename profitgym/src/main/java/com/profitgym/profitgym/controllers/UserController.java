@@ -247,13 +247,37 @@ public class UserController {
         List<AssignedClass> assignedClasses = this.assignedClassRepository.findAll();
         List<Classes> classes = new ArrayList<>();
 
-        for (AssignedClass assignedClass : assignedClasses) {
-            int classId = assignedClass.getClassID();
-            Classes classInformation = this.classesRepository.findByID(classId);
-            classes.add(classInformation);
+        
+        List<AssignedClass> validClasses = new ArrayList<>();
+
+        for(AssignedClass assignedClass : assignedClasses)
+        {
+            LocalDate currentDate = LocalDate.now();
+
+            if(assignedClass.getDate().isAfter(currentDate))
+            {
+                validClasses.add(assignedClass);
+            }
         }
+
+        if(validClasses.isEmpty())
+        {
+            mav.addObject("errorMessage", "No available classes to book.");
+        }
+        else
+        {
+           for (AssignedClass validClass : validClasses)
+            {
+                int classId = validClass.getClassID();
+                Classes classInformation = this.classesRepository.findByID(classId);
+                classes.add(classInformation);
+            }
+
+        }
+
+        
         mav.addObject("loggedInUser", loggedInUser);
-        mav.addObject("assignedClasses", assignedClasses);
+        mav.addObject("assignedClasses", validClasses);
         mav.addObject("classes", classes);
         mav.addObject("ReservedClassObj", new ReservedClass());
         return mav;
