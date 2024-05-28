@@ -96,6 +96,24 @@ public class AdminController {
 
     private static final String RANDOMCHAR_STRING = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
 
+    public AdminController()
+    {
+
+    }
+
+    public AdminController(ClientRepository clientRepository,JavaMailSender emailSender)
+    {
+        this.clientRepository=clientRepository;
+        this.emailSender = emailSender;
+    }
+
+
+    public AdminController(EmployeeRepository employeeRepository,JavaMailSender emailSender)
+    {
+        this.employeeRepository=employeeRepository;
+        this.emailSender = emailSender;
+    }
+
     private String generateRandomPassword(int length) {
         StringBuilder builder = new StringBuilder();
         Random random = new Random();
@@ -175,7 +193,7 @@ public class AdminController {
 
         List<Client> recentClients = this.clientRepository.findTop5ByOrderByCreatedAtDesc();
         mav.addObject("recentClients", recentClients);
-        List<Package> packages=this.packageService.findAll();
+        List<Package> packages = this.packageService.findAll();
         long packagesCount = packages.size();
         long classesCount = this.classesRepository.count();
         long employeesCount = this.employeeRepository.count();
@@ -229,16 +247,17 @@ public class AdminController {
         if (memberships != null) {
             for (Memberships membership : memberships) {
 
-                    Client client = clientRepository.findById(membership.getClientID());
-                    if (clients.contains(client) == false) {
-                        clients.add(client);
-                    }
-                    Package package1 = packageService.findById(membership.getPackageID());
-                    if (packages.contains(package1) == false) {
-                        packages.add(package1);
-                    }
-        }}
-        
+                Client client = clientRepository.findById(membership.getClientID());
+                if (clients.contains(client) == false) {
+                    clients.add(client);
+                }
+                Package package1 = packageService.findById(membership.getPackageID());
+                if (packages.contains(package1) == false) {
+                    packages.add(package1);
+                }
+            }
+        }
+
         mav.addObject("memberships", memberships);
         mav.addObject("packages", packages);
         mav.addObject("clients", clients);
@@ -254,18 +273,15 @@ public class AdminController {
             int coachId = reservedClass.getCoachID();
 
             AssignedClass assignedClassInfo = this.assignedClassRepository.findByID(assignedClassId);
-            if (assignedClassesList.contains(assignedClassInfo) == false) 
-            {
+            if (assignedClassesList.contains(assignedClassInfo) == false) {
                 assignedClassesList.add(assignedClassInfo);
-        
+
                 int classId = assignedClassInfo.getClassID();
                 Classes classInfo = this.classesRepository.findByID(classId);
                 if (classesList.contains(classInfo) == false) {
                     classesList.add(classInfo);
                 }
-            } 
-            else 
-            {
+            } else {
                 System.out.println("error");
             }
             Client clientInfo = this.clientRepository.findById(clientId);
@@ -291,12 +307,12 @@ public class AdminController {
     @PostMapping("/acceptReservedClass")
     public ModelAndView acceptReservedClass(@RequestParam("reservedClassId") int reservedClassId) {
         ReservedClass reservedClass = this.reservedClassRepository.findByID(reservedClassId);
-        AssignedClass assignedClass= this.assignedClassRepository.findByID(reservedClass.getAssignedClassID());
+        AssignedClass assignedClass = this.assignedClassRepository.findByID(reservedClass.getAssignedClassID());
 
-        if (reservedClass != null && assignedClass.getAvailablePlaces()>0) {
+        if (reservedClass != null && assignedClass.getAvailablePlaces() > 0) {
             reservedClass.setIsActivated("Activated");
-            int availablePlaces=assignedClass.getAvailablePlaces();
-            availablePlaces=availablePlaces-1;
+            int availablePlaces = assignedClass.getAvailablePlaces();
+            availablePlaces = availablePlaces - 1;
             assignedClass.setAvailablePlaces(availablePlaces);
             this.assignedClassRepository.save(assignedClass);
             reservedClassRepository.save(reservedClass);
@@ -344,18 +360,30 @@ public class AdminController {
 
     @PostMapping("addclient")
     public ModelAndView saveClient(@ModelAttribute Client clientObj) {
-        String generatedPassword = generateRandomPassword(8);
-        String encoddedPassword = BCrypt.hashpw(generatedPassword, BCrypt.gensalt(12));
-        clientObj.setPassword(encoddedPassword);
-        this.clientRepository.save(clientObj);
-        sendEmail(clientObj.getEmail(), "Welcome to Profit Gym!",
-                "Hello, " + clientObj.getFirstName()
-                        + ". \n\nYour account has been created. Your temporary password is: " + generatedPassword
-                        + "\n\nPlease log in and change your password.");
-
-        System.out.println("Client added");
         ModelAndView modelAndView = new ModelAndView();
-        modelAndView.setViewName("redirect:/admindashboard/addclient");
+
+        Client existingClient = clientRepository.findByEmail(clientObj.getEmail());
+        if (existingClient != null) {
+            modelAndView.setViewName("redirect:/admindashboard/addclient?EmailAlreadyExists");
+            return modelAndView;
+        }
+
+        try {
+            String generatedPassword = generateRandomPassword(8);
+            String encodedPassword = BCrypt.hashpw(generatedPassword, BCrypt.gensalt(12));
+            clientObj.setPassword(encodedPassword);
+            this.clientRepository.save(clientObj);
+            String emailBody = "Hello, " + clientObj.getFirstName()
+                    + ". \n\nYour account has been created. Your temporary password is: " + generatedPassword
+                    + "\n\nPlease log in and change your password.";
+            sendEmail(clientObj.getEmail(), "Welcome to Profit Gym!", emailBody);
+
+            System.out.println("Client added");
+            modelAndView.setViewName("redirect:/admindashboard/addclient");
+        } catch (Exception e) {
+            System.out.println("Error adding client: " + e.getMessage());
+            modelAndView.setViewName("error_page");
+        }
         return modelAndView;
     }
 
@@ -371,15 +399,23 @@ public class AdminController {
     public ModelAndView saveEmployee(@ModelAttribute Employee employeeObj,
             @RequestParam(value = "jobTitleHidden", required = false) Integer jobTitle) {
         ModelAndView modelAndView = new ModelAndView();
+
         if (jobTitle != null) {
             employeeObj.setJobTitle(jobTitle);
         }
 
+        Employee existingEmployee = this.employeeRepository.findByEmail(employeeObj.getEmail());
+        if (existingEmployee != null) {
+            modelAndView.setViewName("redirect:/admindashboard/addemployee?EmailAlreadyExists");
+            return modelAndView;
+        }
+
         try {
             String generatedPassword = generateRandomPassword(8);
-            String encoddedPassword = BCrypt.hashpw(generatedPassword, BCrypt.gensalt(12));
-            employeeObj.setPassword(encoddedPassword);
+            String encodedPassword = BCrypt.hashpw(generatedPassword, BCrypt.gensalt(12));
+            employeeObj.setPassword(encodedPassword);
             this.employeeRepository.save(employeeObj);
+
             String emailBody = "Hello, " + employeeObj.getName()
                     + ". \n\nYour account has been created. Your temporary password is: " + generatedPassword
                     + "\n\nPlease log in and change your password.";
@@ -388,12 +424,13 @@ public class AdminController {
             System.out.println("Employee added");
             modelAndView.setViewName("redirect:/admindashboard/addemployee");
         } catch (Exception e) {
-            System.out.println("error");
+            System.out.println("Error adding class: " + e.getMessage());
+            modelAndView.setViewName("error_page");
         }
         return modelAndView;
     }
 
-    private void sendEmail(String recipientEmail, String subject, String body) {
+    public void sendEmail(String recipientEmail, String subject, String body) {
         try {
             SimpleMailMessage message = new SimpleMailMessage();
             message.setTo(recipientEmail);
@@ -408,22 +445,21 @@ public class AdminController {
     }
 
     @PostMapping("/deleteemployee")
-public ModelAndView deleteEmployee(@RequestParam("id") int employeeId) {
-    ModelAndView modelAndView = new ModelAndView();
-    try {
-        employeeRepository.deleteById(employeeId);
-        System.out.println("Employee deleted");
-        // Redirect to the employees page after successful deletion
-        modelAndView.setViewName("redirect:/admindashboard/employees");
-    } catch (Exception e) {
-        System.out.println("Error deleting employee: " + e.getMessage());
-        // Redirect to an error page or display an error message
-        modelAndView.setViewName("error");
-        modelAndView.addObject("message", "Error deleting employee: " + e.getMessage());
+    public ModelAndView deleteEmployee(@RequestParam("id") int employeeId) {
+        ModelAndView modelAndView = new ModelAndView();
+        try {
+            employeeRepository.deleteById(employeeId);
+            System.out.println("Employee deleted");
+            // Redirect to the employees page after successful deletion
+            modelAndView.setViewName("redirect:/admindashboard/employees");
+        } catch (Exception e) {
+            System.out.println("Error deleting employee: " + e.getMessage());
+            // Redirect to an error page or display an error message
+            modelAndView.setViewName("error");
+            modelAndView.addObject("message", "Error deleting employee: " + e.getMessage());
+        }
+        return modelAndView;
     }
-    return modelAndView;
-}
-
 
     @GetMapping("editclient")
     public ModelAndView editClientForm(@RequestParam("id") int clientId) {
@@ -477,7 +513,7 @@ public ModelAndView deleteEmployee(@RequestParam("id") int employeeId) {
             throws JsonMappingException, JsonProcessingException {
         ObjectMapper objectMapper = new ObjectMapper();
         Employee employeeObj = objectMapper.readValue(employeeJson, Employee.class);
-        
+
         String status;
         Employee employee = this.employeeRepository.findByID(employeeObj.getID());
         System.out.println(employeeObj);
@@ -493,7 +529,7 @@ public ModelAndView deleteEmployee(@RequestParam("id") int employeeId) {
             System.out.println("Error updating employee: " + e.getMessage());
             response = new ServiceResponse<String>("error", status);
         }
-        
+
         return new ResponseEntity<Object>(response, HttpStatus.OK);
     }
 
@@ -661,8 +697,6 @@ public ModelAndView deleteEmployee(@RequestParam("id") int employeeId) {
         return modelAndView;
     }
 
-
-
     @GetMapping("profilesettings")
     public ModelAndView viewProfSettings(HttpSession session) {
         ModelAndView mav = new ModelAndView("employeeProfileSettings.html");
@@ -671,36 +705,33 @@ public ModelAndView deleteEmployee(@RequestParam("id") int employeeId) {
         return mav;
     }
 
-
     @PostMapping("/profilesettings")
     public ModelAndView updateEmployeeProfile(@Valid @ModelAttribute Employee empObj, BindingResult bindingResult,
             HttpSession session, @RequestParam("action") String action) {
         Employee sessionEmployee = (Employee) session.getAttribute("loggedInEmp");
-    
+
         ModelAndView modelAndView = new ModelAndView();
-    
+
         if (action.equals("updateProfile")) {
             if (bindingResult.hasErrors()) {
-                modelAndView.setViewName("employeeProfileSettings.html"); 
+                modelAndView.setViewName("employeeProfileSettings.html");
                 return modelAndView;
             }
-    
 
             sessionEmployee.setName(empObj.getName());
             sessionEmployee.setEmail(empObj.getEmail());
             sessionEmployee.setPhoneNumber(empObj.getPhoneNumber());
             sessionEmployee.setAddress(empObj.getAddress());
-    
+
             session.setAttribute("loggedInEmp", sessionEmployee);
-    
+
             modelAndView.setViewName("/admindashboard/employees");
             return modelAndView;
         } else {
-            modelAndView.setViewName("errorPage"); 
+            modelAndView.setViewName("errorPage");
             modelAndView.addObject("errorMessage", "Invalid action specified.");
             return modelAndView;
         }
     }
-    
 
 }
