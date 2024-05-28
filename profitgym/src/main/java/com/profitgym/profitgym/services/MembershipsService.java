@@ -76,7 +76,6 @@ public class MembershipsService {
 
     }
 
-    @PostMapping("/admindashboard/requestfreeze")
     public ModelAndView freezeMembership(@RequestParam("id") int id,
             @RequestParam("freezeEndDate") String freezeEndDate,
             HttpSession session) {
@@ -85,7 +84,6 @@ public class MembershipsService {
         return new ModelAndView("redirect:/admindashboard/memberships");
     }
 
-    @PostMapping("/admindashboard/requestunfreeze")
     public ModelAndView unfreezeMembership(@RequestParam("id") int id,
             HttpSession session) {
         String url = baseUrl + "/admindashboard/requestunfreeze?id=" + id;
@@ -114,7 +112,7 @@ public class MembershipsService {
             throw new RuntimeException("Failed to accept membership: " + e.getMessage());
         }
     }
-    @PostMapping("/admindashboard/requestmembership")
+
     public void requestmembership(int clientId, int packageId) {
         String url = baseUrl + "/admindashboard/requestmembership?id=" + clientId + "&packageID=" + packageId;
         
@@ -125,8 +123,6 @@ public class MembershipsService {
         }
     }
     
-    
-
     public Memberships findMembershipById(int membershipId) {
         String url = baseUrl + "/admindashboard/memberships/" + membershipId;
         return restTemplate.getForObject(url, Memberships.class);

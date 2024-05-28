@@ -12,7 +12,6 @@ import com.profitgym.profitgym.repositories.ClientRepository;
 
 import com.profitgym.profitgym.services.PackageService;
 
-
 // import com.profitgym.profitgym.repositories.MembershipsRepository;
 
 // import com.profitgym.profitgym.repositories.ScheduledUnfreezeRepository;
@@ -25,7 +24,6 @@ import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
-
 
 @RestController
 @RequestMapping("")
@@ -46,7 +44,6 @@ public class MembershipsController {
 
     @Autowired
     private MembershipsService membershipsService;
-    
 
     @PostMapping("/admindashboard/acceptMembership")
     public ModelAndView acceptMembership(@RequestParam("membershipId") int membershipId) {
@@ -67,7 +64,6 @@ public class MembershipsController {
         }
         return new ModelAndView("redirect:/admindashboard/clientrequests");
     }
-
 
     @PostMapping("/admindashboard/deletemembership")
     public ModelAndView deleteMembership(@RequestParam("membershipId") int membershipId) {
@@ -91,15 +87,15 @@ public class MembershipsController {
         return mav;
     }
 
-
     @PostMapping("/admindashboard/requestmembership")
-    public ModelAndView activateMembership(@RequestParam("id") int clientId, @RequestParam("packageID") int packageId) {
+    public ModelAndView activateMembership(
+            @RequestParam("id") int clientId,
+            @RequestParam("packageID") int packageId) {
         ModelAndView mav = new ModelAndView();
         membershipsService.requestmembership(clientId, packageId);
         mav.setViewName("redirect:/admindashboard/clients");
         return mav;
     }
-    
 
     public int calculateFreezeDuration(LocalDate currentDate, LocalDate freezeEndDate) {
         int freezeDuration = (int) ChronoUnit.DAYS.between(currentDate, freezeEndDate);
@@ -115,27 +111,22 @@ public class MembershipsController {
         this.membershipsService.saveMembership(membership);
     }
 
-  
-
-
     @PostMapping("/admindashboard/requestfreeze")
     public ModelAndView freezeMembership(@RequestParam("id") int id,
-                                          @RequestParam("freezeEndDate") String freezeEndDate,
-                                          HttpSession session) {
+            @RequestParam("freezeEndDate") String freezeEndDate,
+            HttpSession session) {
         membershipsService.freezeMembership(id, freezeEndDate, session);
         return new ModelAndView("redirect:/admindashboard/memberships");
     }
 
     @PostMapping("/admindashboard/requestunfreeze")
     public ModelAndView unfreezeMembership(@RequestParam("id") int id,
-                                          HttpSession session) {
+            HttpSession session) {
         membershipsService.unfreezeMembership(id, session);
         return new ModelAndView("redirect:/admindashboard/memberships");
     }
 
-
-
-     @GetMapping("/admindashboard/memberships")
+    @GetMapping("/admindashboard/memberships")
     public ModelAndView viewMemberships() {
         ModelAndView mav = new ModelAndView("membershipAdminDash.html");
         List<Memberships> memberships = this.membershipsService.findByIsActivated("Activated");
@@ -165,7 +156,4 @@ public class MembershipsController {
         return mav;
     }
 
-    
-    
-    
 }
