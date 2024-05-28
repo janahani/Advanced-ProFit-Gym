@@ -1,47 +1,54 @@
-function validateForm() {
-        var name = document.getElementById("name").value.trim();
-        var description = document.getElementById("description").value.trim();
-        var file = document.getElementById("myFile").value;
-        var days = document.querySelectorAll('input[name="week-days[]"]:checked');
-    
-        var nameError = document.getElementById("name-error");
-        var descriptionError = document.getElementById("description-error");
-        var fileError = document.getElementById("file-error");
-        var daysError = document.getElementById("days-error");
-    
-        nameError.innerHTML = "";
-        descriptionError.innerHTML = "";
-        fileError.innerHTML = "";
-        daysError.innerHTML = "";
-    
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.querySelector('.add-class'); // Select the form by class
+    if (form) {
+        form.addEventListener('submit', function(event) {
+            const isValid = validateForm();
+            if (!isValid) {
+                event.preventDefault(); // Prevent form submission if validation fails
+            }
+        });
+    }
+
+    function validateForm() {
+        var nameInput = document.querySelector('input[name="Name"]');
+        var descriptionInput = document.querySelector('textarea[name="Description"]');
+        var fileInput = document.querySelector('input[name="file"]');
+        var daysCheckboxes = document.querySelectorAll('input[name="week-days[]"]:checked');
+
         var isValid = true;
-    
-        // Validate name
-        if (name === "") {
-            nameError.innerHTML = "Please enter a Class Name";
+
+        // Validate class name
+        if (!nameInput.value.trim()) {
+            document.getElementById("name-error").textContent = "Please enter a class name.";
             isValid = false;
+        } else {
+            document.getElementById("name-error").textContent = "";
         }
-    
+
         // Validate description
-        if (description === "") {
-            descriptionError.innerHTML = "Please enter a Description";
+        if (!descriptionInput.value.trim()) {
+            document.getElementById("description-error").textContent = "Please enter a description.";
             isValid = false;
+        } else {
+            document.getElementById("description-error").textContent = "";
         }
-    
-        // Validate file
-        if (file === "") {
-            fileError.innerHTML = "Please select a File";
+
+        // Validate file upload
+        if (!fileInput.value) {
+            document.getElementById("file-error").textContent = "Please select an image file.";
             isValid = false;
+        } else {
+            document.getElementById("file-error").textContent = "";
         }
-    
-        // Validate days
-        if (days.length === 0) {
-            daysError.innerHTML = "Please select at least one day";
+
+        // Validate days checkboxes
+        if (daysCheckboxes.length === 0) {
+            document.getElementById("days-error").textContent = "Please select at least one day.";
             isValid = false;
+        } else {
+            document.getElementById("days-error").textContent = "";
         }
-    
+
         return isValid;
     }
-    
-
-
+});
