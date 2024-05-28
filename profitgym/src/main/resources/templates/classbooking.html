@@ -29,6 +29,10 @@
     color: rgb(176, 37, 37);
     letter-spacing: -1px;
     margin-bottom:3%;">Types:</h2>
+
+    <div th:if="${errorMessage}">
+        <p th:text="${errorMessage}"></p>
+    </div>
         <div class="card-container">
             <div th:each="assignedClass : ${assignedClasses}" >
                <form th:action="@{/user/bookclass}" th:object="${ReservedClassObj}" method="POST">
