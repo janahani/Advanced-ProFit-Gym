@@ -344,14 +344,7 @@ public class AdminController {
     @GetMapping("classes")
     public ModelAndView viewClasses() {
         ModelAndView mav = new ModelAndView("classAdminDash.html");
-        List<AssignedClass> assignedClasses = this.assignedClassRepository.findAll();
-        List<Classes> classes = new ArrayList<>();
-        for (AssignedClass assignedClass : assignedClasses) {
-            int classId = assignedClass.getClassID();
-            Classes classInformation = this.classesRepository.findByID(classId);
-            classes.add(classInformation);
-        }
-        mav.addObject("assignedClasses", assignedClasses);
+        List<Classes> classes = this.classesRepository.findAll();
         mav.addObject("classes", classes);
         return mav;
     }

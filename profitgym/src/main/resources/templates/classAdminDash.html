@@ -41,18 +41,16 @@
                                     <tr>
                                         <th scope="col">ID</th>
                                         <th scope="col">Name</th>
-                                        <th scope="col">Price</th>
+                                        <th scope="col">Description</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                    
-                                    <tr th:each="assignedClass : ${assignedClasses}" >
+                                    <tr th:each="classObj : ${classes}" >
                                         <div th:unless="${#lists.isEmpty(classes)}">
-                                            <div th:each="classObj : ${classes}">
-                                                <div th:if="${classObj.ID == assignedClass.ClassID}">
                                                    <th th:if="${classObj != null}" th:text="${classObj.ID}"></th>
                                                    <td th:text="${classObj.Name}"></td>
-                                                   <td th:text="${assignedClass.Price}"></td>
+                                                   <td th:text="${classObj.Description}"></td>
                                                 </div>
                                             </div>
                                         </div>
