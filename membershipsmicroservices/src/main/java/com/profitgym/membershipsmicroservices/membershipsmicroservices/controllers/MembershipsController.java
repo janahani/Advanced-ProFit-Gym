@@ -92,6 +92,19 @@ public class MembershipsController {
         return ResponseEntity.ok().body(response);
     }
     
+    @DeleteMapping("/admindashboard/deletemembership")
+    public ResponseEntity<String> deleteMembership(@RequestParam("membershipId") int membershipId) {
+        try {
+            System.out.println("Request received to delete membership with ID: {}" + membershipId);
+            membershipsRepository.deleteById(membershipId);
+            System.out.println("Membership with ID {} deleted successfully" + membershipId);
+            return ResponseEntity.ok("Membership deleted successfully");
+        } catch (Exception e) {
+            System.out.println("Error deleting membership with ID {}: {}" + membershipId + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Error deleting membership: " + e.getMessage());
+        }
+    }
 
     @PostMapping("/admindashboard/acceptMembership")
     public ResponseEntity<Memberships> acceptMembership(@RequestParam("membershipId") int membershipId) {
