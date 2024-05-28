@@ -93,7 +93,7 @@ public class MembershipsController {
             @RequestParam("packageID") int packageId) {
         ModelAndView mav = new ModelAndView();
         membershipsService.requestmembership(clientId, packageId);
-        mav.setViewName("redirect:/admindashboard/clients");
+        mav.setViewName("redirect:/admindashboard/memberships");
         return mav;
     }
 
