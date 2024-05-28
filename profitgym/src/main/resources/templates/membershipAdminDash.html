@@ -55,10 +55,8 @@
                                 <tbody>
                                     <tr th:each="membership, idx  : ${memberships}">
                                         <td th:text="${membership.ID}"></td>
-                                        <td th:each="client : ${clients}" th:if="${client.ID == membership.clientID}"
-                                            th:text="${client.FirstName} + ' ' + ${client.LastName}"></td>
-                                        <td th:each="package : ${packages}" th:if="${package.id == membership.PackageID}"
-                                            th:text="${package.Title}"></td>
+                                        <td th:text="${clients[idx.index]}"></td>
+                                        <td th:text="${packages[idx.index]}"></td>
                                         <td th:text="${membership.VisitsCount}"></td>
                                         <td th:text="${membership.InbodySessionsCount}"></td>
                                         <td>
@@ -128,8 +126,10 @@
                                                     </form>
                                                 </div>
                                             </div>
+                                            <div th:if="${membership.isActivated == 'Not Activated'}">
+                                                <button type="button" class="btn btn-sm btn-freeze" disabled>Freeze</button>
+                                            </div>
                                         </td>
-                                        <td th:text="${membership.Freezed}"></td>
                                         <td th:text="${membership.FreezeCount}"></td>
                                         <td th:text="${membership.isActivated}"></td>
                                         <td>
