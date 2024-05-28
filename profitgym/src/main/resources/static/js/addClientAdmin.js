@@ -1,44 +1,49 @@
-<script>
+
     function validateForm() {
-        // Get form inputs
-        var firstName = document.getElementById('firstName').value;
-        var lastName = document.getElementById('lastName').value;
-        var age = document.getElementById('age').value;
-        var phoneNumber = document.getElementById('phoneNumber').value;
-        var email = document.getElementById('email').value;
-
-        // Validate first name
-        if (firstName === '') {
-            alert('Please enter first name');
-            return false;
+        var firstName = document.getElementById("firstName");
+        var lastName = document.getElementById("lastName");
+        var age = document.getElementById("age");
+        var phoneNumber = document.getElementById("phoneNumber");
+        var gender = document.getElementById("gender");
+        var email = document.getElementById("email");
+        var isValid = true;
+  
+        // Clear error messages
+        var errorMessages = document.querySelectorAll('.error-message');
+        errorMessages.forEach(function (errorMessage) {
+          errorMessage.textContent = '';
+        });
+  
+        if (firstName.value === '') {
+          document.getElementById("fname-error").textContent = 'Please enter a first name.';
+          isValid = false;
         }
-
-        // Validate last name
-        if (lastName === '') {
-            alert('Please enter last name');
-            return false;
+  
+        if (lastName.value === '') {
+          document.getElementById("lname-error").textContent = 'Please enter a last name.';
+          isValid = false;
         }
-
-        // Validate age
-        if (age === '' || isNaN(age)) {
-            alert('Please enter a valid age')
-            return false;
+  
+        if (age.value === '') {
+          document.getElementById("age-error").textContent = 'Please enter an age.';
+          isValid = false;
         }
-
-        // Validate phone number
-        if (phoneNumber === '' || isNaN(phoneNumber)) {
-            alert('Please enter a valid phone number');
-            return false;
+  
+        if (phoneNumber.value === '') {
+          document.getElementById("phoneno-error").textContent = 'Please enter a phone number.';
+          isValid = false;
         }
-
-        // Validate email
-        var emailPattern = /^\w+@[a-zA-Z_]+?\.[a-zA-Z]{2,3}$/;
-        if (!email.match(emailPattern)) {
-            alert('Please enter a valid email address');
-            return false;
+  
+        if (gender.value === '') {
+          document.getElementById("gender-error").textContent = 'Please select a gender.';
+          isValid = false;
         }
-
-        // If all validations pass, submit the form
-        return true;
+  
+        if (email.value === '') {
+          document.getElementById("email-error").textContent = 'Please enter an email.';
+          isValid = false;
+        }
+  
+        return isValid;
     }
-</script>
+

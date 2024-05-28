@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 
 <head>
@@ -9,7 +10,7 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700">
     <link rel="stylesheet"
         href="https://rawcdn.githack.com/Loopple/loopple-public-assets/ad60f16c8a16d1dcad75e176c00d7f9e69320cd4/argon-dashboard/css/nucleo/css/nucleo.css">
-        <link rel="stylesheet" type="text/css" th:href="@{/CSS/theme.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/CSS/theme.css}">
 </head>
 
 <body>
@@ -22,47 +23,56 @@
                 <div class="col-lg">
                     <div class="user-form">
                         <h1>Add a Client</h1>
-                        <form th:action="@{/admindashboard/addclient}" th:object="${clientObj}" method="POST" class="add-client" onsubmit="return validateForm()">
+                        <form th:action="@{/admindashboard/addclient}" th:object="${clientObj}" method="POST"
+                            id="add-client" class="add-client" onsubmit="return validateForm()">
                             <div>
-                                <input id="firstName" input class="add-user-input" type="text" th:field="*{FirstName}" placeholder="First Name" />
+                                <input id="firstName" class="add-user-input" type="text" th:field="*{firstName}"
+                                    placeholder="First Name" />
                             </div>
                             <span id="fname-error" class="error-message"></span>
-                            <br>                            
+                            <br>
                             <div>
-                                <input class="add-user-input" type="text" th:field="*{LastName}" placeholder="Last Name" />
+                                <input id="lastName" class="add-user-input" type="text" th:field="*{lastName}"
+                                    placeholder="Last Name" />
                             </div>
                             <span id="lname-error" class="error-message"></span>
-                            <br>                            
+                            <br>
                             <div>
-                                <input id="age" input class="add-user-input" type="text" th:field="*{Age}" placeholder="Age"/>
+                                <input id="age" class="add-user-input" type="text" th:field="*{age}"
+                                    placeholder="Age" />
                             </div>
                             <span id="age-error" class="error-message"></span>
-                            <br>                            
+                            <br>
                             <div>
-                                <input id="PhoneNumber" input class="add-user-input" type="text" th:field="*{PhoneNumber}" placeholder="Phone Number"/>
+                                <input id="phoneNumber" class="add-user-input" type="text"
+                                    th:field="*{phoneNumber}" placeholder="Phone Number" />
                             </div>
                             <span id="phoneno-error" class="error-message"></span>
-                            <br>                            
+                            <br>
                             <div>
-                                <input id="Weight" input class="add-user-input" type="text" th:field="*{Weight}" placeholder="Weight" />
+                                <input id="Weight" class="add-user-input" type="text" th:field="*{weight}"
+                                    placeholder="Weight" />
                             </div>
-                            <br>                            
+                            <br>
                             <div>
-                                <input id="Height" input class="add-user-input" type="text" th:field="*{Height}" placeholder="Height" />
+                                <input id="Height" class="add-user-input" type="text" th:field="*{height}"
+                                    placeholder="Height" />
                             </div>
-                            <br>                                 
-                            <select class="add-user-input" th:field="*{Gender}">
+                            <br>
+                            <select class="add-user-input" th:field="*{gender}">
                                 <option value="">Gender</option>
                                 <option value="female">Female</option>
                                 <option value="male">Male</option>
                             </select>
+                            <span id="gender-error" class="error-message"></span>
                             <br>
                             <div>
-                                <input id="Email" input class="add-user-input" type="text" th:field="*{Email}" placeholder="Email" />
+                                <input id="email" class="add-user-input" type="text" th:field="*{email}"
+                                    placeholder="Email" />
                             </div>
                             <span id="email-error" class="error-message"></span>
-                            <br> 
-                            <button class="btn btn-add-form" type="submit">Add Client</button>
+                            <br>
+                            <button class="btn btn-add-form" type="button">Add Client</button>
                         </form>
                     </div>
                 </div>
@@ -70,17 +80,67 @@
         </div>
     </div>
     <script>
-        window.addEventListener('DOMContentLoaded', (event) => {
-            clearInputFields();
-    });
 
-        function clearInputFields() {
-    var inputFields = document.querySelectorAll('.add-user-input');
-    inputFields.forEach(function(input) {
-        input.value = '';
-    });
+function validateForm() {
+        var firstName = document.getElementById("firstName");
+        var lastName = document.getElementById("lastName");
+        var age = document.getElementById("age");
+        var phoneNumber = document.getElementById("phoneNumber");
+        var gender = document.getElementById("gender");
+        var email = document.getElementById("email");
+        var isValid = true;
+  
+        // Clear error messages
+        var errorMessages = document.querySelectorAll('.error-message');
+        errorMessages.forEach(function (errorMessage) {
+          errorMessage.textContent = '';
+        });
+  
+        if (firstName.value === '') {
+          document.getElementById("fname-error").textContent = 'Please enter a first name.';
+          isValid = false;
+        }
+  
+        if (lastName.value === '') {
+          document.getElementById("lname-error").textContent = 'Please enter a last name.';
+          isValid = false;
+        }
+  
+        if (age.value === '') {
+          document.getElementById("age-error").textContent = 'Please enter an age.';
+          isValid = false;
+        }
+  
+        if (phoneNumber.value === '') {
+          document.getElementById("phoneno-error").textContent = 'Please enter a phone number.';
+          isValid = false;
+        }
+  
+        if (gender.value === '') {
+          document.getElementById("gender-error").textContent = 'Please select a gender.';
+          isValid = false;
+        }
+  
+        if (email.value === '') {
+          document.getElementById("email-error").textContent = 'Please enter an email.';
+          isValid = false;
+        }
+  
+        return isValid;
     }
     </script>
+    <!-- <script>
+        window.addEventListener('DOMContentLoaded', (event) => {
+            clearInputFields();
+        });
+
+        function clearInputFields() {
+            var inputFields = document.querySelectorAll('.add-user-input');
+            inputFields.forEach(function (input) {
+                input.value = '';
+            });
+        }
+    </script> -->
     <script
         src="https://rawcdn.githack.com/Loopple/loopple-public-assets/5cef8f62939eeb089fa26d4c53a49198de421e3d/argon-dashboard/js/vendor/jquery.min.js"></script>
     <script
