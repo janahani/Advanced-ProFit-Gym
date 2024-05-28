@@ -1,5 +1,5 @@
+<!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-
 <head>
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -7,55 +7,53 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css" />
   <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet" />
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" />
-  <link rel="stylesheet"
-    href="https://rawcdn.githack.com/Loopple/loopple-public-assets/ad60f16c8a16d1dcad75e176c00d7f9e69320cd4/argon-dashboard/css/nucleo/css/nucleo.css" />
+  <link rel="stylesheet" href="https://rawcdn.githack.com/Loopple/loopple-public-assets/ad60f16c8a16d1dcad75e176c00d7f9e69320cd4/argon-dashboard/css/nucleo/css/nucleo.css" />
   <link rel="stylesheet" type="text/css" th:href="@{/CSS/theme.css}" />
 </head>
-
 <body>
   <div th:replace="~{partials/adminDashSideBar}"></div>
   <div class="main-content" id="panel">
     <div th:replace="~{partials/adminNavBar}"></div>
-
     <div class="container-fluid pt-3">
       <div class="row removable">
         <div class="col-lg">
           <div class="user-form">
             <h1>Add an Employee</h1>
-            <form th:action="@{/admindashboard/addemployee}" th:object="${employeeObj}" method="POST" class="add-client"
-              onsubmit="return validateForm()">
+            <form th:action="@{/admindashboard/addemployee}" th:object="${employeeObj}" method="POST" class="add-client" onsubmit="return validateAndSubmitForm()">
               <div>
-                <input class="add-user-input" type="text" th:field="*{Name}" placeholder="Name" />
+                <input id="name" class="add-user-input" type="text" th:field="*{Name}" placeholder="Name" />
+                <span id="name-error" class="error-message"></span>
               </div>
-              <span id="name-error" class="error-message"></span>
               <br>
               <div>
-                <input class="add-user-input" type="text" th:field="*{email}" placeholder="Email" /></div>
-              <span id="email-error" class="error-message"></span>
+                <input id="email" class="add-user-input" type="text" th:field="*{email}" placeholder="Email" />
+                <span id="email-error" class="error-message"></span>
+              </div>
               <br>
               <div>
-                <input class="add-user-input" type="text" th:field="*{PhoneNumber}" placeholder="Phone Number" /> </div>
-              <span id="phoneno-error" class="error-message"></span>
+                <input id="phoneno" class="add-user-input" type="text" th:field="*{PhoneNumber}" placeholder="Phone Number" />
+                <span id="phoneno-error" class="error-message"></span>
+              </div>
               <br>
               <label for="jobTitle">Job Title</label>
               <div>
-                <select class="add-user-input" th:field="*{jobTitle}" name="jobTitle">
+                <select id="jobTitle" class="add-user-input" th:field="*{jobTitle}" name="jobTitle">
                   <option th:each="jobTitle : ${jobTitles}" th:value="${jobTitle.ID}" th:text="${jobTitle.Name}"></option>
-              </select>
+                </select>
+                <span id="jobTitle-error" class="error-message"></span>
               </div>
-              <span id="jobTitle-error" class="error-message"> </span>
-              <input type="hidden" id="jobTitleHidden" name="jobTitleHidden" />
               <br>
-              <div><input class="add-user-input" type="text" th:field="*{Salary}" placeholder="Salary" /></div>
-              <span id="salary-error" class="error-message"></span>
+              <div>
+                <input id="salary" class="add-user-input" type="text" th:field="*{Salary}" placeholder="Salary" />
+                <span id="salary-error" class="error-message"></span>
+              </div>
               <br>
-              <div><input class="add-user-input" type="text" th:field="*{Address}" placeholder="Address" /></div>
-              <span id="address-error" class="error-message"></span>
+              <div>
+                <input id="address" class="add-user-input" type="text" th:field="*{Address}" placeholder="Address" />
+                <span id="address-error" class="error-message"></span>
+              </div>
               <br>
-             
-              <button class="btn btn-add-form" type="submit">
-                Add Employee
-              </button>
+              <button class="btn btn-add-form" type="submit">Add Employee</button>
             </form>
           </div>
         </div>
@@ -63,7 +61,87 @@
     </div>
   </div>
 
-   <script src="/js/addEmployee.js"></script>
+  <script th:src="@{/js/addEmployee.js}"></script>
+
+  <script>
+    function validateAndSubmitForm() {
+  var nameInput = document.getElementById("name");
+  var emailInput = document.getElementById("email");
+  var phoneInput = document.getElementById("phoneno");
+  var jobTitleInput = document.getElementById("jobTitle");
+  var salaryInput = document.getElementById("salary");
+  var addressInput = document.getElementById("address");
+
+  var isValid = true;
+
+  // Validate name
+  if (!nameInput.value.trim()) {
+    document.getElementById("name-error").textContent = "Please enter a name.";
+    isValid = false;
+  } else {
+    document.getElementById("name-error").textContent = "";
+  }
+
+  // Validate email
+  if (!emailInput.value.trim()) {
+    document.getElementById("email-error").textContent = "Please enter an email.";
+    isValid = false;
+  } else if (!isValidEmail(emailInput.value.trim())) {
+    document.getElementById("email-error").textContent = "Please enter a valid email.";
+    isValid = false;
+  } else {
+    document.getElementById("email-error").textContent = "";
+  }
+
+  // Validate phone number
+  if (!phoneInput.value.trim()) {
+    document.getElementById("phoneno-error").textContent = "Please enter a phone number.";
+    isValid = false;
+  } else if (!isValidPhoneNumber(phoneInput.value.trim())) {
+    document.getElementById("phoneno-error").textContent = "Please enter a valid phone number.";
+    isValid = false;
+  } else {
+    document.getElementById("phoneno-error").textContent = "";
+  }
+
+  // Validate job title
+  if (!jobTitleInput.value) {
+    document.getElementById("jobTitle-error").textContent = "Please select a job title.";
+    isValid = false;
+  } else {
+    document.getElementById("jobTitle-error").textContent = "";
+  }
+
+  // Validate salary
+  if (!salaryInput.value.trim()) {
+    document.getElementById("salary-error").textContent = "Please enter a salary.";
+    isValid = false;
+  } else if (isNaN(parseFloat(salaryInput.value.trim()))) {
+    document.getElementById("salary-error").textContent = "Please enter a valid number for the salary.";
+    isValid = false;
+  } else {
+    document.getElementById("salary-error").textContent = "";
+  }
+
+  // Validate address
+  if (!addressInput.value.trim()) {
+    document.getElementById("address-error").textContent = "Please enter an address.";
+    isValid = false;
+  } else {
+    document.getElementById("address-error").textContent = "";
+  }
+
+  return isValid;
+}
+
+function isValidEmail(email) {
+  return /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email);
+}
+
+function isValidPhoneNumber(phoneNumber) {
+  return /^\d{10}$/.test(phoneNumber);
+}
+  </script>
 
   <script
     src="https://rawcdn.githack.com/Loopple/loopple-public-assets/5cef8f62939eeb089fa26d4c53a49198de421e3d/argon-dashboard/js/vendor/jquery.min.js"></script>
@@ -79,3 +157,5 @@
 </body>
 
 </html>
+  
+ 

@@ -1,108 +1,77 @@
-function clearInputFields() {
-  var inputFields = document.querySelectorAll('.add-user-input');
-  inputFields.forEach(function(input) {
-      input.value = '';
-  });
+function validateAndSubmitForm() {
+  var nameInput = document.getElementById("name");
+  var emailInput = document.getElementById("email");
+  var phoneInput = document.getElementById("phoneno");
+  var jobTitleInput = document.getElementById("jobTitle");
+  var salaryInput = document.getElementById("salary");
+  var addressInput = document.getElementById("address");
+
+  var isValid = true;
+
+  // Validate name
+  if (!nameInput.value.trim()) {
+    document.getElementById("name-error").textContent = "Please enter a name.";
+    isValid = false;
+  } else {
+    document.getElementById("name-error").textContent = "";
+  }
+
+  // Validate email
+  if (!emailInput.value.trim()) {
+    document.getElementById("email-error").textContent = "Please enter an email.";
+    isValid = false;
+  } else if (!isValidEmail(emailInput.value.trim())) {
+    document.getElementById("email-error").textContent = "Please enter a valid email.";
+    isValid = false;
+  } else {
+    document.getElementById("email-error").textContent = "";
+  }
+
+  // Validate phone number
+  if (!phoneInput.value.trim()) {
+    document.getElementById("phoneno-error").textContent = "Please enter a phone number.";
+    isValid = false;
+  } else if (!isValidPhoneNumber(phoneInput.value.trim())) {
+    document.getElementById("phoneno-error").textContent = "Please enter a valid phone number.";
+    isValid = false;
+  } else {
+    document.getElementById("phoneno-error").textContent = "";
+  }
+
+  // Validate job title
+  if (!jobTitleInput.value) {
+    document.getElementById("jobTitle-error").textContent = "Please select a job title.";
+    isValid = false;
+  } else {
+    document.getElementById("jobTitle-error").textContent = "";
+  }
+
+  // Validate salary
+  if (!salaryInput.value.trim()) {
+    document.getElementById("salary-error").textContent = "Please enter a salary.";
+    isValid = false;
+  } else if (isNaN(parseFloat(salaryInput.value.trim()))) {
+    document.getElementById("salary-error").textContent = "Please enter a valid number for the salary.";
+    isValid = false;
+  } else {
+    document.getElementById("salary-error").textContent = "";
+  }
+
+  // Validate address
+  if (!addressInput.value.trim()) {
+    document.getElementById("address-error").textContent = "Please enter an address.";
+    isValid = false;
+  } else {
+    document.getElementById("address-error").textContent = "";
+  }
+
+  return isValid;
 }
 
-window.addEventListener('DOMContentLoaded', (event) => {
-  clearInputFields();
-});
+function isValidEmail(email) {
+  return /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email);
+}
 
-function validateForm() {
-    const name = document.getElementsByName('name').value.trim();
-    const phoneNumber = document.getElementsByName('phoneNumber');
-    const email = document.getElementsByName('email');
-    const jobTitle = document.getElementById('jobs').value;
-    const salary = document.getElementsByName('salary');
-    const address = document.getElementsByName('address');
-    const password = document.getElementsByName('password');
-  
-    const nameError = document.getElementById('name-error');
-    const phoneNumberError = document.getElementById('phoneno-error');
-    const emailError = document.getElementById('email-error');
-    const jobTitleError = document.getElementById('jobTitle-error');
-    const salaryError = document.getElementById('salary-error');
-    const addressError = document.getElementById('address-error');
-    const passwordError = document.getElementById('password-error');
-  
-    let isValid = true;
-  
-    // Name validation
-    if (name.value.trim() === '') {
-      nameError.innerText = 'Name is required';
-      isValid = false;
-    } else {
-      nameError.innerText = '';
-    }
-
-    // Regular expression for a valid 10-digit phone number
-    var phoneRegex ='/^0\d{10}$/';
-
-     if (phoneNumber.value.trim() === '') {
-        phoneNumberError.innerText = 'Phone Number is required';
-         isValid = false;
-    } else if (!phoneRegex.test(phoneNumber.value)) {
-        phoneNumberError.innerText = 'Invalid phone number format';
-         isValid = false;
-    } 
-  
-  
-    // Email validation
-    if (email.value.trim() === '') {
-      emailError.innerText = 'Email is required';
-      isValid = false;
-    } else if (!isValidEmail(email.value)) {
-      emailError.innerText = 'Invalid email format';
-      isValid = false;
-    } else {
-      emailError.innerText = '';
-    }
-  
-    // Job Title validation
-    if (jobTitle.value === '') {
-      jobTitleError.innerText = 'Job Title is required';
-      isValid = false;
-    } else {
-      jobTitleError.innerText = '';
-    }
-  
-    // Salary validation
-    if (salary.value.trim() === '' ) {
-      salaryError.innerText = 'Salary is required';
-      isValid = false;
-    } else if ((salary.value)>=1000) {
-        emailError.innerText = 'Minimum Salary value is 1000';
-        isValid = false;
-      }else {
-      salaryError.innerText = '';
-    }
-  
-    // Address validation
-    if (address.value.trim() === '') {
-      addressError.innerText = 'Address is required';
-      isValid = false;
-    } else {
-      addressError.innerText = '';
-    }
-
-    
-        // Password validation
-        if(password.value.trim() === ''){
-            passwordError.innerText = 'Password is required';
-            isValid = false;
-        } else if (password.value.length < 6) {
-            passwordError.innerText = 'Password must be at least 6 characters long';
-            isValid = false;
-        } else {
-            passwordError.innerText = '';
-        }
-  
-    return isValid;
-  }
-  
-  // Helper function to validate email format
-  function isValidEmail(email) {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return emailRegex.test(email);
-  }
+function isValidPhoneNumber(phoneNumber) {
+  return /^\d{10}$/.test(phoneNumber);
+}
