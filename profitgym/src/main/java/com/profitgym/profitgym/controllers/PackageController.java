@@ -14,6 +14,7 @@ import com.profitgym.profitgym.models.Package;
 import com.profitgym.profitgym.services.PackageService;
 
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 
 import java.util.List;
 
@@ -31,13 +32,19 @@ public class PackageController {
         return mav;
     }
 
-    @SuppressWarnings("null")
+    
     @PostMapping("addpackage")
-    public ModelAndView savePackage(@ModelAttribute Package packageObj) {
-        this.packageService.savePackage(packageObj);
+    public ModelAndView savePackage(@ModelAttribute Package packageObj,HttpSession session) {
         ModelAndView modelAndView = new ModelAndView();
+        if (session.getAttribute("loggedInEmp") == null) {
+            modelAndView.setViewName("redirect:/loginemployee");
+            return modelAndView;
+        }
+        else{
+        this.packageService.savePackage(packageObj);
         modelAndView.setViewName("redirect:/admindashboard/addpackage");
         return modelAndView;
+        }
     }
 
     @GetMapping("packages")
