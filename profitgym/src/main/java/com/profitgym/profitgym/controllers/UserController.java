@@ -41,7 +41,7 @@ import com.profitgym.profitgym.repositories.EmployeeRepository;
 import com.profitgym.profitgym.services.PackageService;
 import com.profitgym.profitgym.repositories.ReservedClassRepository;
 import com.profitgym.profitgym.repositories.MembershipsRepository;
-// import com.profitgym.profitgym.repositories.ScheduledUnfreezeRepository;
+import com.profitgym.profitgym.repositories.ScheduledUnfreezeRepository;
 
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
@@ -71,8 +71,8 @@ public class UserController {
     @Autowired
     private ReservedClassRepository reservedClassRepository;
 
-    // @Autowired
-    // private ScheduledUnfreezeRepository scheduledUnfreezeRepository;
+    @Autowired
+    private ScheduledUnfreezeRepository scheduledUnfreezeRepository;
 
     @Autowired
     private EmployeeRepository employeeRepository;
@@ -113,13 +113,13 @@ public class UserController {
     }
 
 
-    // public void createScheduledUnfreeze(int membershipID, LocalDate currentDate, LocalDate freezeEnddate) {
-    //     ScheduledUnfreeze scheduledUnfreeze = new ScheduledUnfreeze();
-    //     scheduledUnfreeze.setFreezeStartDate(currentDate);
-    //     scheduledUnfreeze.setFreezeEndDate(freezeEnddate);
-    //     scheduledUnfreeze.setMembershipID(membershipID);
-    //     this.scheduledUnfreezeRepository.save(scheduledUnfreeze);
-    // }
+    public void createScheduledUnfreeze(int membershipID, LocalDate currentDate, LocalDate freezeEnddate) {
+        ScheduledUnfreeze scheduledUnfreeze = new ScheduledUnfreeze();
+        scheduledUnfreeze.setFreezeStartDate(currentDate);
+        scheduledUnfreeze.setFreezeEndDate(freezeEnddate);
+        scheduledUnfreeze.setMembershipID(membershipID);
+        this.scheduledUnfreezeRepository.save(scheduledUnfreeze);
+    }
 
 
     @GetMapping("/profile")
@@ -376,47 +376,47 @@ public class UserController {
         return mav;
     }
 
-    // @PostMapping("requestfreeze")
-    // public ModelAndView freezeMembership(@RequestParam("freezeEndDate") String freezeEndDate,
-    //         HttpSession session) {
-    //     Client loggedInUser = (Client) session.getAttribute("loggedInUser");
-    //     int freezeDuration = calculateFreezeDuration(LocalDate.now(), LocalDate.parse(freezeEndDate));
-    //     Memberships membership = membershipsRepository.findByClientID(loggedInUser.getID());
+    @PostMapping("requestfreeze")
+    public ModelAndView freezeMembership(@RequestParam("freezeEndDate") String freezeEndDate,
+            HttpSession session) {
+        Client loggedInUser = (Client) session.getAttribute("loggedInUser");
+        int freezeDuration = calculateFreezeDuration(LocalDate.now(), LocalDate.parse(freezeEndDate));
+        Memberships membership = membershipsRepository.findByClientID(loggedInUser.getID());
 
-    //     updateMembershipEndDate(membership, freezeDuration);
+        updateMembershipEndDate(membership, freezeDuration);
 
-    //     createScheduledUnfreeze(membership.getID(), LocalDate.now(), LocalDate.parse(freezeEndDate));
+        createScheduledUnfreeze(membership.getID(), LocalDate.now(), LocalDate.parse(freezeEndDate));
 
-    //     ModelAndView modelAndView = new ModelAndView();
-    //     modelAndView.setViewName("redirect:/user/requestfreeze");
-    //     return modelAndView;
-    // }
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("redirect:/user/requestfreeze");
+        return modelAndView;
+    }
 
-    // @PostMapping("requestunfreeze")
-    // public ModelAndView unfreezeMembership(HttpSession session) {
-    //     Client loggedInUser = (Client) session.getAttribute("loggedInUser");
-    //     Memberships membership = membershipsRepository.findByClientID(loggedInUser.getID());
+    @PostMapping("requestunfreeze")
+    public ModelAndView unfreezeMembership(HttpSession session) {
+        Client loggedInUser = (Client) session.getAttribute("loggedInUser");
+        Memberships membership = membershipsRepository.findByClientID(loggedInUser.getID());
 
-    //     ScheduledUnfreeze scheduledUnfreeze = scheduledUnfreezeRepository.findByMembershipID(membership.getID());
-    //     // get the difference between old freeze duration and the new freeze duration
-    //     int newFreezeDuration = calculateFreezeDuration(scheduledUnfreeze.getFreezeStartDate(), LocalDate.now());
-    //     int oldFreezeDuration = calculateFreezeDuration(scheduledUnfreeze.getFreezeStartDate(),
-    //             scheduledUnfreeze.getFreezeEndDate());
-    //     int freezeDuration = oldFreezeDuration - newFreezeDuration;
+        ScheduledUnfreeze scheduledUnfreeze = scheduledUnfreezeRepository.findByMembershipID(membership.getID());
+        // get the difference between old freeze duration and the new freeze duration
+        int newFreezeDuration = calculateFreezeDuration(scheduledUnfreeze.getFreezeStartDate(), LocalDate.now());
+        int oldFreezeDuration = calculateFreezeDuration(scheduledUnfreeze.getFreezeStartDate(),
+                scheduledUnfreeze.getFreezeEndDate());
+        int freezeDuration = oldFreezeDuration - newFreezeDuration;
 
-    //     // update membership end date by subtracting the new freeze duration
-    //     membership.setEndDate(membership.getEndDate().minusDays(freezeDuration));
-    //     membership.setFreezeCount(membership.getFreezeCount() + freezeDuration);
-    //     membership.setFreezed("Not Freezed");
-    //     this.membershipsRepository.save(membership);
+        // update membership end date by subtracting the new freeze duration
+        membership.setEndDate(membership.getEndDate().minusDays(freezeDuration));
+        membership.setFreezeCount(membership.getFreezeCount() + freezeDuration);
+        membership.setFreezed("Not Freezed");
+        this.membershipsRepository.save(membership);
 
-    //     // remove scheduled unfreeze
-    //     this.scheduledUnfreezeRepository.delete(scheduledUnfreeze);
+        // remove scheduled unfreeze
+        this.scheduledUnfreezeRepository.delete(scheduledUnfreeze);
 
-    //     ModelAndView modelAndView = new ModelAndView();
-    //     modelAndView.setViewName("redirect:/user/requestfreeze");
-    //     return modelAndView;
-    // }
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("redirect:/user/requestfreeze");
+        return modelAndView;
+    }
 
     @GetMapping("profsettings")
     public ModelAndView viewProfSettings() {

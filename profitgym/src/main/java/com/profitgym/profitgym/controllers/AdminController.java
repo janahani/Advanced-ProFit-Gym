@@ -38,6 +38,8 @@ import com.profitgym.profitgym.repositories.EmployeeRepository;
 import com.profitgym.profitgym.repositories.JobTitlesRepository;
 import com.profitgym.profitgym.repositories.MembershipsRepository;
 import com.profitgym.profitgym.services.PackageService;
+import com.profitgym.profitgym.services.MembershipsService;
+
 import com.profitgym.profitgym.repositories.ReservedClassRepository;
 
 import jakarta.servlet.http.HttpSession;
@@ -67,6 +69,9 @@ public class AdminController {
 
     @Autowired
     private PackageService packageService;
+
+    @Autowired
+    private MembershipsService membershipsService;
 
     @Autowired
     private EmployeeRepository employeeRepository;
@@ -241,27 +246,27 @@ public class AdminController {
     @GetMapping("clientrequests")
     public ModelAndView viewRequests() {
         ModelAndView mav = new ModelAndView("clientReqAdminDash.html");
-        List<Memberships> memberships = membershipsRepository.findByIsActivated("Pending");
+
+        List<Memberships> memberships = membershipsService.getAllClientRequests("Pending");
         List<Client> clients = new ArrayList<>();
         List<Package> packages = new ArrayList<>();
         if (memberships != null) {
             for (Memberships membership : memberships) {
-
                 Client client = clientRepository.findById(membership.getClientID());
-                if (clients.contains(client) == false) {
+                if (!clients.contains(client)) {
                     clients.add(client);
                 }
                 Package package1 = packageService.findById(membership.getPackageID());
-                if (packages.contains(package1) == false) {
+                if (!packages.contains(package1)) {
                     packages.add(package1);
                 }
             }
         }
-
+        
         mav.addObject("memberships", memberships);
         mav.addObject("packages", packages);
         mav.addObject("clients", clients);
-
+        
         List<ReservedClass> reservedClassesList = this.reservedClassRepository.findByIsActivated("Pending");
         List<Classes> classesList = new ArrayList<>();
         List<Client> clientsList = new ArrayList<>();

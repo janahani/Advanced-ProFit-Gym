@@ -12,17 +12,21 @@ import com.profitgym.membershipsmicroservices.membershipsmicroservices.models.Sc
 import com.profitgym.membershipsmicroservices.membershipsmicroservices.repositories.MembershipsRepository;
 import com.profitgym.membershipsmicroservices.membershipsmicroservices.repositories.ScheduledUnfreezeRepository;
 
+
+
 import jakarta.servlet.http.HttpSession;
 
 import java.io.Console;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("")
@@ -35,13 +39,37 @@ public class MembershipsController {
     private ScheduledUnfreezeRepository scheduledUnfreezeRepository;
 
     @GetMapping("/admindashboard/memberships")
-    public ResponseEntity<List<Memberships>> getAllMemberships() {
-        System.out.println("Request received to fetch all memberships");
-        List<Memberships> memberships = membershipsRepository.findAll();
+    public ResponseEntity<List<Memberships>> getAllActivatedMemberships() {
+        System.out.println("Request received to fetch all activated memberships");
+        List<Memberships> memberships = membershipsRepository.findByIsActivated("Activated");
         System.out.println(memberships.size());
         return new ResponseEntity<>(memberships, HttpStatus.OK);
     }
 
+    @GetMapping("/admindashboard/clientrequests")
+    public ResponseEntity<List<Memberships>> getAllClientRequests() {
+        System.out.println("Request received to fetch all client requests");
+        List<Memberships> memberships = membershipsRepository.findByIsActivated("Pending");
+        System.out.println(memberships.size());
+        return new ResponseEntity<>(memberships, HttpStatus.OK);
+    }
+
+    @PostMapping("/admindashboard/requestmembership")
+    public ResponseEntity<Map<String, String>> requestMembership(@RequestParam("id") int clientId, @RequestParam("packageID") int packageId) {
+        Memberships membership = new Memberships();
+        membership.setClientID(clientId);
+        membership.setIsActivated("Activated");
+        membership.setPackageID(packageId);
+    
+        membershipsRepository.save(membership);
+    
+        Map<String, String> response = new HashMap<>();
+        response.put("message", "Membership requested successfully.");
+        
+        return ResponseEntity.ok().body(response);
+    }
+    
+    
     @DeleteMapping("/admindashboard/deletemembership")
     public ResponseEntity<String> deleteMembership(@RequestParam("membershipId") int membershipId) {
         try {
@@ -143,33 +171,7 @@ public ResponseEntity<String> unfreezeMembership(@RequestParam("id") int id) {
         return new ResponseEntity<>(membershipsList, HttpStatus.OK);
     }
 
-    @PostMapping("/user/requestfreeze")
-    public ResponseEntity<String> requestFreeze(@RequestParam("freezeEndDate") String freezeEndDate,
-            HttpSession session) {
-        Client loggedInUser = (Client) session.getAttribute("loggedInUser");
-        int freezeDuration = calculateFreezeDuration(LocalDate.now(), LocalDate.parse(freezeEndDate));
-        Memberships membership = membershipsRepository.findByClientID(loggedInUser.getID());
-        updateMembershipEndDate(membership, freezeDuration);
-        createScheduledUnfreezeClient(membership.getID(), LocalDate.now(), LocalDate.parse(freezeEndDate));
-        return new ResponseEntity<>("Membership frozen", HttpStatus.OK);
-    }
-
-    @PostMapping("/user/requestunfreeze")
-    public ResponseEntity<String> requestUnfreeze(HttpSession session) {
-        Client loggedInUser = (Client) session.getAttribute("loggedInUser");
-        Memberships membership = membershipsRepository.findByClientID(loggedInUser.getID());
-        ScheduledUnfreeze scheduledUnfreeze = scheduledUnfreezeRepository.findByMembershipID(membership.getID());
-        int newFreezeDuration = calculateFreezeDuration(scheduledUnfreeze.getFreezeStartDate(), LocalDate.now());
-        int oldFreezeDuration = calculateFreezeDuration(scheduledUnfreeze.getFreezeStartDate(),
-                scheduledUnfreeze.getFreezeEndDate());
-        int freezeDuration = oldFreezeDuration - newFreezeDuration;
-        membership.setEndDate(membership.getEndDate().minusDays(freezeDuration));
-        membership.setFreezeCount(membership.getFreezeCount() + freezeDuration);
-        membership.setFreezed("Not Freezed");
-        membershipsRepository.save(membership);
-        scheduledUnfreezeRepository.delete(scheduledUnfreeze);
-        return new ResponseEntity<>("Membership unfrozen", HttpStatus.OK);
-    }
+   
 
     // User side membership functionalities end
     // -----------------------------------------------------
@@ -183,15 +185,7 @@ public ResponseEntity<String> unfreezeMembership(@RequestParam("id") int id) {
         membershipsRepository.save(membership);
     }
 
-    private void createScheduledUnfreezeClient(int membershipID, LocalDate currentDate, LocalDate freezeEndDate) {
-        ScheduledUnfreeze scheduledUnfreeze = new ScheduledUnfreeze();
-        scheduledUnfreeze.setFreezeStartDate(currentDate);
-        scheduledUnfreeze.setFreezeEndDate(freezeEndDate);
-        scheduledUnfreeze.setMembershipID(membershipID);
-        scheduledUnfreeze.setFreezeCount(membershipsRepository.findById(membershipID).getFreezeCount());
-        scheduledUnfreezeRepository.save(scheduledUnfreeze);
-    }
-
+  
     public void createScheduledUnfreezeAdmin(Memberships membership, LocalDate currentDate, LocalDate freezeEnddate) {
         ScheduledUnfreeze scheduledUnfreeze = new ScheduledUnfreeze();
         scheduledUnfreeze.setFreezeStartDate(currentDate);

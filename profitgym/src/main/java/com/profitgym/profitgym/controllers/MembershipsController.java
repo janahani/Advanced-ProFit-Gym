@@ -53,7 +53,7 @@ public class MembershipsController {
         Memberships membership = this.membershipsService.findMembershipById(membershipId);
         if (membership != null) {
             membership.setIsActivated("Activated");
-            membershipsService.saveMembership(membership);
+            membershipsService.acceptMembership(membershipId);
         }
         return new ModelAndView("redirect:/admindashboard/clientrequests");
     }
@@ -63,40 +63,11 @@ public class MembershipsController {
         Memberships membership = this.membershipsService.findMembershipById(membershipId);
         if (membership != null) {
             membership.setIsActivated("Not Activated");
-            membershipsService.saveMembership(membership);
+            membershipsService.declineMembership(membershipId);
         }
         return new ModelAndView("redirect:/admindashboard/clientrequests");
     }
 
-    @GetMapping("/admindashboard/memberships")
-    public ModelAndView viewMemberships() {
-        ModelAndView mav = new ModelAndView("membershipAdminDash.html");
-        List<Memberships> memberships = this.membershipsService.findAll();
-        List<Client> clients = new ArrayList<>();
-        List<Package> packages = new ArrayList<>();
-        if (memberships != null) {
-            LocalDate currentDate = LocalDate.now();
-            LocalDate minFreezeDate = currentDate.plusDays(3);
-            List<LocalDate> maxFreezeDates = new ArrayList<>();
-            for (Memberships membership : memberships) {
-                if ("Activated".equals(membership.getIsActivated())) {
-                    Client client = clientRepository.findById(membership.getClientID());
-                    clients.add(client);
-                    Package package1 = packageService.findById(membership.getPackageID());
-                    if (!packages.contains(package1)) {
-                        packages.add(package1);
-                    }
-                    maxFreezeDates.add(currentDate.plusDays(membership.getFreezeCount()));
-                }
-            }
-            mav.addObject("minFreezeDate", minFreezeDate);
-            mav.addObject("maxFreezeDates", maxFreezeDates);
-        }
-        mav.addObject("memberships", memberships);
-        mav.addObject("clients", clients);
-        mav.addObject("packages", packages);
-        return mav;
-    }
 
     @PostMapping("/admindashboard/deletemembership")
     public ModelAndView deleteMembership(@RequestParam("membershipId") int membershipId) {
@@ -124,15 +95,11 @@ public class MembershipsController {
     @PostMapping("/admindashboard/requestmembership")
     public ModelAndView activateMembership(@RequestParam("id") int clientId, @RequestParam("packageID") int packageId) {
         ModelAndView mav = new ModelAndView();
-        Package pack = packageService.findById(packageId);
-        Memberships membership = new Memberships();
-        membership.setClientID(clientId);
-        membership.setIsActivated("Activated");
-        membership.setPackage(pack);
-        membershipsService.saveMembership(membership);
+        membershipsService.requestmembership(clientId, packageId);
         mav.setViewName("redirect:/admindashboard/clients");
         return mav;
     }
+    
 
     public int calculateFreezeDuration(LocalDate currentDate, LocalDate freezeEndDate) {
         int freezeDuration = (int) ChronoUnit.DAYS.between(currentDate, freezeEndDate);
@@ -168,56 +135,37 @@ public class MembershipsController {
 
 
 
-
-    // client side membership functionalities begin ---------------------------------------------------
-
+     @GetMapping("/admindashboard/memberships")
+    public ModelAndView viewMemberships() {
+        ModelAndView mav = new ModelAndView("membershipAdminDash.html");
+        List<Memberships> memberships = this.membershipsService.findByIsActivated("Activated");
+        List<Client> clients = new ArrayList<>();
+        List<Package> packages = new ArrayList<>();
+        if (memberships != null) {
+            LocalDate currentDate = LocalDate.now();
+            LocalDate minFreezeDate = currentDate.plusDays(3);
+            List<LocalDate> maxFreezeDates = new ArrayList<>();
+            for (Memberships membership : memberships) {
+                if ("Activated".equals(membership.getIsActivated())) {
+                    Client client = clientRepository.findById(membership.getClientID());
+                    clients.add(client);
+                    Package package1 = packageService.findById(membership.getPackageID());
+                    if (!packages.contains(package1)) {
+                        packages.add(package1);
+                    }
+                    maxFreezeDates.add(currentDate.plusDays(membership.getFreezeCount()));
+                }
+            }
+            mav.addObject("minFreezeDate", minFreezeDate);
+            mav.addObject("maxFreezeDates", maxFreezeDates);
+        }
+        mav.addObject("memberships", memberships);
+        mav.addObject("clients", clients);
+        mav.addObject("packages", packages);
+        return mav;
+    }
 
     
-    // @PostMapping("/user/requestfreeze")
-    // public ModelAndView freezeMembership(@RequestParam("freezeEndDate") String freezeEndDate,
-    //         HttpSession session) {
-    //     Client loggedInUser = (Client) session.getAttribute("loggedInUser");
-    //     int freezeDuration = calculateFreezeDuration(LocalDate.now(), LocalDate.parse(freezeEndDate));
-    //     Memberships membership = membershipsService.findByClientID(loggedInUser.getID());
-
-    //     updateMembershipEndDate(membership, freezeDuration);
-
-    //     createScheduledUnfreezeClient(membership.getID(), LocalDate.now(), LocalDate.parse(freezeEndDate));
-
-    //     ModelAndView modelAndView = new ModelAndView();
-    //     modelAndView.setViewName("redirect:/user/requestfreeze");
-    //     return modelAndView;
-    // }
-
-    // @PostMapping("/user/requestunfreeze")
-    // public ModelAndView unfreezeMembership(HttpSession session) {
-    //     Client loggedInUser = (Client) session.getAttribute("loggedInUser");
-    //     Memberships membership = membershipsService.findByClientID(loggedInUser.getID());
-
-    //     ScheduledUnfreeze scheduledUnfreeze = scheduledUnfreezeRepository.findByMembershipID(membership.getID());
-    //     // get the difference between old freeze duration and the new freeze duration
-    //     int newFreezeDuration = calculateFreezeDuration(scheduledUnfreeze.getFreezeStartDate(), LocalDate.now());
-    //     int oldFreezeDuration = calculateFreezeDuration(scheduledUnfreeze.getFreezeStartDate(),
-    //             scheduledUnfreeze.getFreezeEndDate());
-    //     int freezeDuration = oldFreezeDuration - newFreezeDuration;
-
-    //     // update membership end date by subtracting the new freeze duration
-    //     membership.setEndDate(membership.getEndDate().minusDays(freezeDuration));
-    //     membership.setFreezeCount(membership.getFreezeCount() + freezeDuration);
-    //     membership.setFreezed("Not Freezed");
-    //     this.membershipsService.saveMembership(membership);
-
-    //     // remove scheduled unfreeze
-    //     this.scheduledUnfreezeRepository.delete(scheduledUnfreeze);
-
-    //     ModelAndView modelAndView = new ModelAndView();
-    //     modelAndView.setViewName("redirect:/user/requestfreeze");
-    //     return modelAndView;
-    // }
-
-
-
-
     
     
 }
