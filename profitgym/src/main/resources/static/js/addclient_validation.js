@@ -9,87 +9,68 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     function validateForm() {
-        const fname = document.getElementById('fname');
-        const lname = document.getElementById('lname');
-        const age = document.getElementById('age');
-        const gender = document.querySelector('input[name="gender"]:checked');
-        const email = document.getElementById('email');
-        var phoneno = document.getElementById("phone");
+        var firstNameInput = document.getElementById("firstName");
+        var lastNameInput = document.getElementById("lastName");
+        var ageInput = document.getElementById("age");
+        var phoneNumberInput = document.getElementById("phoneNumber");
+        var weightInput = document.getElementById("weight");
+        var heightInput = document.getElementById("height");
+        var genderInput = document.getElementById("gender");
+        var emailInput = document.getElementById("email");
 
+        var isValid = true;
 
-        const fnameError = document.getElementById('fname-error');
-        const lnameError = document.getElementById('lname-error');
-        const ageError = document.getElementById('age-error');
-        const genderError = document.getElementById('gender-error');
-        const emailError = document.getElementById('email-error');
-        var phonenoError = document.getElementById("phoneno-error");
-
-        let isValid = true;
-
-        // First Name validation
-        if (fname.value.trim() === '') {
-            fnameError.innerText = 'First Name is required';
+        if (!firstNameInput.value.trim()) {
+            document.getElementById("fname-error").textContent = "Please enter first name.";
             isValid = false;
         } else {
-            fnameError.innerText = '';
+            document.getElementById("fname-error").textContent = "";
         }
 
-        // Last Name validation
-        if (lname.value.trim() === '') {
-            lnameError.innerText = 'Last Name is required';
+        if (!lastNameInput.value.trim()) {
+            document.getElementById("lname-error").textContent = "Please enter last name.";
             isValid = false;
         } else {
-            lnameError.innerText = '';
+            document.getElementById("lname-error").textContent = "";
         }
 
-        // Age validation
-        if (age.value.trim() === '' ) {
-            ageError.innerText = 'Age is required';
-            isValid = false;
-        }else if( age.value < 16 || age.value > 100){
-            ageError.innerText = 'Age must be between 16 and 100';
-            isValid = false;
-        }else {
-            ageError.innerText = '';
-        }
-
-        // Gender validation
-        if (!gender) {
-            genderError.innerText = 'Gender is required';
+        if (!ageInput.value.trim()) {
+            document.getElementById("age-error").textContent = "Please enter age.";
             isValid = false;
         } else {
-            genderError.innerText = '';
+            document.getElementById("age-error").textContent = "";
         }
 
-        // Email validation
-        if (email.value.trim() === '') {
-            emailError.innerText = 'Email is required';
-            isValid = false;
-        }else if( !isValidEmail(email.value)){
-            emailError.innerText =  'Invalid email format';
+        if (!phoneNumberInput.value.trim()) {
+            document.getElementById("phoneno-error").textContent = "Please enter phone number.";
             isValid = false;
         } else {
-            emailError.innerText = '';
+            document.getElementById("phoneno-error").textContent = "";
         }
 
-        // Regular expression for a valid 10-digit phone number
-        var phoneRegex ='/^0\d{10}$/';
+        if (!weightInput.value.trim()) {
+        }
 
-        if (phoneno.value.trim() === '') {
-            phonenoError.innerText = 'Phone Number is required';
+        if (!heightInput.value.trim()) {
+        }
+
+        if (!genderInput.value.trim()) {
+        }
+
+        if (!emailInput.value.trim()) {
+            document.getElementById("email-error").textContent = "Please enter email.";
             isValid = false;
-        } else if (!phoneRegex.test(phoneno.value)) {
-            phonenoError.innerText = 'Invalid phone number format';
+        } else if (!isValidEmail(emailInput.value.trim())) {
+            document.getElementById("email-error").textContent = "Please enter a valid email.";
             isValid = false;
-        } 
+        } else {
+            document.getElementById("email-error").textContent = "";
+        }
 
         return isValid;
     }
 
-    // Helper function to validate email format
     function isValidEmail(email) {
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        return emailRegex.test(email);
+        return /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email);
     }
 });
-
