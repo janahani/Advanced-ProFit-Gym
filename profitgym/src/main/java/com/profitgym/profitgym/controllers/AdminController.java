@@ -364,8 +364,13 @@ public class AdminController {
     }
 
     @PostMapping("addclient")
-    public ModelAndView saveClient(@ModelAttribute Client clientObj) {
+    public ModelAndView saveClient(@ModelAttribute Client clientObj, HttpSession session) {
         ModelAndView modelAndView = new ModelAndView();
+
+        if (session.getAttribute("loggedInEmp") == null) {
+            modelAndView.setViewName("redirect:/loginemployee");
+            return modelAndView;
+        }
 
         Client existingClient = clientRepository.findByEmail(clientObj.getEmail());
         if (existingClient != null) {
@@ -402,8 +407,13 @@ public class AdminController {
 
     @PostMapping("addemployee")
     public ModelAndView saveEmployee(@ModelAttribute Employee employeeObj,
-            @RequestParam(value = "jobTitleHidden", required = false) Integer jobTitle) {
+            @RequestParam(value = "jobTitleHidden", required = false) Integer jobTitle,HttpSession session) {
         ModelAndView modelAndView = new ModelAndView();
+
+        if (session.getAttribute("loggedInEmp") == null) {
+            modelAndView.setViewName("redirect:/loginemployee");
+            return modelAndView;
+        }
 
         if (jobTitle != null) {
             employeeObj.setJobTitle(jobTitle);
