@@ -88,10 +88,12 @@ public class MembershipsController {
     }
 
     @PostMapping("/admindashboard/requestmembership")
-    public ModelAndView activateMembership(@RequestParam("id") int clientId, @RequestParam("packageID") int packageId) {
+    public ModelAndView activateMembership(
+            @RequestParam("id") int clientId,
+            @RequestParam("packageID") int packageId) {
         ModelAndView mav = new ModelAndView();
         membershipsService.requestmembership(clientId, packageId);
-        mav.setViewName("redirect:/admindashboard/clients");
+        mav.setViewName("redirect:/admindashboard/memberships");
         return mav;
     }
 
