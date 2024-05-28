@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
@@ -19,7 +20,8 @@
                 <div class="col-lg">
                     <div class="user-form">
                         <h1>Add a Client</h1>
-                        <form th:action="@{/admindashboard/addclient}" th:object="${clientObj}" method="POST" class="add-client" onsubmit="return validateForm()">
+                        <form th:action="@{/admindashboard/addclient}" th:object="${clientObj}" method="POST"
+                            id="add-client" class="add-client" onsubmit="return validateForm()">
                             <div>
                                 <input id="firstName" class="add-user-input" type="text" th:field="*{FirstName}" placeholder="First Name" />
                                 <span id="fname-error" class="error-message"></span>
@@ -43,7 +45,7 @@
                             <div>
                                 <input id="weight" class="add-user-input" type="text" th:field="*{Weight}" placeholder="Weight" />
                             </div>
-                            <br>                            
+                            <br>
                             <div>
                                 <input id="height" class="add-user-input" type="text" th:field="*{Height}" placeholder="Height" />
                             </div>
@@ -53,6 +55,7 @@
                                 <option value="female">Female</option>
                                 <option value="male">Male</option>
                             </select>
+                            <span id="gender-error" class="error-message"></span>
                             <br>
                             <div>
                                 <input id="email" class="add-user-input" type="text" th:field="*{Email}" placeholder="Email" />
@@ -68,8 +71,59 @@
     </div>
     <script th:src="@{/js/addclient_validation.js}"></script>
     <script>
+
+function validateForm() {
+        var firstName = document.getElementById("firstName");
+        var lastName = document.getElementById("lastName");
+        var age = document.getElementById("age");
+        var phoneNumber = document.getElementById("phoneNumber");
+        var gender = document.getElementById("gender");
+        var email = document.getElementById("email");
+        var isValid = true;
+  
+        // Clear error messages
+        var errorMessages = document.querySelectorAll('.error-message');
+        errorMessages.forEach(function (errorMessage) {
+          errorMessage.textContent = '';
+        });
+  
+        if (firstName.value === '') {
+          document.getElementById("fname-error").textContent = 'Please enter a first name.';
+          isValid = false;
+        }
+  
+        if (lastName.value === '') {
+          document.getElementById("lname-error").textContent = 'Please enter a last name.';
+          isValid = false;
+        }
+  
+        if (age.value === '') {
+          document.getElementById("age-error").textContent = 'Please enter an age.';
+          isValid = false;
+        }
+  
+        if (phoneNumber.value === '') {
+          document.getElementById("phoneno-error").textContent = 'Please enter a phone number.';
+          isValid = false;
+        }
+  
+        if (gender.value === '') {
+          document.getElementById("gender-error").textContent = 'Please select a gender.';
+          isValid = false;
+        }
+  
+        if (email.value === '') {
+          document.getElementById("email-error").textContent = 'Please enter an email.';
+          isValid = false;
+        }
+  
+        return isValid;
+    }
+    </script>
+    <!-- <script>
         window.addEventListener('DOMContentLoaded', (event) => {
             clearInputFields();
+        });
         });
 
         function clearInputFields() {

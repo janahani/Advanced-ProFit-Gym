@@ -1,12 +1,13 @@
-
 document.addEventListener('DOMContentLoaded', function() {
-    const form = document.getElementById('addclient-form');
-    form.addEventListener('submit', function(event) {
-        const isValid = validateForm();
-        if (!isValid) {
-            event.preventDefault();
-        }
-    });
+    const form = document.getElementById('add-client');
+    if (form) {
+        form.addEventListener('submit', function(event) {
+            const isValid = validateForm();
+            if (!isValid) {
+                event.preventDefault();
+            }
+        });
+    }
 
     function validateForm() {
         var firstNameInput = document.getElementById("firstName");
