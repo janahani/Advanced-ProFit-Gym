@@ -4,6 +4,7 @@ import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.After;
 import org.aspectj.lang.annotation.AfterReturning;
+import org.aspectj.lang.annotation.AfterThrowing;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
@@ -26,6 +27,11 @@ public class UserControllerAspect {
     @AfterReturning(pointcut = "execution(* com.profitgym.profitgym.controllers.UserController.*(..))", returning = "result")
     public void afterReturningUserControllerMethods(JoinPoint joinPoint, Object result) {
         System.out.println("After returning user controller method:" + joinPoint.getSignature() + ", result =" + result);
+    }
+
+    @AfterThrowing(pointcut = "execution(* com.profitgym.profitgym.controllers.UserController.*(..))", throwing = "ex")
+    public void afterThrowingUserControllerMethods(JoinPoint joinPoint, Exception ex) {
+        System.out.println("Exception thrown:" + joinPoint.getSignature() + ", ex =" + ex.getMessage());
     }
 
     @Around("within(com.profitgym.profitgym.controllers.UserController)")
